@@ -19,10 +19,10 @@ import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
 
 public class PersonTable extends Table<PersonTable> {
-    public Field ID = field("ID");
-    public Field NAME = field("NAME");
-    public Field SSN = field("SSN");
-    public Field PHONE_NO = field("PHONE_NO");
+    public final Field ID = field("ID");
+    public final Field NAME = field("NAME");
+    public final Field SSN = field("SSN");
+    public final Field PHONE_NO = field("PHONE_NO");
 
     PersonTable(String alias) {
         super("PERSON", alias, PersonTable::new);

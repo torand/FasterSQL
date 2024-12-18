@@ -19,11 +19,11 @@ import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
 
 public class AddressTable extends Table<AddressTable> {
-    public Field PERSON_ID = field("PERSON_ID");
-    public Field STREET = field("STREET");
-    public Field ZIP = field("ZIP");
-    public Field COUNTRY = field("COUNTRY");
-    public Field VERIFIED = field("VERIFIED");
+    public final Field PERSON_ID = field("PERSON_ID");
+    public final Field STREET = field("STREET");
+    public final Field ZIP = field("ZIP");
+    public final Field COUNTRY = field("COUNTRY");
+    public final Field VERIFIED = field("VERIFIED");
 
     AddressTable(String alias) {
         super("ADDRESS", alias, AddressTable::new);
