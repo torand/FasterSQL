@@ -36,7 +36,7 @@ public class TruncateStatementTest {
     @Test
     public void shouldBuildValidSql() {
         final String expectedSql =
-                "truncate table PERSON";
+            "truncate table PERSON";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }

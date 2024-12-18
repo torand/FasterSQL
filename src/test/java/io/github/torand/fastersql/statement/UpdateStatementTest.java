@@ -35,16 +35,16 @@ public class UpdateStatementTest {
             update(PERSON)
                 .set(PERSON.NAME, "Tore Torell")
                 .where(PERSON.SSN.eq("17016812345")
-                        .and(PERSON.NAME.isNull()));
+                    .and(PERSON.NAME.isNull()));
     }
 
     @Test
     public void shouldBuildValidSql() {
-        final String expectedSql =
-                "update PERSON "
-              + "set NAME = ? "
-              + "where SSN = ? "
-              + "and NAME is null";
+        final String expectedSql = """
+            update PERSON \
+            set NAME = ? \
+            where SSN = ? \
+            and NAME is null""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }
@@ -58,16 +58,16 @@ public class UpdateStatementTest {
     @Test
     public void shouldAllowSystemFunctionAsValue() {
         PreparableStatement statement =
-                update(ADDRESS)
-                        .set(ADDRESS.ZIP, "7089")
-                        .set(ADDRESS.VERIFIED, currentTimestamp())
-                        .where(ADDRESS.ZIP.eq("7088"));
+            update(ADDRESS)
+                .set(ADDRESS.ZIP, "7089")
+                .set(ADDRESS.VERIFIED, currentTimestamp())
+                .where(ADDRESS.ZIP.eq("7088"));
 
-        final String expectedSql =
-                "update ADDRESS "
-                        + "set ZIP = ?, "
-                        + "VERIFIED = current_timestamp "
-                        + "where ZIP = ?";
+        final String expectedSql = """
+            update ADDRESS \
+            set ZIP = ?, \
+            VERIFIED = current_timestamp \
+            where ZIP = ?""";
         Object[] expectedParams = {"7089", "7088"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
@@ -78,14 +78,14 @@ public class UpdateStatementTest {
     public void shouldAllowNullValues() {
         String zip = null;
         PreparableStatement statement =
-                update(ADDRESS)
-                        .set(ADDRESS.ZIP, zip)
-                        .where(ADDRESS.ZIP.eq("7088"));
+            update(ADDRESS)
+                .set(ADDRESS.ZIP, zip)
+                .where(ADDRESS.ZIP.eq("7088"));
 
-        final String expectedSql =
-                "update ADDRESS "
-                        + "set ZIP = null "
-                        + "where ZIP = ?";
+        final String expectedSql = """
+            update ADDRESS \
+            set ZIP = null \
+            where ZIP = ?""";
         Object[] expectedParams = {"7088"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);

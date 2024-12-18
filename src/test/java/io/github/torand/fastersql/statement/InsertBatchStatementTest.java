@@ -36,9 +36,9 @@ public class InsertBatchStatementTest {
     @BeforeEach
     public void setup() {
         Collection<Person> persons = asList(
-                new Person(1, "Ole", "11111111111", Optional.of("123 45 678")),
-                new Person(2, "Dole", "22222222222", Optional.empty()),
-                new Person(3, "Doffen", null, Optional.of("345 67 890")));
+            new Person(1, "Ole", "11111111111", Optional.of("123 45 678")),
+            new Person(2, "Dole", "22222222222", Optional.empty()),
+            new Person(3, "Doffen", null, Optional.of("345 67 890")));
 
         statement =
             insertBatch(persons).into(PERSON)
@@ -50,12 +50,12 @@ public class InsertBatchStatementTest {
 
     @Test
     public void shouldBuildValidSqlForOracle() {
-        final String expectedSql =
-                "insert all"
-                 + " into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, ?, ?)"
-                 + " into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, ?, null)"
-                 + " into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, null, ?)"
-              + " select 1 from DUAL";
+        final String expectedSql = """
+            insert all\
+             into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, ?, ?)\
+             into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, ?, null)\
+             into PERSON (ID, NAME, SSN, PHONE_NO) values (?, ?, null, ?)\
+             select 1 from DUAL""";
 
         Context oracleContext = Context.of(new OracleDialect());
         assertThat(statement.sql(oracleContext)).isEqualTo(expectedSql);
@@ -63,9 +63,9 @@ public class InsertBatchStatementTest {
 
     @Test
     public void shouldBuildValidSqlForNonOracle() {
-        final String expectedSql =
-                "insert into PERSON (ID, NAME, SSN, PHONE_NO) "
-              + "values (?, ?, ?, ?), (?, ?, ?, null), (?, ?, null, ?)";
+        final String expectedSql = """
+            insert into PERSON (ID, NAME, SSN, PHONE_NO)\
+             values (?, ?, ?, ?), (?, ?, ?, null), (?, ?, null, ?)""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }

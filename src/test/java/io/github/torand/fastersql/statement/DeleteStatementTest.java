@@ -36,10 +36,10 @@ public class DeleteStatementTest {
 
     @Test
     public void shouldBuildValidSql() {
-        final String expectedSql =
-                "delete from PERSON "
-              + "where SSN = ? "
-              + "and NAME is null";
+        final String expectedSql = """
+            delete from PERSON \
+            where SSN = ? \
+            and NAME is null""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }

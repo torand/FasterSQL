@@ -39,9 +39,9 @@ public class InsertStatementTest {
 
     @Test
     public void shouldBuildValidSql() {
-        final String expectedSql =
-                "insert into PERSON (NAME, SSN) "
-              + "values (?, ?)";
+        final String expectedSql = """
+            insert into PERSON (NAME, SSN) \
+            values (?, ?)""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }
@@ -55,16 +55,16 @@ public class InsertStatementTest {
     @Test
     public void shouldAllowSystemFunctionAsValue() {
         PreparableStatement statement =
-                insert().into(ADDRESS)
-                        .value(ADDRESS.PERSON_ID, 123)
-                        .value(ADDRESS.STREET, "Tryllegata 14")
-                        .value(ADDRESS.ZIP, "7089")
-                        .value(ADDRESS.COUNTRY, "Noreg")
-                        .value(ADDRESS.VERIFIED, currentTimestamp());
+            insert().into(ADDRESS)
+                .value(ADDRESS.PERSON_ID, 123)
+                .value(ADDRESS.STREET, "Tryllegata 14")
+                .value(ADDRESS.ZIP, "7089")
+                .value(ADDRESS.COUNTRY, "Noreg")
+                .value(ADDRESS.VERIFIED, currentTimestamp());
 
-        final String expectedSql =
-                "insert into ADDRESS (PERSON_ID, STREET, ZIP, COUNTRY, VERIFIED) "
-              + "values (?, ?, ?, ?, current_timestamp)";
+        final String expectedSql = """
+            insert into ADDRESS (PERSON_ID, STREET, ZIP, COUNTRY, VERIFIED) \
+            values (?, ?, ?, ?, current_timestamp)""";
         Object[] expectedParams = {123, "Tryllegata 14", "7089", "Noreg"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
@@ -75,16 +75,16 @@ public class InsertStatementTest {
     public void shouldAllowNullAsValue() {
         String zip = null;
         PreparableStatement statement =
-                insert().into(ADDRESS)
-                        .value(ADDRESS.PERSON_ID, 123)
-                        .value(ADDRESS.STREET, "Tryllegata 14")
-                        .value(ADDRESS.ZIP, zip)
-                        .value(ADDRESS.COUNTRY, "Noreg")
-                        .value(ADDRESS.VERIFIED, currentTimestamp());
+            insert().into(ADDRESS)
+                .value(ADDRESS.PERSON_ID, 123)
+                .value(ADDRESS.STREET, "Tryllegata 14")
+                .value(ADDRESS.ZIP, zip)
+                .value(ADDRESS.COUNTRY, "Noreg")
+                .value(ADDRESS.VERIFIED, currentTimestamp());
 
-        final String expectedSql =
-                "insert into ADDRESS (PERSON_ID, STREET, ZIP, COUNTRY, VERIFIED) "
-              + "values (?, ?, null, ?, current_timestamp)";
+        final String expectedSql = """
+            insert into ADDRESS (PERSON_ID, STREET, ZIP, COUNTRY, VERIFIED) \
+            values (?, ?, null, ?, current_timestamp)""";
         Object[] expectedParams = {123, "Tryllegata 14", "Noreg"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
