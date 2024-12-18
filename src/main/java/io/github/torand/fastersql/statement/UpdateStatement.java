@@ -36,11 +36,11 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 
 public class UpdateStatement extends PreparableStatement {
-    private final Table table;
+    private final Table<?> table;
     private final List<FieldValue> fieldValues;
     private final List<Expression> expressions;
 
-    UpdateStatement(Table table, Collection<FieldValue> fieldValues, Collection<Expression> expressions) {
+    UpdateStatement(Table<?> table, Collection<FieldValue> fieldValues, Collection<Expression> expressions) {
         this.table = requireNonNull(table, "No table specified");
         this.fieldValues = asList(fieldValues);
         this.expressions = asList(expressions);

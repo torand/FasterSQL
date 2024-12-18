@@ -68,7 +68,7 @@ public class Join {
     }
 
     public String sql(Context context) {
-        Table rightTable = headOf(this.rights).table();
+        Table<?> rightTable = headOf(this.rights).table();
         StringBuilder sql = new StringBuilder()
             .append(mode.sql)
             .append(" ")
@@ -87,7 +87,7 @@ public class Join {
         return sql.toString();
     }
 
-    public Table joined() {
+    public Table<?> joined() {
         return headOf(rights).table();
     }
 

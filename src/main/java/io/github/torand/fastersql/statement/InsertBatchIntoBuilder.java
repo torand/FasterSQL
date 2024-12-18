@@ -31,7 +31,7 @@ public class InsertBatchIntoBuilder<T> {
         this.entities = asList(requireNonEmpty(entities, "No entities specified"));
     }
 
-    public InsertBatchStatement<? extends T> into(Table table) {
+    public InsertBatchStatement<? extends T> into(Table<?> table) {
         return new InsertBatchStatement<>(entities, requireNonNull(table, "No table specified"), null);
     }
 }

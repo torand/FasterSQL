@@ -20,7 +20,7 @@ import io.github.torand.fastersql.Table;
 import static java.util.Objects.requireNonNull;
 
 public class TruncateTableBuilder {
-    public TruncateStatement table(Table table) {
+    public TruncateStatement table(Table<?> table) {
         return new TruncateStatement(requireNonNull(table, "No table specified"));
     }
 }

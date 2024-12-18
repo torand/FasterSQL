@@ -52,7 +52,7 @@ import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
 public class SelectStatement extends PreparableStatement {
     private final List<Projection> projections;
-    private final List<Table> tables;
+    private final List<Table<?>> tables;
     private final List<Join> joins;
     private final Subquery subqueryFrom;
     private final List<Expression> expressions;
@@ -63,7 +63,7 @@ public class SelectStatement extends PreparableStatement {
     private final Long offset;
     private final boolean forUpdate;
 
-    SelectStatement(List<Projection> projections, List<Table> tables, List<Join> joins, Subquery subqueryFrom, List<Expression> expressions, List<Field> groups, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
+    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Expression> expressions, List<Field> groups, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
         this.projections = asList(projections);
         this.tables = asList(tables);
         this.joins = asList(joins);
@@ -199,7 +199,7 @@ public class SelectStatement extends PreparableStatement {
             }
         } else {
             // Tables that are joined with should not be specified in the FROM clause
-            Set<Table> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
+            Set<Table<?>> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
 
             sb.append(streamSafely(tables)
                 .filter(not(joinedTables::contains))

@@ -45,7 +45,7 @@ public final class Statements {
         return new SelectFromBuilder(true, projections);
     }
 
-    public static UpdateStatement update(Table table) {
+    public static UpdateStatement update(Table<?> table) {
         return new UpdateStatement(table, null, null);
     }
 
@@ -53,7 +53,7 @@ public final class Statements {
         return new DeleteFromBuilder();
     }
 
-    public static DeleteStatement deleteFrom(Table table) {
+    public static DeleteStatement deleteFrom(Table<?> table) {
         return new DeleteStatement(table, null);
     }
 
@@ -61,7 +61,7 @@ public final class Statements {
         return new TruncateTableBuilder();
     }
 
-    public static TruncateStatement truncateTable(Table table) {
+    public static TruncateStatement truncateTable(Table<?> table) {
         return new TruncateStatement(table);
     }
 
@@ -69,7 +69,7 @@ public final class Statements {
         return new InsertIntoBuilder();
     }
 
-    public static InsertStatement insertInto(Table table) {
+    public static InsertStatement insertInto(Table<?> table) {
         return new InsertStatement(table, null);
     }
 

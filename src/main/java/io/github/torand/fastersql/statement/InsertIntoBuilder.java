@@ -20,7 +20,7 @@ import io.github.torand.fastersql.Table;
 import static java.util.Objects.requireNonNull;
 
 public class InsertIntoBuilder {
-    public InsertStatement into(Table table) {
+    public InsertStatement into(Table<?> table) {
         return new InsertStatement(requireNonNull(table, "No table specified"), null);
     }
 }

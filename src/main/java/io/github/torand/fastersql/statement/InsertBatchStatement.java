@@ -34,11 +34,11 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 
 public class InsertBatchStatement<T> extends PreparableStatement {
-    private final Table table;
+    private final Table<?> table;
     private final List<FieldValueExtractor<? super T>> fieldValueExtractors;
     private final List<? extends T> entities;
 
-    InsertBatchStatement(Collection<? extends T> entities, Table table, Collection<FieldValueExtractor<? super T>> fieldValueExtractors) {
+    InsertBatchStatement(Collection<? extends T> entities, Table<?> table, Collection<FieldValueExtractor<? super T>> fieldValueExtractors) {
         this.entities = asList(requireNonEmpty(entities, "No entities specified"));
         this.table = requireNonNull(table, "No table specified");
         this.fieldValueExtractors = asList(fieldValueExtractors);

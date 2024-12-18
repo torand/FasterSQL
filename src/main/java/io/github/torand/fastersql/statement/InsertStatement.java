@@ -34,10 +34,10 @@ import static io.github.torand.fastersql.Command.INSERT;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 
 public class InsertStatement extends PreparableStatement {
-    private final Table table;
+    private final Table<?> table;
     private final List<FieldValue> fieldValues;
 
-    InsertStatement(Table table, Collection<FieldValue> fieldValues) {
+    InsertStatement(Table<?> table, Collection<FieldValue> fieldValues) {
         this.table = requireNonNull(table, "No table specified");
         this.fieldValues = asList(fieldValues);
     }

@@ -35,10 +35,10 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 
 public class DeleteStatement extends PreparableStatement {
-    private final Table fromTable;
+    private final Table<?> fromTable;
     private final List<Expression> expressions;
 
-    DeleteStatement(Table table, Collection<Expression> expressions) {
+    DeleteStatement(Table<?> table, Collection<Expression> expressions) {
         this.fromTable = requireNonNull(table, "No table specified");
         this.expressions = asList(expressions);
     }

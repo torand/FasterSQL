@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public class DeleteFromBuilder {
     DeleteFromBuilder() {}
 
-    public DeleteStatement from(Table table) {
+    public DeleteStatement from(Table<?> table) {
         return new DeleteStatement(requireNonNull(table, "No table specified"), null);
     }
 }

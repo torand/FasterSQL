@@ -43,9 +43,9 @@ public class SelectFromBuilder {
         return new SelectFromBuilder(true, projections);
     }
 
-    public SelectStatement from(Table firstTable, Table... moreTables) {
+    public SelectStatement from(Table<?> firstTable, Table<?>... moreTables) {
         requireNonNull(firstTable, "First table is null");
-        List<Table> tables = asNonEmptyList(firstTable, moreTables);
+        List<Table<?>> tables = asNonEmptyList(firstTable, moreTables);
         return new SelectStatement(projections, tables, null, null, null, null, null, distinct, null, null, false);
     }
 
