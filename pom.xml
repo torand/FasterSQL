@@ -24,7 +24,7 @@
     <packaging>jar</packaging>
 
     <name>FasterSQL</name>
-    <description>Maven library for efficient integration with relational databases</description>
+    <description>Java library to efficiently integrate with a relational database</description>
     <url>https://github.com/torand/FasterSQL</url>
 
     <licenses>
