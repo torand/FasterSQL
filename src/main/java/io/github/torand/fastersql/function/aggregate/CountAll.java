@@ -44,7 +44,7 @@ public class CountAll implements AggregateFunction {
     }
 
     @Override
-    public Order ascIf(boolean condition) {
+    public Order ascIf(boolean predicate) {
         throw new UnsupportedOperationException("The 'count(*)' function can't be used in an 'order by' clause");
     }
 

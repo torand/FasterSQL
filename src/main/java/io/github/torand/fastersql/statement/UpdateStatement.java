@@ -18,9 +18,9 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.OptionalCondition;
 import io.github.torand.fastersql.constant.Constant;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.OptionalExpression;
 import io.github.torand.fastersql.function.Function;
 import io.github.torand.fastersql.util.functional.Optionals;
 
@@ -29,21 +29,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 import static io.github.torand.fastersql.Command.UPDATE;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 public class UpdateStatement extends PreparableStatement {
     private final Table<?> table;
     private final List<FieldValue> fieldValues;
-    private final List<Expression> expressions;
+    private final List<Condition> conditions;
 
-    UpdateStatement(Table<?> table, Collection<FieldValue> fieldValues, Collection<Expression> expressions) {
+    UpdateStatement(Table<?> table, Collection<FieldValue> fieldValues, Collection<Condition> conditions) {
         this.table = requireNonNull(table, "No table specified");
         this.fieldValues = asList(fieldValues);
-        this.expressions = asList(expressions);
+        this.conditions = asList(conditions);
     }
 
     public UpdateStatement set(Field field, Constant constant) {
@@ -51,7 +51,7 @@ public class UpdateStatement extends PreparableStatement {
         requireNonNull(constant, "No constant specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, constant.value()));
-        return new UpdateStatement(table, concatenated, expressions);
+        return new UpdateStatement(table, concatenated, conditions);
     }
 
     public UpdateStatement set(Field field, Function function) {
@@ -59,14 +59,14 @@ public class UpdateStatement extends PreparableStatement {
         requireNonNull(function, "No function specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, function));
-        return new UpdateStatement(table, concatenated, expressions);
+        return new UpdateStatement(table, concatenated, conditions);
     }
 
     public UpdateStatement set(Field field, Object value) {
         requireNonNull(field, "No field specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, value));
-        return new UpdateStatement(table, concatenated, expressions);
+        return new UpdateStatement(table, concatenated, conditions);
     }
 
     public UpdateStatement set(Field field, Optional<?> maybeValue) {
@@ -75,28 +75,28 @@ public class UpdateStatement extends PreparableStatement {
 
         if (maybeValue.isPresent()) {
             List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, maybeValue.get()));
-            return new UpdateStatement(table, concatenated, expressions);
+            return new UpdateStatement(table, concatenated, conditions);
         } else {
             return this;
         }
     }
 
-    public UpdateStatement where(Expression... expressions) {
-        requireNonEmpty(expressions, "No expressions specified");
+    public UpdateStatement where(Condition... conditions) {
+        requireNonEmpty(conditions, "No conditions specified");
 
-        List<Expression> concatenated = concat(this.expressions, expressions);
+        List<Condition> concatenated = concat(this.conditions, conditions);
         return new UpdateStatement(table, fieldValues, concatenated);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause expressions that are present.
-     * @param maybeExpressions the expressions that may be present or not
+     * Same as other method of same name, but only adds to the where clause conditions that are present.
+     * @param maybeConditions the conditions that may be present or not
      * @return updated statement, for method chaining
      */
-    public final UpdateStatement where(OptionalExpression... maybeExpressions) {
-        requireNonEmpty(maybeExpressions, "No expressions specified");
+    public final UpdateStatement where(OptionalCondition... maybeConditions) {
+        requireNonEmpty(maybeConditions, "No optional conditions specified");
 
-        List<Expression> concatenated = concat(this.expressions, OptionalExpression.unwrap(maybeExpressions));
+        List<Condition> concatenated = concat(this.conditions, OptionalCondition.unwrap(maybeConditions));
         return new UpdateStatement(table, fieldValues, concatenated);
     }
 
@@ -110,9 +110,9 @@ public class UpdateStatement extends PreparableStatement {
         sb.append(table.sql(context));
         sb.append(" set ");
         sb.append(streamSafely(fieldValues).map(fv -> fv.field().sql(localContext) + " = " + fv.valueSql(localContext)).collect(joining(", ")));
-        if (nonEmpty(expressions)) {
+        if (nonEmpty(conditions)) {
             sb.append(" where ");
-            sb.append(streamSafely(expressions).map(e -> e.sql(localContext)).collect(joining(" and ")));
+            sb.append(streamSafely(conditions).map(e -> e.sql(localContext)).collect(joining(" and ")));
         }
 
         return sb.toString();
@@ -120,7 +120,7 @@ public class UpdateStatement extends PreparableStatement {
 
     @Override
     List<Object> params(Context context) {
-        return Stream.concat(streamSafely(fieldValues).map(FieldValue::param).flatMap(Optionals::stream), streamSafely(expressions).flatMap(e -> e.params(context))).toList();
+        return Stream.concat(streamSafely(fieldValues).map(FieldValue::param).flatMap(Optionals::stream), streamSafely(conditions).flatMap(e -> e.params(context))).toList();
     }
 
     private void validate() {
@@ -128,7 +128,7 @@ public class UpdateStatement extends PreparableStatement {
             throw new IllegalStateException("No values to set");
         }
         validateFieldTableRelations(streamSafely(fieldValues).map(FieldValue::field));
-        validateFieldTableRelations(streamSafely(expressions).flatMap(Expression::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {

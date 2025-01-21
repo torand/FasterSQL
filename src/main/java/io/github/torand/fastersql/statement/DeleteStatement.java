@@ -18,58 +18,59 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.OptionalExpression;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.OptionalCondition;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
 import static io.github.torand.fastersql.Command.DELETE;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Objects.isNull;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.joining;
 
 public class DeleteStatement extends PreparableStatement {
     private final Table<?> fromTable;
-    private final List<Expression> expressions;
+    private final List<Condition> conditions;
 
-    DeleteStatement(Table<?> table, Collection<Expression> expressions) {
+    DeleteStatement(Table<?> table, Collection<Condition> conditions) {
         this.fromTable = requireNonNull(table, "No table specified");
-        this.expressions = asList(expressions);
+        this.conditions = asList(conditions);
     }
 
-    public DeleteStatement where(Expression... expressions) {
-        requireNonEmpty(expressions, "No expressions specified");
-        List<Expression> concatenated = concat(this.expressions, expressions);
+    public DeleteStatement where(Condition... conditions) {
+        requireNonEmpty(conditions, "No conditions specified");
+        List<Condition> concatenated = concat(this.conditions, conditions);
         return new DeleteStatement(fromTable, concatenated);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause expressions that are present.
-     * @param maybeExpressions the expressions that may be present or not
+     * Same as other method of same name, but only adds to the where clause conditions that are present.
+     * @param maybeConditions the conditions that may be present or not
      * @return updated statement, for method chaining
      */
-    public final DeleteStatement where(OptionalExpression... maybeExpressions) {
-        requireNonEmpty(maybeExpressions, "No optional expressions specified");
-        List<Expression> concatenated = concat(this.expressions, OptionalExpression.unwrap(maybeExpressions));
+    public final DeleteStatement where(OptionalCondition... maybeConditions) {
+        requireNonEmpty(maybeConditions, "No optional conditions specified");
+        List<Condition> concatenated = concat(this.conditions, OptionalCondition.unwrap(maybeConditions));
         return new DeleteStatement(fromTable, concatenated);
     }
 
     /**
-     * Adds one or more expressions to the where clause, if a condition is true.
-     * @param expressionSuppliers the suppliers providing expressions to add
+     * Adds one or more conditions to the where clause, if a predicate is true.
+     * @param predicate the predicate that must be true for conditions to be added
+     * @param conditionSuppliers the suppliers providing conditions to add
      * @return updated statement, for method chaining
      */
     @SafeVarargs
-    public final DeleteStatement whereIf(boolean condition, Supplier<Expression>... expressionSuppliers) {
-        requireNonEmpty(expressionSuppliers, "No expression suppliers specified");
-        if (condition) {
-            List<Expression> concatenated = concat(this.expressions, unwrapSuppliers(expressionSuppliers));
+    public final DeleteStatement whereIf(boolean predicate, Supplier<Condition>... conditionSuppliers) {
+        requireNonEmpty(conditionSuppliers, "No condition suppliers specified");
+        if (predicate) {
+            List<Condition> concatenated = concat(this.conditions, unwrapSuppliers(conditionSuppliers));
             return new DeleteStatement(fromTable, concatenated);
         }
         return this;
@@ -84,9 +85,9 @@ public class DeleteStatement extends PreparableStatement {
         sb.append("delete from ");
         sb.append(fromTable.sql(localContext));
 
-        if (nonEmpty(expressions)) {
+        if (nonEmpty(conditions)) {
             sb.append(" where ");
-            sb.append(streamSafely(expressions)
+            sb.append(streamSafely(conditions)
                 .map(e -> e.sql(localContext))
                 .collect(joining(" and ")));
         }
@@ -96,7 +97,7 @@ public class DeleteStatement extends PreparableStatement {
 
     @Override
     List<Object> params(Context context) {
-        return streamSafely(expressions)
+        return streamSafely(conditions)
             .flatMap(e -> e.params(context))
             .toList();
     }
@@ -108,7 +109,7 @@ public class DeleteStatement extends PreparableStatement {
 
         // TODO: Verify that deleteTables is subset of fromTables
 
-        validateFieldTableRelations(streamSafely(expressions).flatMap(Expression::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {

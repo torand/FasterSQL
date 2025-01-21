@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.logical;
+package io.github.torand.fastersql.condition.logical;
 
-import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.condition.Condition;
 
-public final class LogicalExpressions {
-    private LogicalExpressions() {}
+public final class LogicalConditions {
+    private LogicalConditions() {}
 
-    public static And and(Expression... operands) {
+    public static And and(Condition... operands) {
         return new And(operands);
     }
 
-    public static Or or(Expression... operands) {
+    public static Or or(Condition... operands) {
         return new Or(operands);
     }
 
-    public static Not not(Expression operand) {
+    public static Not not(Condition operand) {
         return new Not(operand);
     }
 }

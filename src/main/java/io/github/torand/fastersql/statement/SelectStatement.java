@@ -19,8 +19,8 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Join;
 import io.github.torand.fastersql.Table;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.OptionalExpression;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.OptionalCondition;
 import io.github.torand.fastersql.function.FieldFunction;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
 import io.github.torand.fastersql.order.Order;
@@ -34,9 +34,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static java.util.Objects.*;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toSet;
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
@@ -49,13 +46,16 @@ import static io.github.torand.fastersql.util.functional.Predicates.instanceOf;
 import static io.github.torand.fastersql.util.functional.Predicates.not;
 import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static java.util.Objects.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 public class SelectStatement extends PreparableStatement {
     private final List<Projection> projections;
     private final List<Table<?>> tables;
     private final List<Join> joins;
     private final Subquery subqueryFrom;
-    private final List<Expression> expressions;
+    private final List<Condition> conditions;
     private final List<Field> groups;
     private final List<Order> orders;
     private final boolean distinct;
@@ -63,12 +63,12 @@ public class SelectStatement extends PreparableStatement {
     private final Long offset;
     private final boolean forUpdate;
 
-    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Expression> expressions, List<Field> groups, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
+    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Condition> conditions, List<Field> groups, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
         this.projections = asList(projections);
         this.tables = asList(tables);
         this.joins = asList(joins);
         this.subqueryFrom = subqueryFrom;
-        this.expressions = asList(expressions);
+        this.conditions = asList(conditions);
         this.groups = asList(groups);
         this.orders = asList(orders);
         this.distinct = distinct;
@@ -82,7 +82,7 @@ public class SelectStatement extends PreparableStatement {
         require(() -> isNull(subqueryFrom), "Can't combine a subquery FROM clause with joins");
 
         List<Join> concatenated = concat(this.joins, joins);
-        return new SelectStatement(projections, tables, concatenated, subqueryFrom, expressions, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, concatenated, subqueryFrom, conditions, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement leftOuterJoin(Join join) {
@@ -96,52 +96,53 @@ public class SelectStatement extends PreparableStatement {
     }
 
     @SafeVarargs
-    public final SelectStatement joinIf(boolean condition, Supplier<Join>... joinSuppliers) {
+    public final SelectStatement joinIf(boolean predicate, Supplier<Join>... joinSuppliers) {
         requireNonEmpty(joinSuppliers, "No join suppliers specified");
         require(() -> isNull(subqueryFrom), "Can't combine a subquery FROM clause with joins");
-        if (condition) {
+        if (predicate) {
             List<Join> concatenated = concat(this.joins, unwrapSuppliers(joinSuppliers));
-            return new SelectStatement(projections, tables, concatenated, subqueryFrom, expressions, groups, orders, distinct, limit, offset, forUpdate);
+            return new SelectStatement(projections, tables, concatenated, subqueryFrom, conditions, groups, orders, distinct, limit, offset, forUpdate);
         } else {
             return this;
         }
     }
 
     /**
-     * Adds one or more expressions to the where clause.
-     * @param expressions the expressions to add
+     * Adds one or more conditions to the where clause.
+     * @param conditions the conditions to add
      * @return updated statement, for method chaining
      */
-    public SelectStatement where(Expression... expressions) {
-        requireNonEmpty(expressions, "No expressions specified");
+    public SelectStatement where(Condition... conditions) {
+        requireNonEmpty(conditions, "No conditions specified");
 
-        List<Expression> concatenated = concat(this.expressions, expressions);
+        List<Condition> concatenated = concat(this.conditions, conditions);
         return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause expressions that are present.
-     * @param maybeExpressions the expression that may be present or not
+     * Same as other method of same name, but only adds to the where clause conditions that are present.
+     * @param maybeConditions the condition that may be present or not
      * @return updated statement, for method chaining
      */
     @SafeVarargs
-    public final SelectStatement where(OptionalExpression... maybeExpressions) {
-        requireNonEmpty(maybeExpressions, "No expressions specified");
+    public final SelectStatement where(OptionalCondition... maybeConditions) {
+        requireNonEmpty(maybeConditions, "No optional conditions specified");
 
-        List<Expression> concatenated = concat(this.expressions, OptionalExpression.unwrap(maybeExpressions));
+        List<Condition> concatenated = concat(this.conditions, OptionalCondition.unwrap(maybeConditions));
         return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     /**
-     * Adds one or more expressions to the where clause, if a condition is true.
-     * @param expressionSuppliers the suppliers providing expressions to add
+     * Adds one or more conditions to the where clause, if a predicate is true.
+     * @param predicate the predicate that must be true for conditions to be added
+     * @param conditionSuppliers the suppliers providing conditions to add
      * @return updatet statement, for method chaining
      */
     @SafeVarargs
-    public final SelectStatement whereIf(boolean condition, Supplier<Expression>... expressionSuppliers) {
-        requireNonEmpty(expressionSuppliers, "No expression suppliers specified");
-        if (condition) {
-            List<Expression> concatenated = concat(this.expressions, unwrapSuppliers(expressionSuppliers));
+    public final SelectStatement whereIf(boolean predicate, Supplier<Condition>... conditionSuppliers) {
+        requireNonEmpty(conditionSuppliers, "No condition suppliers specified");
+        if (predicate) {
+            List<Condition> concatenated = concat(this.conditions, unwrapSuppliers(conditionSuppliers));
             return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
         } else {
             return this;
@@ -152,26 +153,26 @@ public class SelectStatement extends PreparableStatement {
         requireNonEmpty(groups, "No groups specified");
 
         List<Field> concatenated = concat(this.groups, groups);
-        return new SelectStatement(projections, tables, joins, subqueryFrom, expressions, concatenated, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, conditions, concatenated, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement orderBy(Order... orders) {
         requireNonEmpty(orders, "No orders specified");
 
         List<Order> concatenated = concat(this.orders, orders);
-        return new SelectStatement(projections, tables, joins, subqueryFrom, expressions, groups, concatenated, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, conditions, groups, concatenated, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement limit(long limit) {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, expressions, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, conditions, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement offset(long offset) {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, expressions, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, conditions, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement forUpdate() {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, expressions, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, conditions, groups, orders, distinct, limit, offset, forUpdate);
     }
 
     @Override
@@ -214,9 +215,9 @@ public class SelectStatement extends PreparableStatement {
             }
         }
 
-        if (nonEmpty(expressions)) {
+        if (nonEmpty(conditions)) {
             sb.append(" where ");
-            sb.append(streamSafely(expressions)
+            sb.append(streamSafely(conditions)
                 .map(e -> e.sql(localContext))
                 .collect(joining(" and ")));
         }
@@ -290,7 +291,7 @@ public class SelectStatement extends PreparableStatement {
             params.addAll(subqueryFrom.params(context));
         }
 
-        streamSafely(expressions).flatMap(e -> e.params(context)).forEach(params::add);
+        streamSafely(conditions).flatMap(e -> e.params(context)).forEach(params::add);
 
         if (nonNull(limit)) {
             if (context.getDialect().supports(LIMIT_OFFSET)) {
@@ -333,7 +334,7 @@ public class SelectStatement extends PreparableStatement {
             validateFieldTableRelations(streamSafely(joins).flatMap(Join::fields));
         }
 
-        validateFieldTableRelations(streamSafely(expressions).flatMap(Expression::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
         validateFieldTableRelations(streamSafely(groups));
         validateFieldTableRelations(streamSafely(orders).flatMap(Order::fields));
 

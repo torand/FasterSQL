@@ -13,46 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.logical;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 
-public class Lt implements Expression {
-    private final LeftOperand operand;
-    private final Object value;
+public class And implements Condition {
+    private final List<Condition> operands;
 
-    Lt(LeftOperand operand, Object value) {
-        if (value instanceof Field) {
-            throw new IllegalArgumentException("Use LtField for expressions with field as right operand");
-        }
-        this.operand = requireNonNull(operand, "No operand specified");
-        this.value = requireNonNull(value, "No value specified");
+    And(Condition... operands) {
+        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " < ?";
+        return operands.stream().map(e -> e.sql(context)).collect(joining(" and "));
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " >= ?";
+        return "not (" + sql(context) + ")";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(value);
+        return operands.stream().flatMap(o -> o.params(context));
     }
 
     @Override
     public Stream<Field> fields() {
-        return operand.fields();
+        return operands.stream().flatMap(Condition::fields);
     }
 }

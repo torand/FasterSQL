@@ -13,48 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.logical;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
-import static io.github.torand.fastersql.statement.Helpers.paramMarkers;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 
-public class In implements Expression {
-    private final LeftOperand operand;
-    private final List<?> values;
+public class Or implements Condition {
+    private final List<Condition> operands;
 
-    In(LeftOperand operand, Collection<?> values) {
-        this.operand = requireNonNull(operand, "No operand specified");
-        this.values = asList(requireNonEmpty(values, "No values specified"));
+    Or(Condition... operands) {
+        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " in (" + paramMarkers(values.size()) + ")";
+        return "(" + operands.stream().map(e -> e.sql(context)).collect(joining(" or ")) + ")";
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " not in (" + paramMarkers(values.size()) + ")";
+        return "not " + sql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return values.stream().map(v -> v);
+        return operands.stream().flatMap(o -> o.params(context));
     }
 
     @Override
     public Stream<Field> fields() {
-        return operand.fields();
+        return operands.stream().flatMap(Condition::fields);
     }
 }

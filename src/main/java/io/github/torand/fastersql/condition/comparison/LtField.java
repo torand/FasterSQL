@@ -13,43 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.logical;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.LeftOperand;
 
-import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Objects.requireNonNull;
 
-public class Or implements Expression {
-    private final List<Expression> operands;
+public class LtField implements Condition {
+    private final LeftOperand left;
+    private final Field right;
 
-    Or(Expression... operands) {
-        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
+    LtField(LeftOperand left, Field right) {
+        this.left = requireNonNull(left, "No left operand specified");
+        this.right = requireNonNull(right, "No right operand specified");
     }
 
     @Override
     public String sql(Context context) {
-        return "(" + operands.stream().map(e -> e.sql(context)).collect(joining(" or ")) + ")";
+        return left.sql(context) + " < " + right.sql(context);
     }
 
     @Override
     public String negatedSql(Context context) {
-        return "not " + sql(context);
+        return left.sql(context) + " >= " + right.sql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return operands.stream().flatMap(o -> o.params(context));
+        return Stream.empty();
     }
 
     @Override
     public Stream<Field> fields() {
-        return operands.stream().flatMap(Expression::fields);
+        return Stream.concat(left.fields(), Stream.of(right));
     }
 }

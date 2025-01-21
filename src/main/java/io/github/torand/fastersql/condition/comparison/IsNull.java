@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class GtField implements Expression {
-    private final LeftOperand left;
-    private final Field right;
+public class IsNull implements Condition {
+    private final Field operand;
 
-    GtField(LeftOperand left, Field right) {
-        this.left = requireNonNull(left, "No left field specified");
-        this.right = requireNonNull(right, "No right field specified");
+    IsNull(Field operand) {
+        this.operand = requireNonNull(operand, "No operand specified");
     }
 
     @Override
     public String sql(Context context) {
-        return left.sql(context) + " > " + right.sql(context);
+        return operand.sql(context) + " is null";
     }
 
     @Override
     public String negatedSql(Context context) {
-        return left.sql(context) + " <= " + right.sql(context);
+        return operand.sql(context) + " is not null";
     }
 
     @Override
@@ -50,6 +47,6 @@ public class GtField implements Expression {
 
     @Override
     public Stream<Field> fields() {
-        return Stream.concat(left.fields(), Stream.of(right));
+        return Stream.empty();
     }
 }

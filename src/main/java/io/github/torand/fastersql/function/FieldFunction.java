@@ -28,8 +28,8 @@ public interface FieldFunction extends Function {
     // One aggregate function, count(*), does not operate on a specific field
     Optional<Field> field();
 
-    default Order ascIf(boolean condition) {
-        return condition ? asc() : desc();
+    default Order ascIf(boolean predicate) {
+        return predicate ? asc() : desc();
     }
 
     default Order asc() {

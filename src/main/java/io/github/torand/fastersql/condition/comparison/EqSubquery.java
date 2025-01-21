@@ -13,44 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.LeftOperand;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class EqSubquery implements Expression {
-    private final LeftOperand operand;
-    private final Subquery subquery;
+public class EqSubquery implements Condition {
+    private final LeftOperand left;
+    private final Subquery right;
 
-    EqSubquery(LeftOperand operand, Subquery subquery) {
-        this.operand = requireNonNull(operand, "No operand specified");
-        this.subquery = requireNonNull(subquery, "No sub query specified");
+    EqSubquery(LeftOperand left, Subquery right) {
+        this.left = requireNonNull(left, "No left operand specified");
+        this.right = requireNonNull(right, "No right operand specified");
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " = " + subquery.sql(context);
+        return left.sql(context) + " = " + right.sql(context);
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " != " + subquery.sql(context);
+        return left.sql(context) + " != " + right.sql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return subquery.params(context).stream();
+        return right.params(context).stream();
     }
 
     @Override
     public Stream<Field> fields() {
-        return operand.fields();
+        return left.fields();
     }
 }

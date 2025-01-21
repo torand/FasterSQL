@@ -13,43 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression;
+package io.github.torand.fastersql.condition;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Sql;
-import io.github.torand.fastersql.expression.logical.LogicalExpressions;
+import io.github.torand.fastersql.condition.logical.LogicalConditions;
 
 import java.util.stream.Stream;
 
-public interface Expression extends Sql {
+/**
+ * Represents a restriction on the rows fetched by a query or affected by an update or delete.
+ */
+public interface Condition extends Sql {
     String negatedSql(Context context);
 
     Stream<Field> fields();
 
     Stream<Object> params(Context context);
 
-    default Expression or(Expression other) {
-        return LogicalExpressions.or(this, other);
+    default Condition or(Condition other) {
+        return LogicalConditions.or(this, other);
     }
 
-    default OptionalExpression or(OptionalExpression maybeOther) {
+    default OptionalCondition or(OptionalCondition maybeOther) {
         if (maybeOther.isPresent()) {
-            return OptionalExpression.of(LogicalExpressions.or(this, maybeOther.get()));
+            return OptionalCondition.of(LogicalConditions.or(this, maybeOther.get()));
         } else {
-            return OptionalExpression.of(this);
+            return OptionalCondition.of(this);
         }
     }
 
-    default Expression and(Expression other) {
-        return LogicalExpressions.and(this, other);
+    default Condition and(Condition other) {
+        return LogicalConditions.and(this, other);
     }
 
-    default OptionalExpression and(OptionalExpression maybeOther) {
+    default OptionalCondition and(OptionalCondition maybeOther) {
         if (maybeOther.isPresent()) {
-            return OptionalExpression.of(LogicalExpressions.and(this, maybeOther.get()));
+            return OptionalCondition.of(LogicalConditions.and(this, maybeOther.get()));
         } else {
-            return OptionalExpression.of(this);
+            return OptionalCondition.of(this);
         }
     }
 }

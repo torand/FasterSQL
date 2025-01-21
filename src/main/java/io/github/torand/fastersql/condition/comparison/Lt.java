@@ -13,43 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.LeftOperand;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class LeField implements Expression {
+public class Lt implements Condition {
     private final LeftOperand left;
-    private final Field right;
+    private final Object right;
 
-    LeField(LeftOperand left, Field right) {
-        this.left = requireNonNull(left, "No left field specified");
-        this.right = requireNonNull(right, "No right field specified");
+    Lt(LeftOperand left, Object right) {
+        if (right instanceof Field) {
+            throw new IllegalArgumentException("Use LtField for conditions with field as right operand");
+        }
+        this.left = requireNonNull(left, "No left operand specified");
+        this.right = requireNonNull(right, "No right operand specified");
     }
 
     @Override
     public String sql(Context context) {
-        return left.sql(context) + " <= " + right.sql(context);
+        return left.sql(context) + " < ?";
     }
 
     @Override
     public String negatedSql(Context context) {
-        return left.sql(context) + " > " + right.sql(context);
+        return left.sql(context) + " >= ?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return Stream.of(right);
     }
 
     @Override
     public Stream<Field> fields() {
-        return Stream.concat(left.fields(), Stream.of(right));
+        return left.fields();
     }
 }

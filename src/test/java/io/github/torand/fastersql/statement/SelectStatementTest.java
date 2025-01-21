@@ -24,16 +24,16 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.singletonList;
+import static io.github.torand.fastersql.condition.logical.LogicalConditions.not;
 import static io.github.torand.fastersql.constant.Constants.constant;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.TestDataModel.ADDRESS;
 import static io.github.torand.fastersql.datamodel.TestDataModel.PERSON;
-import static io.github.torand.fastersql.expression.logical.LogicalExpressions.not;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SelectStatementTest {
@@ -98,7 +98,7 @@ public class SelectStatementTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInExpressions() {
+    public void shouldHandleSubqueriesInConditions() {
         final PersonTable PERSON2 = PERSON.as("P2");
 
         PreparableStatement statement =

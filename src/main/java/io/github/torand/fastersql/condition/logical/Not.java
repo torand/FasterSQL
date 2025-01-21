@@ -13,42 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.logical;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class Ge implements Expression {
-    private final LeftOperand operand;
-    private final Object value;
+public class Not implements Condition {
+    private final Condition operand;
 
-    Ge(LeftOperand operand, Object value) {
-        if (value instanceof Field) {
-            throw new IllegalArgumentException("Use GeField for expressions with field as right operand");
-        }
+    Not(Condition operand) {
         this.operand = requireNonNull(operand, "No operand specified");
-        this.value = requireNonNull(value, "No value specified");
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " >= ?";
+        return operand.negatedSql(context);
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " < ?";
+        return operand.sql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(value);
+        return operand.params(context);
     }
 
     @Override

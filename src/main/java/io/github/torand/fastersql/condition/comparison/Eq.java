@@ -13,46 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.LeftOperand;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class Le implements Expression {
-    private final LeftOperand operand;
-    private final Object value;
+public class Eq implements Condition {
+    private final LeftOperand left;
+    private final Object right;
 
-    Le(LeftOperand operand, Object value) {
-        if (value instanceof Field) {
-            throw new IllegalArgumentException("Use LeField for expressions with field as right operand");
+    Eq(LeftOperand left, Object right) {
+        if (right instanceof Field) {
+            throw new IllegalArgumentException("Use EqField for conditions with field as right operand");
         }
-        this.operand = requireNonNull(operand, "No operand specified");
-        this.value = requireNonNull(value, "No value specified");
+        this.left = requireNonNull(left, "No left operand specified");
+        this.right = requireNonNull(right, "Use IsNull for conditions with 'NULL' as right operand");
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " <= ?";
+        return left.sql(context) + " = ?";
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " > ?";
+        return left.sql(context) + " != ?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(value);
+        return Stream.of(right);
     }
 
     @Override
     public Stream<Field> fields() {
-        return operand.fields();
+        return left.fields();
     }
 }

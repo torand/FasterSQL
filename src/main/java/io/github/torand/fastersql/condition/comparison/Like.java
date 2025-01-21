@@ -13,45 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.expression.comparison;
+package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.condition.LeftOperand;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class Like implements Expression {
-    private final LeftOperand operand;
-    private final String pattern;
+public class Like implements Condition {
+    private final LeftOperand left;
+    private final String right;
 
-    Like(LeftOperand operand, String pattern) {
-        this.operand = requireNonNull(operand, "No operand specified");
+    Like(LeftOperand left, String right) {
+        this.left = requireNonNull(left, "No left operand specified");
 
-        requireNonNull(pattern, "No pattern specified");
-        this.pattern = pattern.contains("%") ? pattern : "%" + pattern + "%";
+        requireNonNull(right, "No right operand specified");
+        this.right = right.contains("%") ? right : "%" + right + "%";
     }
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " like ?";
+        return left.sql(context) + " like ?";
     }
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " not like ?";
+        return left.sql(context) + " not like ?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(pattern);
+        return Stream.of(right);
     }
 
     @Override
     public Stream<Field> fields() {
-        return operand.fields();
+        return left.fields();
     }
 }

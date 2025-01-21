@@ -16,7 +16,7 @@
 package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.expression.LeftOperand;
+import io.github.torand.fastersql.condition.LeftOperand;
 import io.github.torand.fastersql.function.FieldFunction;
 import io.github.torand.fastersql.util.functional.Optionals;
 
