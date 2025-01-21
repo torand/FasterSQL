@@ -54,20 +54,20 @@ public class PreparedStatementBuilder {
         PreparedStatement stmt = connection.prepareStatement(sql);
         int i = 1;
         for (Object param : params) {
-            if (param instanceof Instant) {
-                stmt.setTimestamp(i, Timestamp.from((Instant)param));
-            } else if (param instanceof LocalDateTime) {
-                stmt.setTimestamp(i, Timestamp.valueOf((LocalDateTime)param));
-            } else if (param instanceof LocalDate) {
-                stmt.setDate(i, Date.valueOf((LocalDate)param));
-            } else if (param instanceof UUID) {
-                stmt.setObject(i, param.toString());
-            } else if (param instanceof URI) {
-                stmt.setObject(i, param.toString());
-            } else if (param instanceof Enum) {
-                stmt.setObject(i, ((Enum)param).name());
-            } else if (param instanceof InputStream) {
-                stmt.setBinaryStream(i, (InputStream)param);
+            if (param instanceof Instant instant) {
+                stmt.setTimestamp(i, Timestamp.from(instant));
+            } else if (param instanceof LocalDateTime localDateTime) {
+                stmt.setTimestamp(i, Timestamp.valueOf(localDateTime));
+            } else if (param instanceof LocalDate localDate) {
+                stmt.setDate(i, Date.valueOf(localDate));
+            } else if (param instanceof UUID uuid) {
+                stmt.setObject(i, uuid.toString());
+            } else if (param instanceof URI uri) {
+                stmt.setObject(i, uri.toString());
+            } else if (param instanceof Enum enumValue) {
+                stmt.setObject(i, enumValue.name());
+            } else if (param instanceof InputStream inputStream) {
+                stmt.setBinaryStream(i, inputStream);
             } else {
                 stmt.setObject(i, param);
             }
