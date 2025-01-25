@@ -30,13 +30,22 @@ public class Descending implements Order {
         this.projection = requireNonNull(projection, "No projection specified");
     }
 
+    // Sql
+
     @Override
     public String sql(Context context) {
         return projection.alias() + " desc";
     }
 
     @Override
-    public Stream<Field> fields() {
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Order
+
+    @Override
+    public Stream<Field> fieldRefs() {
         return projection instanceof Field ? Stream.of((Field)projection) : Stream.empty();
     }
 }

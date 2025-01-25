@@ -19,23 +19,33 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.projection.Projection;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.requireNonNull;
+import java.util.stream.Stream;
+
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class StringConstant implements Constant {
     private final String value;
     private final String alias;
 
     StringConstant(String value, String alias) {
-        this.value = value;
+        this.value = requireNonNull(value, "Use NullConstant to represent 'null'");
         this.alias = alias;
     }
 
+    // Sql
+
     @Override
-    public Object value() {
-        return value;
+    public String sql(Context context) {
+        return "?";
     }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.of(value);
+    }
+
+    // Projection
 
     @Override
     public Projection as(String alias) {
@@ -44,18 +54,27 @@ public class StringConstant implements Constant {
     }
 
     @Override
-    public Projection forField(Field field) {
-        requireNonNull(field, "No field specified");
-        return new StringConstant(value, field.alias());
-    }
-
-    @Override
     public String alias() {
         return alias;
     }
 
+    // Expression
+
     @Override
-    public String sql(Context context) {
-        return isNull(value) ? "null" : "'" + value + "'";
+    public Stream<Field> fieldRefs() {
+        return Stream.empty();
+    }
+
+    // Constant
+
+    @Override
+    public Object value() {
+        return value;
+    }
+
+    @Override
+    public Projection forField(Field field) {
+        requireNonNull(field, "No field specified");
+        return new StringConstant(value, field.alias());
     }
 }

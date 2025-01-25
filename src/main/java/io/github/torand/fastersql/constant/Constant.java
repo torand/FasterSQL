@@ -16,9 +16,10 @@
 package io.github.torand.fastersql.constant;
 
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-public interface Constant extends Projection {
+public interface Constant extends Projection, Expression {
     Projection forField(Field field);
 
     Object value();

@@ -30,14 +30,11 @@ public class IsNull implements Condition {
         this.operand = requireNonNull(operand, "No operand specified");
     }
 
+    // Sql
+
     @Override
     public String sql(Context context) {
         return operand.sql(context) + " is null";
-    }
-
-    @Override
-    public String negatedSql(Context context) {
-        return operand.sql(context) + " is not null";
     }
 
     @Override
@@ -45,8 +42,15 @@ public class IsNull implements Condition {
         return Stream.empty();
     }
 
+    // Condition
+
     @Override
-    public Stream<Field> fields() {
+    public String negatedSql(Context context) {
+        return operand.sql(context) + " is not null";
+    }
+
+    @Override
+    public Stream<Field> fieldRefs() {
         return Stream.empty();
     }
 }

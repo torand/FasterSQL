@@ -19,10 +19,11 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.statement.SelectStatement;
 
-import java.util.List;
+import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class Subquery implements Sql {
     private final SelectStatement selectStatement;
@@ -38,20 +39,25 @@ public class Subquery implements Sql {
         this.alias = requireNonBlank(alias, "No alias specified");
     }
 
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "(" + selectStatement.sql(context) + ")";
+    }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return streamSafely(selectStatement.params(context));
+    }
+
+    // Projection
+
     public Subquery as(String alias) {
         return new Subquery(selectStatement, alias);
     }
 
     public String alias() {
         return alias;
-    }
-
-    public List<Object> params(Context context) {
-        return selectStatement.params(context);
-    }
-
-    @Override
-    public String sql(Context context) {
-        return "(" + selectStatement.sql(context) + ")";
     }
 }

@@ -18,9 +18,9 @@ package io.github.torand.fastersql;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
 import static io.github.torand.fastersql.util.contract.Requires.require;
+import static java.util.Objects.requireNonNull;
 
 public class Join {
     private enum JoinMode {
@@ -91,7 +91,7 @@ public class Join {
         return headOf(rights).table();
     }
 
-    public Stream<Field> fields() {
+    public Stream<Field> fieldRefs() {
         return Stream.concat(streamSafely(lefts), streamSafely(rights));
     }
 }

@@ -19,8 +19,10 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.projection.Projection;
 
-import static java.util.Objects.requireNonNull;
+import java.util.stream.Stream;
+
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class NullConstant implements Constant {
     private final String alias;
@@ -29,10 +31,19 @@ public class NullConstant implements Constant {
         this.alias = alias;
     }
 
+    // Sql
+
     @Override
-    public Object value() {
-        return null;
+    public String sql(Context context) {
+        return "null";
     }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Projection
 
     @Override
     public Projection as(String alias) {
@@ -41,18 +52,27 @@ public class NullConstant implements Constant {
     }
 
     @Override
-    public Projection forField(Field field) {
-        requireNonNull(field, "No field specified");
-        return new NullConstant(field.alias());
-    }
-
-    @Override
     public String alias() {
         return alias;
     }
 
+    // Expression
+
     @Override
-    public String sql(Context context) {
-        return "null";
+    public Stream<Field> fieldRefs() {
+        return Stream.empty();
+    }
+
+    // Constant
+
+    @Override
+    public Object value() {
+        return null;
+    }
+
+    @Override
+    public Projection forField(Field field) {
+        requireNonNull(field, "No field specified");
+        return new NullConstant(field.alias());
     }
 }

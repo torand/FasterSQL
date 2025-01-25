@@ -109,7 +109,7 @@ public class DeleteStatement extends PreparableStatement {
 
         // TODO: Verify that deleteTables is subset of fromTables
 
-        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fieldRefs));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {

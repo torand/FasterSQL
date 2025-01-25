@@ -17,32 +17,43 @@ package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class Upper implements SingleRowFunction {
-    private final Field field;
+    private final Expression expression;
     private final String alias;
 
-    Upper(Field field, String alias) {
-        this.field = requireNonNull(field, "No field specified");
-        this.alias = nonBlank(alias) ? alias : defaultAlias(field);
+    Upper(Expression expression, String alias) {
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonBlank(alias) ? alias : defaultAlias();
+    }
+
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "upper(" + expression.sql(context) + ")";
     }
 
     @Override
-    public Optional<Field> field() {
-        return Optional.of(field);
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
     }
+
+    // Projection
 
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Upper(field, alias);
+        return new Upper(expression, alias);
     }
 
     @Override
@@ -50,12 +61,14 @@ public class Upper implements SingleRowFunction {
         return alias;
     }
 
+    // Expression
+
     @Override
-    public String sql(Context context) {
-        return "upper(" + field.sql(context) + ")";
+    public Stream<Field> fieldRefs() {
+        return expression.fieldRefs();
     }
 
-    private String defaultAlias(Field field) {
-        return "UPPER_" + field.alias();
+    private String defaultAlias() {
+        return "UPPER_" + new Random().nextInt(999) + 1;
     }
 }

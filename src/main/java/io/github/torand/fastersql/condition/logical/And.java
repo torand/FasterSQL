@@ -33,14 +33,11 @@ public class And implements Condition {
         this.operands = asList(requireNonEmpty(operands, "No operands specified"));
     }
 
+    // Sql
+
     @Override
     public String sql(Context context) {
         return operands.stream().map(e -> e.sql(context)).collect(joining(" and "));
-    }
-
-    @Override
-    public String negatedSql(Context context) {
-        return "not (" + sql(context) + ")";
     }
 
     @Override
@@ -48,8 +45,15 @@ public class And implements Condition {
         return operands.stream().flatMap(o -> o.params(context));
     }
 
+    // Condition
+
     @Override
-    public Stream<Field> fields() {
-        return operands.stream().flatMap(Condition::fields);
+    public String negatedSql(Context context) {
+        return "not (" + sql(context) + ")";
+    }
+
+    @Override
+    public Stream<Field> fieldRefs() {
+        return operands.stream().flatMap(Condition::fieldRefs);
     }
 }

@@ -17,21 +17,30 @@ package io.github.torand.fastersql;
 
 import io.github.torand.fastersql.dialect.Dialect;
 
+import static io.github.torand.fastersql.Clause.PROJECTION;
+import static io.github.torand.fastersql.Command.SELECT;
+
 public class Context {
     private final Dialect dialect;
     private final Command command;
+    private final Clause clause;
 
     public static Context of(Dialect dialect) {
-        return new Context(dialect, null);
+        return new Context(dialect, null,  null);
     }
 
-    private Context(Dialect dialect, Command command) {
+    private Context(Dialect dialect, Command command, Clause clause) {
         this.dialect = dialect;
         this.command = command;
+        this.clause = clause;
     }
 
     public Context withCommand(Command command) {
-        return new Context(this.dialect, command);
+        return new Context(this.dialect, command, command == SELECT ? PROJECTION : null);
+    }
+
+    public Context withClause(Clause clause) {
+        return new Context(this.dialect, this.command, clause);
     }
 
     public Dialect getDialect() {
@@ -44,5 +53,9 @@ public class Context {
 
     public boolean isCommand(Command command) {
         return this.command == command;
+    }
+
+    public boolean isClause(Clause claue) {
+        return this.clause == clause;
     }
 }

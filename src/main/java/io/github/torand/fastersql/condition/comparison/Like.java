@@ -22,6 +22,7 @@ import io.github.torand.fastersql.condition.LeftOperand;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 public class Like implements Condition {
@@ -35,14 +36,12 @@ public class Like implements Condition {
         this.right = right.contains("%") ? right : "%" + right + "%";
     }
 
-    @Override
-    public String sql(Context context) {
-        return left.sql(context) + " like ?";
-    }
+    // Sql
 
     @Override
-    public String negatedSql(Context context) {
-        return left.sql(context) + " not like ?";
+    public String sql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " like ?";
     }
 
     @Override
@@ -50,8 +49,16 @@ public class Like implements Condition {
         return Stream.of(right);
     }
 
+    // Condition
+
     @Override
-    public Stream<Field> fields() {
-        return left.fields();
+    public String negatedSql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " not like ?";
+    }
+
+    @Override
+    public Stream<Field> fieldRefs() {
+        return left.fieldRefs();
     }
 }

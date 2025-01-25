@@ -21,12 +21,11 @@ import io.github.torand.fastersql.Join;
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.condition.Condition;
 import io.github.torand.fastersql.condition.OptionalCondition;
-import io.github.torand.fastersql.function.FieldFunction;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.subquery.Subquery;
-import io.github.torand.fastersql.util.functional.Optionals;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -287,8 +286,10 @@ public class SelectStatement extends PreparableStatement {
     public List<Object> params(Context context) {
         List<Object> params = new LinkedList<>();
 
+        streamSafely(projections).flatMap(p -> p.params(context)).forEach(params::add);
+
         if (nonNull(subqueryFrom)) {
-            params.addAll(subqueryFrom.params(context));
+            subqueryFrom.params(context).forEach(params::add);
         }
 
         streamSafely(conditions).flatMap(e -> e.params(context)).forEach(params::add);
@@ -317,26 +318,19 @@ public class SelectStatement extends PreparableStatement {
         }
 
         List<Field> projectedFields = streamSafely(projections)
-            .filter(instanceOf(Field.class))
-            .map(castTo(Field.class))
+            .filter(instanceOf(Expression.class))
+            .map(castTo(Expression.class))
+            .flatMap(Expression::fieldRefs)
             .toList();
         validateFieldTableRelations(streamSafely(projectedFields));
 
-        List<Field> projectedFunctionFields = streamSafely(projections)
-            .filter(instanceOf(FieldFunction.class))
-            .map(castTo(FieldFunction.class))
-            .map(FieldFunction::field)
-            .flatMap(Optionals::stream)
-            .toList();
-        validateFieldTableRelations(streamSafely(projectedFunctionFields));
-
         if (nonNull(joins)) {
-            validateFieldTableRelations(streamSafely(joins).flatMap(Join::fields));
+            validateFieldTableRelations(streamSafely(joins).flatMap(Join::fieldRefs));
         }
 
-        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fieldRefs));
         validateFieldTableRelations(streamSafely(groups));
-        validateFieldTableRelations(streamSafely(orders).flatMap(Order::fields));
+        validateFieldTableRelations(streamSafely(orders).flatMap(Order::fieldRefs));
 
         if (forUpdate) {
             if (distinct || nonEmpty(groups) || streamSafely(projections).anyMatch(instanceOf(AggregateFunction.class))) {

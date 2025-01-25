@@ -21,5 +21,5 @@ import io.github.torand.fastersql.Sql;
 import java.util.stream.Stream;
 
 public interface Order extends Sql {
-    Stream<Field> fields();
+    Stream<Field> fieldRefs();
 }

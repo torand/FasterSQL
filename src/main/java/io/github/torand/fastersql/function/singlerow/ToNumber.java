@@ -17,41 +17,52 @@ package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.contract.Requires.require;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class ToNumber implements SingleRowFunction {
-    private final Field field;
+    private final Expression expression;
     private final int precision;
     private final int scale;
     private final String alias;
 
-    ToNumber(Field field, int precision, int scale, String alias) {
+    ToNumber(Expression expression, int precision, int scale, String alias) {
         require(() -> precision >= 1, "precision must be 1 or greater");
         require(() -> scale >= 0, "scale must be 0 or greater");
-        require(() -> scale <= precision, "scale must be less than or equal precision");
+        require(() -> scale <= precision, "scale must be less than or equal to precision");
 
-        this.field = requireNonNull(field, "No field specified");
-        this.alias = nonBlank(alias) ? alias : defaultAlias(field);
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonBlank(alias) ? alias : defaultAlias();
         this.precision = precision;
         this.scale = scale;
     }
 
+    // Sql
+
     @Override
-    public Optional<Field> field() {
-        return Optional.of(field);
+    public String sql(Context context) {
+        return context.getDialect().getToNumberFunction(expression.sql(context), precision, scale);
     }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Projection
 
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new ToNumber(field, precision, scale, alias);
+        return new ToNumber(expression, precision, scale, alias);
     }
 
     @Override
@@ -59,12 +70,14 @@ public class ToNumber implements SingleRowFunction {
         return alias;
     }
 
+    // Expression
+
     @Override
-    public String sql(Context context) {
-        return context.getDialect().getToNumberFunction(field.sql(context), precision, scale);
+    public Stream<Field> fieldRefs() {
+        return expression.fieldRefs();
     }
 
-    private String defaultAlias(Field field) {
-        return "TO_NUMBER_" + field.alias();
+    private String defaultAlias() {
+        return "TO_NUMBER_" + new Random().nextInt(999) + 1;
     }
 }

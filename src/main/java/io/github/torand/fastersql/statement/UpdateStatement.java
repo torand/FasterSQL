@@ -128,7 +128,7 @@ public class UpdateStatement extends PreparableStatement {
             throw new IllegalStateException("No values to set");
         }
         validateFieldTableRelations(streamSafely(fieldValues).map(FieldValue::field));
-        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fields));
+        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fieldRefs));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {

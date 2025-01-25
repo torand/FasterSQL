@@ -17,19 +17,22 @@ package io.github.torand.fastersql.condition.comparison;
 
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.condition.LeftOperand;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.Collection;
+
+import static io.github.torand.fastersql.constant.Constants.constant;
 
 public final class ComparisonConditions {
     private ComparisonConditions() {}
 
     public static Eq eq(LeftOperand left, Object right) {
-        return new Eq(left, right);
+        return new Eq(left, constant(right));
     }
 
-    public static EqField eq(LeftOperand left, Field right) {
-        return new EqField(left, right);
+    public static Eq eq(LeftOperand left, Expression right) {
+        return new Eq(left, right);
     }
 
     public static EqSubquery eq(LeftOperand left, Subquery right) {
@@ -37,35 +40,35 @@ public final class ComparisonConditions {
     }
 
     public static Lt lt(LeftOperand left, Object right) {
+        return new Lt(left, constant(right));
+    }
+
+    public static Lt lt(LeftOperand left, Expression right) {
         return new Lt(left, right);
     }
 
-    public static LtField lt(LeftOperand left, Field right) {
-        return new LtField(left, right);
+    public static Le le(LeftOperand left, Object right) {
+        return new Le(left, constant(right));
     }
 
-    public static Le le(LeftOperand left, Object right) {
+    public static Le le(LeftOperand left, Expression right) {
         return new Le(left, right);
     }
 
-    public static LeField le(LeftOperand left, Field right) {
-        return new LeField(left, right);
+    public static Gt gt(LeftOperand left, Object right) {
+        return new Gt(left, constant(right));
     }
 
-    public static Gt gt(LeftOperand left, Object right) {
+    public static Gt gt(LeftOperand left, Expression right) {
         return new Gt(left, right);
     }
 
-    public static GtField gt(LeftOperand left, Field right) {
-        return new GtField(left, right);
-    }
-
     public static Ge ge(LeftOperand left, Object right) {
-        return new Ge(left, right);
+        return new Ge(left, constant(right));
     }
 
-    public static GeField ge(LeftOperand left, Field right) {
-        return new GeField(left, right);
+    public static Ge ge(LeftOperand left, Expression right) {
+        return new Ge(left, right);
     }
 
     public static In in(LeftOperand left, Collection<?> right) {

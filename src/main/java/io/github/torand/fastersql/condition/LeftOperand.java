@@ -18,6 +18,7 @@ package io.github.torand.fastersql.condition;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.condition.comparison.ComparisonConditions;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.statement.SelectStatement;
 import io.github.torand.fastersql.subquery.Subquery;
 
@@ -30,7 +31,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 public interface LeftOperand extends Sql {
-    Stream<Field> fields();
+    Stream<Field> fieldRefs();
 
     default Condition eq(Object value) {
         return ComparisonConditions.eq(this, value);
@@ -41,8 +42,8 @@ public interface LeftOperand extends Sql {
         return OptionalCondition.ofNullable(value.map(v -> ComparisonConditions.eq(this, v)).orElse(null));
     }
 
-    default Condition eq(Field other) {
-        return ComparisonConditions.eq(this, other);
+    default Condition eq(Expression expression) {
+        return ComparisonConditions.eq(this, expression);
     }
 
     default Condition eq(SelectStatement inner) {
@@ -58,7 +59,7 @@ public interface LeftOperand extends Sql {
         return OptionalCondition.ofNullable(value.map(v -> ComparisonConditions.lt(this, v)).orElse(null));
     }
 
-    default Condition lt(Field other) {
+    default Condition lt(Expression other) {
         return ComparisonConditions.lt(this, other);
     }
 
@@ -71,7 +72,7 @@ public interface LeftOperand extends Sql {
         return OptionalCondition.ofNullable(value.map(v -> ComparisonConditions.le(this, v)).orElse(null));
     }
 
-    default Condition le(Field other) {
+    default Condition le(Expression other) {
         return ComparisonConditions.le(this, other);
     }
 
@@ -84,7 +85,7 @@ public interface LeftOperand extends Sql {
         return OptionalCondition.ofNullable(value.map(v -> ComparisonConditions.gt(this, v)).orElse(null));
     }
 
-    default Condition gt(Field other) {
+    default Condition gt(Expression other) {
         return ComparisonConditions.gt(this, other);
     }
 
@@ -97,7 +98,7 @@ public interface LeftOperand extends Sql {
         return OptionalCondition.ofNullable(value.map(v -> ComparisonConditions.ge(this, v)).orElse(null));
     }
 
-    default Condition ge(Field other) {
+    default Condition ge(Expression other) {
         return ComparisonConditions.ge(this, other);
     }
 

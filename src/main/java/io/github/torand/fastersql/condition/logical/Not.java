@@ -30,14 +30,11 @@ public class Not implements Condition {
         this.operand = requireNonNull(operand, "No operand specified");
     }
 
+    // Sql
+
     @Override
     public String sql(Context context) {
         return operand.negatedSql(context);
-    }
-
-    @Override
-    public String negatedSql(Context context) {
-        return operand.sql(context);
     }
 
     @Override
@@ -45,8 +42,15 @@ public class Not implements Condition {
         return operand.params(context);
     }
 
+    // Condition
+
     @Override
-    public Stream<Field> fields() {
-        return operand.fields();
+    public String negatedSql(Context context) {
+        return operand.sql(context);
+    }
+
+    @Override
+    public Stream<Field> fieldRefs() {
+        return operand.fieldRefs();
     }
 }

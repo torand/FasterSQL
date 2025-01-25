@@ -19,40 +19,47 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.condition.Condition;
 import io.github.torand.fastersql.condition.LeftOperand;
+import io.github.torand.fastersql.expression.Expression;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 public class Le implements Condition {
     private final LeftOperand left;
-    private final Object right;
+    private final Expression right;
 
-    Le(LeftOperand left, Object right) {
-        if (right instanceof Field) {
-            throw new IllegalArgumentException("Use LeField for conditions with field as right operand");
-        }
+    Le(LeftOperand left, Expression right) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
     }
 
-    @Override
-    public String sql(Context context) {
-        return left.sql(context) + " <= ?";
-    }
+    // Sql
 
     @Override
-    public String negatedSql(Context context) {
-        return left.sql(context) + " > ?";
+    public String sql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " <= " + right.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(right);
+        Context localContext = context.withClause(RESTRICTION);
+        return Stream.concat(left.params(localContext), right.params(localContext));
+    }
+
+    // Condition
+
+    @Override
+    public String negatedSql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " > " + right.sql(localContext);
+
     }
 
     @Override
-    public Stream<Field> fields() {
-        return left.fields();
+    public Stream<Field> fieldRefs() {
+        return Stream.concat(left.fieldRefs(), right.fieldRefs());
     }
 }

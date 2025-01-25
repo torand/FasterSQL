@@ -15,18 +15,13 @@
  */
 package io.github.torand.fastersql.function;
 
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.order.Orders;
-
-import java.util.Optional;
 
 /**
  * A function that operates on a specific field (or no specific field).
  */
 public interface FieldFunction extends Function {
-    // One aggregate function, count(*), does not operate on a specific field
-    Optional<Field> field();
 
     default Order ascIf(boolean predicate) {
         return predicate ? asc() : desc();

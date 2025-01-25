@@ -28,9 +28,7 @@ import java.util.stream.Stream;
 public interface Condition extends Sql {
     String negatedSql(Context context);
 
-    Stream<Field> fields();
-
-    Stream<Object> params(Context context);
+    Stream<Field> fieldRefs();
 
     default Condition or(Condition other) {
         return LogicalConditions.or(this, other);

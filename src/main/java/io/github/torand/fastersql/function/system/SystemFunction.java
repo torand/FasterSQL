@@ -15,11 +15,27 @@
  */
 package io.github.torand.fastersql.function.system;
 
+import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.function.Function;
+
+import java.util.stream.Stream;
 
 /**
  * A function that returns a single value without operating on table rows.
  */
 public interface SystemFunction extends Function {
 
+    // Sql
+    @Override
+    default Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Expression
+
+    @Override
+    default Stream<Field> fieldRefs() {
+        return Stream.empty();
+    }
 }

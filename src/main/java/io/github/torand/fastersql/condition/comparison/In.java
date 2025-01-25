@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static io.github.torand.fastersql.statement.Helpers.paramMarkers;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
@@ -38,14 +39,12 @@ public class In implements Condition {
         this.right = asList(requireNonEmpty(right, "No right operand specified"));
     }
 
-    @Override
-    public String sql(Context context) {
-        return left.sql(context) + " in (" + paramMarkers(right.size()) + ")";
-    }
+    // Sql
 
     @Override
-    public String negatedSql(Context context) {
-        return left.sql(context) + " not in (" + paramMarkers(right.size()) + ")";
+    public String sql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " in (" + paramMarkers(right.size()) + ")";
     }
 
     @Override
@@ -53,8 +52,16 @@ public class In implements Condition {
         return right.stream().map(v -> v);
     }
 
+    // Condition
+
     @Override
-    public Stream<Field> fields() {
-        return left.fields();
+    public String negatedSql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " not in (" + paramMarkers(right.size()) + ")";
+    }
+
+    @Override
+    public Stream<Field> fieldRefs() {
+        return left.fieldRefs();
     }
 }

@@ -19,11 +19,11 @@ import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static java.util.Objects.requireNonNull;
 
 public class Min implements AggregateFunction {
     private final Field field;
@@ -34,6 +34,20 @@ public class Min implements AggregateFunction {
         this.alias = nonBlank(alias) ? alias : defaultAlias(field);
     }
 
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "min(" + field.sql(context) + ")";
+    }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Projection
+
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
@@ -41,18 +55,15 @@ public class Min implements AggregateFunction {
     }
 
     @Override
-    public Optional<Field> field() {
-        return Optional.of(field);
-    }
-
-    @Override
     public String alias() {
         return alias;
     }
 
+    // Expression
+
     @Override
-    public String sql(Context context) {
-        return "min(" + field.sql(context) + ")";
+    public Stream<Field> fieldRefs() {
+        return Stream.of(field);
     }
 
     private String defaultAlias(Field field) {

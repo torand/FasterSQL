@@ -20,7 +20,7 @@ import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
@@ -32,6 +32,20 @@ public class CountAll implements AggregateFunction {
         this.alias = nonBlank(alias) ? alias : defaultAlias();
     }
 
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "count(*)";
+    }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    // Projection
+
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
@@ -39,9 +53,11 @@ public class CountAll implements AggregateFunction {
     }
 
     @Override
-    public Optional<Field> field() {
-        return Optional.empty();
+    public String alias() {
+        return alias;
     }
+
+    // FieldFunction
 
     @Override
     public Order ascIf(boolean predicate) {
@@ -58,14 +74,11 @@ public class CountAll implements AggregateFunction {
         throw new UnsupportedOperationException("The 'count(*)' function can't be used in an 'order by' clause");
     }
 
-    @Override
-    public String alias() {
-        return alias;
-    }
+    // Expression
 
     @Override
-    public String sql(Context context) {
-        return "count(*)";
+    public Stream<Field> fieldRefs() {
+        return Stream.empty();
     }
 
     private String defaultAlias() {

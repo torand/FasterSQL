@@ -23,6 +23,7 @@ import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 public class EqSubquery implements Condition {
@@ -34,23 +35,30 @@ public class EqSubquery implements Condition {
         this.right = requireNonNull(right, "No right operand specified");
     }
 
-    @Override
-    public String sql(Context context) {
-        return left.sql(context) + " = " + right.sql(context);
-    }
+    // Sql
 
     @Override
-    public String negatedSql(Context context) {
-        return left.sql(context) + " != " + right.sql(context);
+    public String sql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " = " + right.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return right.params(context).stream();
+        Context localContext = context.withClause(RESTRICTION);
+        return Stream.concat(left.params(localContext), right.params(localContext));
+    }
+
+    // Condition
+
+    @Override
+    public String negatedSql(Context context) {
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " != " + right.sql(localContext);
     }
 
     @Override
-    public Stream<Field> fields() {
-        return left.fields();
+    public Stream<Field> fieldRefs() {
+        return left.fieldRefs();
     }
 }

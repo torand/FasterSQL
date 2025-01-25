@@ -42,7 +42,7 @@ public class SelectStatementTest {
     @BeforeEach
     public void setup() {
         statement =
-            select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP, nullValue().forField(ADDRESS.COUNTRY))
+            select(upper(PERSON.NAME).as("P_NAME"), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP, nullValue().forField(ADDRESS.COUNTRY))
                 .from(PERSON)
                 .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
                 .where(PERSON.SSN.eq("17016812345")
@@ -57,7 +57,7 @@ public class SelectStatementTest {
     @Test
     public void shouldBuildValidSql() {
         final String expectedSql = """
-            select upper(P.NAME) UPPER_P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP, null A_COUNTRY \
+            select upper(P.NAME) P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP, null A_COUNTRY \
             from PERSON P \
             left outer join ADDRESS A on P.ID = A.PERSON_ID \
             where P.SSN = ? \
@@ -127,11 +127,11 @@ public class SelectStatementTest {
 
         final String expectedSql = """
             select count(*) ANTALL from (\
-            select 1 \
+            select ? \
             from PERSON P \
             where P.NAME like ?\
             ) TREFF""";
-        Object[] expectedParams = {"%or%"};
+        Object[] expectedParams = {1L, "%or%"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
         assertThat(statement.params(context())).contains(expectedParams);
@@ -145,10 +145,10 @@ public class SelectStatementTest {
                 .where(PERSON.NAME.eq("Per"));
 
         final String expectedSql = """
-            select P.NAME P_NAME, '123 45 678' P_PHONE_NO, P.SSN P_SSN \
+            select P.NAME P_NAME, ? P_PHONE_NO, P.SSN P_SSN \
             from PERSON P \
             where P.NAME = ?""";
-        Object[] expectedParams = {"Per"};
+        Object[] expectedParams = {"123 45 678", "Per"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
         assertThat(statement.params(context())).contains(expectedParams);
@@ -162,10 +162,10 @@ public class SelectStatementTest {
                 .where(PERSON.NAME.eq("Per"));
 
         final String expectedSql = """
-            select 1 \
+            select ? \
             from PERSON P \
             where P.NAME = ?""";
-        Object[] expectedParams = {"Per"};
+        Object[] expectedParams = {1L, "Per"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
         assertThat(statement.params(context())).contains(expectedParams);

@@ -17,29 +17,59 @@ package io.github.torand.fastersql.constant;
 
 import java.util.UUID;
 
-import static io.github.torand.fastersql.util.functional.Optionals.mapIfNonNull;
+import static java.util.Objects.isNull;
 
 public final class Constants {
 
     private Constants() {}
 
-    public static StringConstant constant(UUID value) {
-        return new StringConstant(mapIfNonNull(value, UUID::toString), null);
+    public static Constant constant(Object value) {
+        if (isNull(value)) {
+            return nullValue();
+        } else if (value instanceof String string) {
+            return constant(string);
+        } else if (value instanceof Integer integer) {
+            return constant(Long.valueOf(integer));
+        } else if (value instanceof Long longValue) {
+            return constant(longValue);
+        } else if (value instanceof UUID uuid) {
+            return constant(uuid);
+        } else if (value instanceof Enum enumValue) {
+            return constant(enumValue);
+        }
+
+        throw new IllegalArgumentException("Unsupported constant type: " + value.getClass());
     }
 
-    public static StringConstant constant(Enum<? extends Enum<?>> value) {
-        return new StringConstant(mapIfNonNull(value, Enum::name), null);
+    public static Constant constant(UUID value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+        return new StringConstant(value.toString(), null);
     }
 
-    public static StringConstant constant(String value) {
+    public static Constant constant(Enum<? extends Enum<?>> value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+        return new StringConstant(value.name(), null);
+    }
+
+    public static Constant constant(String value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
         return new StringConstant(value, null);
     }
 
-    public static IntegerConstant constant(Long value) {
+    public static Constant constant(Long value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
         return new IntegerConstant(value, null);
     }
 
-    public static NullConstant nullValue() {
+    public static Constant nullValue() {
         return new NullConstant(null);
     }
 }

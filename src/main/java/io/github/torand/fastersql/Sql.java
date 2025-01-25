@@ -15,9 +15,13 @@
  */
 package io.github.torand.fastersql;
 
+import java.util.stream.Stream;
+
 /**
  * A construct that can be expressed as an SQL fragment.
  */
 public interface Sql {
     String sql(Context context);
+
+    Stream<Object> params(Context context);
 }

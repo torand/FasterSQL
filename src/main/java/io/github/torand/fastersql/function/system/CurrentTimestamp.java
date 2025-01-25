@@ -27,6 +27,15 @@ public class CurrentTimestamp implements SystemFunction {
         this.alias = alias;
     }
 
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "current_timestamp";
+    }
+
+    // Projection
+
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
@@ -36,10 +45,5 @@ public class CurrentTimestamp implements SystemFunction {
     @Override
     public String alias() {
         return alias;
-    }
-
-    @Override
-    public String sql(Context context) {
-        return "current_timestamp";
     }
 }

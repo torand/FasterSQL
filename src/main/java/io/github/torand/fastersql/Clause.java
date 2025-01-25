@@ -13,14 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.function.singlerow;
+package io.github.torand.fastersql;
 
-import io.github.torand.fastersql.condition.LeftOperand;
-import io.github.torand.fastersql.function.FieldFunction;
-
-/**
- * A function that returns a single value based upon one value from a single row.
- */
-public interface SingleRowFunction extends FieldFunction, LeftOperand {
-
+public enum Clause {
+    PROJECTION, RESTRICTION
 }
