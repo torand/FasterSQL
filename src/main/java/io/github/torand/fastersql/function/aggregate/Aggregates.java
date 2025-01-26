@@ -39,4 +39,8 @@ public final class Aggregates {
     public static Sum sum(Field field) {
         return new Sum(field, null);
     }
+
+    public static Avg avg(Field field) {
+        return new Avg(field, null);
+    }
 }
