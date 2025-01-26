@@ -24,13 +24,11 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
-public class InSubquery implements Predicate {
-    private final LeftOperand left;
-    private final Subquery right;
+public class ExistsSubquery implements Predicate {
+    private final Subquery operand;
 
-    InSubquery(LeftOperand left, Subquery right) {
-        this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+    ExistsSubquery(Subquery operand) {
+        this.operand = requireNonNull(operand, "No operand specified");
     }
 
     // Sql
@@ -38,13 +36,13 @@ public class InSubquery implements Predicate {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " in " + right.sql(localContext);
+        return "exists " + operand.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return right.params(localContext);
+        return operand.params(localContext);
     }
 
     // Predicate
@@ -52,11 +50,11 @@ public class InSubquery implements Predicate {
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " not in " + right.sql(localContext);
+        return "not exists " + operand.sql(localContext);
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return left.fieldRefs();
+        return Stream.empty();
     }
 }

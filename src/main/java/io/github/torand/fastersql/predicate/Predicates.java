@@ -31,6 +31,10 @@ public final class Predicates {
         return new InSubquery(left, right);
     }
 
+    public static ExistsSubquery exists(Subquery operand) {
+        return new ExistsSubquery(operand);
+    }
+
     public static Like like(LeftOperand left, String right) {
         return new Like(left, right);
     }
