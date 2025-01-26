@@ -44,12 +44,20 @@ public final class ComparisonPredicates {
         return new Lt(left, right);
     }
 
+    public static LtSubquery lt(LeftOperand left, Subquery right) {
+        return new LtSubquery(left, right);
+    }
+
     public static Le le(LeftOperand left, Object right) {
         return new Le(left, constant(right));
     }
 
     public static Le le(LeftOperand left, Expression right) {
         return new Le(left, right);
+    }
+
+    public static LeSubquery le(LeftOperand left, Subquery right) {
+        return new LeSubquery(left, right);
     }
 
     public static Gt gt(LeftOperand left, Object right) {
@@ -60,11 +68,19 @@ public final class ComparisonPredicates {
         return new Gt(left, right);
     }
 
+    public static GtSubquery gt(LeftOperand left, Subquery right) {
+        return new GtSubquery(left, right);
+    }
+
     public static Ge ge(LeftOperand left, Object right) {
         return new Ge(left, constant(right));
     }
 
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
+    }
+
+    public static GeSubquery ge(LeftOperand left, Subquery right) {
+        return new GeSubquery(left, right);
     }
 }

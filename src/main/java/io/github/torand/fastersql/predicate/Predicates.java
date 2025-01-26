@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.predicate;
 
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.Collection;
 
@@ -24,6 +25,10 @@ public final class Predicates {
 
     public static In in(LeftOperand left, Collection<?> right) {
         return new In(left, right);
+    }
+
+    public static InSubquery in(LeftOperand left, Subquery right) {
+        return new InSubquery(left, right);
     }
 
     public static Like like(LeftOperand left, String right) {
