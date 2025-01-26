@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.constant;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
@@ -26,15 +28,41 @@ public final class Constants {
     public static Constant constant(Object value) {
         if (isNull(value)) {
             return nullValue();
-        } else if (value instanceof String string) {
+        }
+
+        if (value instanceof String string) {
             return constant(string);
-        } else if (value instanceof Integer integer) {
+        }
+
+        if (value instanceof Integer integer) {
             return constant(Long.valueOf(integer));
-        } else if (value instanceof Long longValue) {
+        }
+
+        if (value instanceof Long longValue) {
             return constant(longValue);
-        } else if (value instanceof UUID uuid) {
+        }
+
+        if (value instanceof BigInteger biginteger) {
+            return constant(biginteger.longValue());
+        }
+
+        if (value instanceof Float floatValue) {
+            return constant(Double.valueOf(floatValue));
+        }
+
+        if (value instanceof Double doubleValue) {
+            return constant(doubleValue);
+        }
+
+        if (value instanceof BigDecimal bigdecimal) {
+            return constant(bigdecimal.doubleValue());
+        }
+
+        if (value instanceof UUID uuid) {
             return constant(uuid);
-        } else if (value instanceof Enum enumValue) {
+        }
+
+        if (value instanceof Enum enumValue) {
             return constant(enumValue);
         }
 
@@ -67,6 +95,13 @@ public final class Constants {
             return nullValue();
         }
         return new IntegerConstant(value, null);
+    }
+
+    public static Constant constant(Double value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+        return new DecimalConstant(value, null);
     }
 
     public static Constant nullValue() {
