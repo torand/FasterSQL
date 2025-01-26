@@ -13,47 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.logical;
+package io.github.torand.fastersql.predicate;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
 
-import java.util.List;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
+import static java.util.Objects.requireNonNull;
 
-public class And implements Condition {
-    private final List<Condition> operands;
+public class IsNull implements Predicate {
+    private final Field operand;
 
-    And(Condition... operands) {
-        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
+    IsNull(Field operand) {
+        this.operand = requireNonNull(operand, "No operand specified");
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return operands.stream().map(e -> e.sql(context)).collect(joining(" and "));
+        return operand.sql(context) + " is null";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return operands.stream().flatMap(o -> o.params(context));
+        return Stream.empty();
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
-        return "not (" + sql(context) + ")";
+        return operand.sql(context) + " is not null";
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return operands.stream().flatMap(Condition::fieldRefs);
+        return Stream.empty();
     }
 }

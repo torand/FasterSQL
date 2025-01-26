@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.logical;
+package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.Field;
 
-public final class LogicalConditions {
-    private LogicalConditions() {}
+import java.util.Collection;
 
-    public static And and(Condition... operands) {
-        return new And(operands);
+public final class Predicates {
+    private Predicates() {}
+
+    public static In in(LeftOperand left, Collection<?> right) {
+        return new In(left, right);
     }
 
-    public static Or or(Condition... operands) {
-        return new Or(operands);
+    public static Like like(LeftOperand left, String right) {
+        return new Like(left, right);
     }
 
-    public static Not not(Condition operand) {
-        return new Not(operand);
+    public static IsNull isNull(Field operand) {
+        return new IsNull(operand);
     }
 }

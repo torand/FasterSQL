@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.function.singlerow;
+package io.github.torand.fastersql.predicate.compound;
 
-import io.github.torand.fastersql.function.FieldFunction;
-import io.github.torand.fastersql.predicate.LeftOperand;
+import io.github.torand.fastersql.predicate.Predicate;
 
-/**
- * A function that returns a single value based upon one value from a single row.
- */
-public interface SingleRowFunction extends FieldFunction, LeftOperand {
+public final class CompoundPredicates {
+    private CompoundPredicates() {}
 
+    public static And and(Predicate... operands) {
+        return new And(operands);
+    }
+
+    public static Or or(Predicate... operands) {
+        return new Or(operands);
+    }
+
+    public static Not not(Predicate operand) {
+        return new Not(operand);
+    }
 }

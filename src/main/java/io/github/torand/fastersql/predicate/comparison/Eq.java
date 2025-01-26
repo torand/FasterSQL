@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.comparison;
+package io.github.torand.fastersql.predicate.comparison;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.LeftOperand;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.predicate.LeftOperand;
+import io.github.torand.fastersql.predicate.Predicate;
 
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
-public class Gt implements Condition {
+public class Eq implements Predicate {
     private final LeftOperand left;
     private final Expression right;
 
-    Gt(LeftOperand left, Expression right) {
+    Eq(LeftOperand left, Expression right) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
     }
@@ -40,7 +40,7 @@ public class Gt implements Condition {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " > " + right.sql(localContext);
+        return left.sql(localContext) + " = " + right.sql(localContext);
     }
 
     @Override
@@ -49,12 +49,12 @@ public class Gt implements Condition {
         return Stream.concat(left.params(localContext), right.params(localContext));
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " <= " + right.sql(localContext);
+        return left.sql(localContext) + " != " + right.sql(localContext);
     }
 
     @Override

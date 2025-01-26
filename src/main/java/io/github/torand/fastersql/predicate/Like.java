@@ -13,47 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.logical;
+package io.github.torand.fastersql.predicate;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
 
-import java.util.List;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.joining;
+import static io.github.torand.fastersql.Clause.RESTRICTION;
+import static java.util.Objects.requireNonNull;
 
-public class Or implements Condition {
-    private final List<Condition> operands;
+public class Like implements Predicate {
+    private final LeftOperand left;
+    private final String right;
 
-    Or(Condition... operands) {
-        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
+    Like(LeftOperand left, String right) {
+        this.left = requireNonNull(left, "No left operand specified");
+
+        requireNonNull(right, "No right operand specified");
+        this.right = right.contains("%") ? right : "%" + right + "%";
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return "(" + operands.stream().map(e -> e.sql(context)).collect(joining(" or ")) + ")";
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " like ?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return operands.stream().flatMap(o -> o.params(context));
+        return Stream.of(right);
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
-        return "not " + sql(context);
+        Context localContext = context.withClause(RESTRICTION);
+        return left.sql(localContext) + " not like ?";
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return operands.stream().flatMap(Condition::fieldRefs);
+        return left.fieldRefs();
     }
 }

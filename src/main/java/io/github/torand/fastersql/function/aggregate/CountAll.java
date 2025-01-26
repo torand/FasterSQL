@@ -60,7 +60,7 @@ public class CountAll implements AggregateFunction {
     // FieldFunction
 
     @Override
-    public Order ascIf(boolean predicate) {
+    public Order ascIf(boolean condition) {
         throw new UnsupportedOperationException("The 'count(*)' function can't be used in an 'order by' clause");
     }
 

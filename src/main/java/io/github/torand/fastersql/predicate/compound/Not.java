@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.comparison;
+package io.github.torand.fastersql.predicate.compound;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
+import io.github.torand.fastersql.predicate.Predicate;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
-public class IsNull implements Condition {
-    private final Field operand;
+public class Not implements Predicate {
+    private final Predicate operand;
 
-    IsNull(Field operand) {
+    Not(Predicate operand) {
         this.operand = requireNonNull(operand, "No operand specified");
     }
 
@@ -34,23 +34,23 @@ public class IsNull implements Condition {
 
     @Override
     public String sql(Context context) {
-        return operand.sql(context) + " is null";
+        return operand.negatedSql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return operand.params(context);
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
-        return operand.sql(context) + " is not null";
+        return operand.sql(context);
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return Stream.empty();
+        return operand.fieldRefs();
     }
 }

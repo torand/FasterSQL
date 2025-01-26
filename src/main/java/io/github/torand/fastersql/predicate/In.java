@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.comparison;
+package io.github.torand.fastersql.predicate;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.LeftOperand;
-import io.github.torand.fastersql.expression.Expression;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Clause.RESTRICTION;
+import static io.github.torand.fastersql.statement.Helpers.paramMarkers;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
-public class Le implements Condition {
+public class In implements Predicate {
     private final LeftOperand left;
-    private final Expression right;
+    private final List<?> right;
 
-    Le(LeftOperand left, Expression right) {
+    In(LeftOperand left, Collection<?> right) {
         this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+        this.right = asList(requireNonEmpty(right, "No right operand specified"));
     }
 
     // Sql
@@ -40,26 +42,24 @@ public class Le implements Condition {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " <= " + right.sql(localContext);
+        return left.sql(localContext) + " in (" + paramMarkers(right.size()) + ")";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        Context localContext = context.withClause(RESTRICTION);
-        return Stream.concat(left.params(localContext), right.params(localContext));
+        return right.stream().map(v -> v);
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " > " + right.sql(localContext);
-
+        return left.sql(localContext) + " not in (" + paramMarkers(right.size()) + ")";
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return Stream.concat(left.fieldRefs(), right.fieldRefs());
+        return left.fieldRefs();
     }
 }

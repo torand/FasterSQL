@@ -15,12 +15,12 @@
  */
 package io.github.torand.fastersql;
 
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.LeftOperand;
-import io.github.torand.fastersql.condition.comparison.ComparisonConditions;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.order.Orders;
+import io.github.torand.fastersql.predicate.LeftOperand;
+import io.github.torand.fastersql.predicate.Predicate;
+import io.github.torand.fastersql.predicate.Predicates;
 import io.github.torand.fastersql.projection.Projection;
 
 import java.util.stream.Stream;
@@ -81,8 +81,8 @@ public class Field implements Projection, LeftOperand, Expression {
         return Stream.of(this);
     }
 
-    public Condition isNull() {
-        return ComparisonConditions.isNull(this);
+    public Predicate isNull() {
+        return Predicates.isNull(this);
     }
 
     public Join on(Field other) {
@@ -93,8 +93,8 @@ public class Field implements Projection, LeftOperand, Expression {
         return Orders.asc(this);
     }
 
-    public Order ascIf(boolean predicate) {
-        return predicate ? asc() : desc();
+    public Order ascIf(boolean condition) {
+        return condition ? asc() : desc();
     }
 
     public Order desc() {

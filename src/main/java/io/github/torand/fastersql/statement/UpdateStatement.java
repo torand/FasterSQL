@@ -18,10 +18,10 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.OptionalCondition;
 import io.github.torand.fastersql.constant.Constant;
 import io.github.torand.fastersql.function.Function;
+import io.github.torand.fastersql.predicate.OptionalPredicate;
+import io.github.torand.fastersql.predicate.Predicate;
 import io.github.torand.fastersql.util.functional.Optionals;
 
 import java.util.Collection;
@@ -38,12 +38,12 @@ import static java.util.stream.Collectors.joining;
 public class UpdateStatement extends PreparableStatement {
     private final Table<?> table;
     private final List<FieldValue> fieldValues;
-    private final List<Condition> conditions;
+    private final List<Predicate> predicates;
 
-    UpdateStatement(Table<?> table, Collection<FieldValue> fieldValues, Collection<Condition> conditions) {
+    UpdateStatement(Table<?> table, Collection<FieldValue> fieldValues, Collection<Predicate> predicates) {
         this.table = requireNonNull(table, "No table specified");
         this.fieldValues = asList(fieldValues);
-        this.conditions = asList(conditions);
+        this.predicates = asList(predicates);
     }
 
     public UpdateStatement set(Field field, Constant constant) {
@@ -51,7 +51,7 @@ public class UpdateStatement extends PreparableStatement {
         requireNonNull(constant, "No constant specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, constant.value()));
-        return new UpdateStatement(table, concatenated, conditions);
+        return new UpdateStatement(table, concatenated, predicates);
     }
 
     public UpdateStatement set(Field field, Function function) {
@@ -59,14 +59,14 @@ public class UpdateStatement extends PreparableStatement {
         requireNonNull(function, "No function specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, function));
-        return new UpdateStatement(table, concatenated, conditions);
+        return new UpdateStatement(table, concatenated, predicates);
     }
 
     public UpdateStatement set(Field field, Object value) {
         requireNonNull(field, "No field specified");
 
         List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, value));
-        return new UpdateStatement(table, concatenated, conditions);
+        return new UpdateStatement(table, concatenated, predicates);
     }
 
     public UpdateStatement set(Field field, Optional<?> maybeValue) {
@@ -75,28 +75,28 @@ public class UpdateStatement extends PreparableStatement {
 
         if (maybeValue.isPresent()) {
             List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, maybeValue.get()));
-            return new UpdateStatement(table, concatenated, conditions);
+            return new UpdateStatement(table, concatenated, predicates);
         } else {
             return this;
         }
     }
 
-    public UpdateStatement where(Condition... conditions) {
-        requireNonEmpty(conditions, "No conditions specified");
+    public UpdateStatement where(Predicate... predicates) {
+        requireNonEmpty(predicates, "No predicates specified");
 
-        List<Condition> concatenated = concat(this.conditions, conditions);
+        List<Predicate> concatenated = concat(this.predicates, predicates);
         return new UpdateStatement(table, fieldValues, concatenated);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause conditions that are present.
-     * @param maybeConditions the conditions that may be present or not
+     * Same as other method of same name, but only adds to the where clause predicates that are present.
+     * @param maybePredicates the predicates that may be present or not
      * @return updated statement, for method chaining
      */
-    public final UpdateStatement where(OptionalCondition... maybeConditions) {
-        requireNonEmpty(maybeConditions, "No optional conditions specified");
+    public final UpdateStatement where(OptionalPredicate... maybePredicates) {
+        requireNonEmpty(maybePredicates, "No optional predicates specified");
 
-        List<Condition> concatenated = concat(this.conditions, OptionalCondition.unwrap(maybeConditions));
+        List<Predicate> concatenated = concat(this.predicates, OptionalPredicate.unwrap(maybePredicates));
         return new UpdateStatement(table, fieldValues, concatenated);
     }
 
@@ -110,9 +110,9 @@ public class UpdateStatement extends PreparableStatement {
         sb.append(table.sql(context));
         sb.append(" set ");
         sb.append(streamSafely(fieldValues).map(fv -> fv.field().sql(localContext) + " = " + fv.valueSql(localContext)).collect(joining(", ")));
-        if (nonEmpty(conditions)) {
+        if (nonEmpty(predicates)) {
             sb.append(" where ");
-            sb.append(streamSafely(conditions).map(e -> e.sql(localContext)).collect(joining(" and ")));
+            sb.append(streamSafely(predicates).map(e -> e.sql(localContext)).collect(joining(" and ")));
         }
 
         return sb.toString();
@@ -120,7 +120,7 @@ public class UpdateStatement extends PreparableStatement {
 
     @Override
     List<Object> params(Context context) {
-        return Stream.concat(streamSafely(fieldValues).map(FieldValue::param).flatMap(Optionals::stream), streamSafely(conditions).flatMap(e -> e.params(context))).toList();
+        return Stream.concat(streamSafely(fieldValues).map(FieldValue::param).flatMap(Optionals::stream), streamSafely(predicates).flatMap(e -> e.params(context))).toList();
     }
 
     private void validate() {
@@ -128,7 +128,7 @@ public class UpdateStatement extends PreparableStatement {
             throw new IllegalStateException("No values to set");
         }
         validateFieldTableRelations(streamSafely(fieldValues).map(FieldValue::field));
-        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fieldRefs));
+        validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {

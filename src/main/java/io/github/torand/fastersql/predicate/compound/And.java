@@ -13,52 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.comparison;
+package io.github.torand.fastersql.predicate.compound;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.LeftOperand;
+import io.github.torand.fastersql.predicate.Predicate;
 
+import java.util.List;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Clause.RESTRICTION;
-import static java.util.Objects.requireNonNull;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.joining;
 
-public class Like implements Condition {
-    private final LeftOperand left;
-    private final String right;
+public class And implements Predicate {
+    private final List<Predicate> operands;
 
-    Like(LeftOperand left, String right) {
-        this.left = requireNonNull(left, "No left operand specified");
-
-        requireNonNull(right, "No right operand specified");
-        this.right = right.contains("%") ? right : "%" + right + "%";
+    And(Predicate... operands) {
+        this.operands = asList(requireNonEmpty(operands, "No operands specified"));
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " like ?";
+        return operands.stream().map(e -> e.sql(context)).collect(joining(" and "));
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(right);
+        return operands.stream().flatMap(o -> o.params(context));
     }
 
-    // Condition
+    // Predicate
 
     @Override
     public String negatedSql(Context context) {
-        Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " not like ?";
+        return "not (" + sql(context) + ")";
     }
 
     @Override
     public Stream<Field> fieldRefs() {
-        return left.fieldRefs();
+        return operands.stream().flatMap(Predicate::fieldRefs);
     }
 }

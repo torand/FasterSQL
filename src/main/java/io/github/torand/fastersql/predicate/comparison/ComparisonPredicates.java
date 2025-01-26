@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.condition.comparison;
+package io.github.torand.fastersql.predicate.comparison;
 
-import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.condition.LeftOperand;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.subquery.Subquery;
-
-import java.util.Collection;
 
 import static io.github.torand.fastersql.constant.Constants.constant;
 
-public final class ComparisonConditions {
-    private ComparisonConditions() {}
+public final class ComparisonPredicates {
+    private ComparisonPredicates() {}
 
     public static Eq eq(LeftOperand left, Object right) {
         return new Eq(left, constant(right));
@@ -69,17 +66,5 @@ public final class ComparisonConditions {
 
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
-    }
-
-    public static In in(LeftOperand left, Collection<?> right) {
-        return new In(left, right);
-    }
-
-    public static Like like(LeftOperand left, String right) {
-        return new Like(left, right);
-    }
-
-    public static IsNull isNull(Field operand) {
-        return new IsNull(operand);
     }
 }

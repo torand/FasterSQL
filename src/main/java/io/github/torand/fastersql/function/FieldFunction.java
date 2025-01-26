@@ -23,8 +23,8 @@ import io.github.torand.fastersql.order.Orders;
  */
 public interface FieldFunction extends Function {
 
-    default Order ascIf(boolean predicate) {
-        return predicate ? asc() : desc();
+    default Order ascIf(boolean condition) {
+        return condition ? asc() : desc();
     }
 
     default Order asc() {

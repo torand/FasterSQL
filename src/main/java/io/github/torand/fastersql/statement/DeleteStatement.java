@@ -18,8 +18,8 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
-import io.github.torand.fastersql.condition.Condition;
-import io.github.torand.fastersql.condition.OptionalCondition;
+import io.github.torand.fastersql.predicate.OptionalPredicate;
+import io.github.torand.fastersql.predicate.Predicate;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,41 +36,41 @@ import static java.util.stream.Collectors.joining;
 
 public class DeleteStatement extends PreparableStatement {
     private final Table<?> fromTable;
-    private final List<Condition> conditions;
+    private final List<Predicate> predicates;
 
-    DeleteStatement(Table<?> table, Collection<Condition> conditions) {
+    DeleteStatement(Table<?> table, Collection<Predicate> predicates) {
         this.fromTable = requireNonNull(table, "No table specified");
-        this.conditions = asList(conditions);
+        this.predicates = asList(predicates);
     }
 
-    public DeleteStatement where(Condition... conditions) {
-        requireNonEmpty(conditions, "No conditions specified");
-        List<Condition> concatenated = concat(this.conditions, conditions);
+    public DeleteStatement where(Predicate... predicates) {
+        requireNonEmpty(predicates, "No predicates specified");
+        List<Predicate> concatenated = concat(this.predicates, predicates);
         return new DeleteStatement(fromTable, concatenated);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause conditions that are present.
-     * @param maybeConditions the conditions that may be present or not
+     * Same as other method of same name, but only adds to the where clause predicates that are present.
+     * @param maybePredicates the predicates that may be present or not
      * @return updated statement, for method chaining
      */
-    public final DeleteStatement where(OptionalCondition... maybeConditions) {
-        requireNonEmpty(maybeConditions, "No optional conditions specified");
-        List<Condition> concatenated = concat(this.conditions, OptionalCondition.unwrap(maybeConditions));
+    public final DeleteStatement where(OptionalPredicate... maybePredicates) {
+        requireNonEmpty(maybePredicates, "No optional predicates specified");
+        List<Predicate> concatenated = concat(this.predicates, OptionalPredicate.unwrap(maybePredicates));
         return new DeleteStatement(fromTable, concatenated);
     }
 
     /**
-     * Adds one or more conditions to the where clause, if a predicate is true.
-     * @param predicate the predicate that must be true for conditions to be added
-     * @param conditionSuppliers the suppliers providing conditions to add
+     * Adds one or more predicates to the where clause, if a predicate is true.
+     * @param condition the condition that must be true for predicates to be added
+     * @param predicateSuppliers the suppliers providing predicates to add
      * @return updated statement, for method chaining
      */
     @SafeVarargs
-    public final DeleteStatement whereIf(boolean predicate, Supplier<Condition>... conditionSuppliers) {
-        requireNonEmpty(conditionSuppliers, "No condition suppliers specified");
-        if (predicate) {
-            List<Condition> concatenated = concat(this.conditions, unwrapSuppliers(conditionSuppliers));
+    public final DeleteStatement whereIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
+        requireNonEmpty(predicateSuppliers, "No predicate suppliers specified");
+        if (condition) {
+            List<Predicate> concatenated = concat(this.predicates, unwrapSuppliers(predicateSuppliers));
             return new DeleteStatement(fromTable, concatenated);
         }
         return this;
@@ -85,9 +85,9 @@ public class DeleteStatement extends PreparableStatement {
         sb.append("delete from ");
         sb.append(fromTable.sql(localContext));
 
-        if (nonEmpty(conditions)) {
+        if (nonEmpty(predicates)) {
             sb.append(" where ");
-            sb.append(streamSafely(conditions)
+            sb.append(streamSafely(predicates)
                 .map(e -> e.sql(localContext))
                 .collect(joining(" and ")));
         }
@@ -97,7 +97,7 @@ public class DeleteStatement extends PreparableStatement {
 
     @Override
     List<Object> params(Context context) {
-        return streamSafely(conditions)
+        return streamSafely(predicates)
             .flatMap(e -> e.params(context))
             .toList();
     }
@@ -109,7 +109,7 @@ public class DeleteStatement extends PreparableStatement {
 
         // TODO: Verify that deleteTables is subset of fromTables
 
-        validateFieldTableRelations(streamSafely(conditions).flatMap(Condition::fieldRefs));
+        validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));
     }
 
     private void validateFieldTableRelations(Stream<Field> fields) {
