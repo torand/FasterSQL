@@ -264,7 +264,7 @@ public class SelectStatement extends PreparableStatement {
     }
 
     private StringBuilder addLimitOffsetFallback(Context context, StringBuilder innerSql, Long rowFrom, Long rowTo) {
-        String rowNum = context.getDialect().getRowNumLiteral()
+        String rowNum = context.getDialect().formatRowNumLiteral()
             .orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no ROWNUM literal"));
 
         if (nonNull(rowFrom) && nonNull(rowTo)) {

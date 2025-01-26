@@ -29,12 +29,12 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
-    public Optional<String> getRowNumLiteral() {
+    public Optional<String> formatRowNumLiteral() {
         return Optional.empty();
     }
 
     @Override
-    public String getToNumberFunction(String operand, int precision, int scale) {
+    public String formatToNumberFunction(String operand, int precision, int scale) {
         return "cast(" + operand + " as decimal(" + precision + "," + scale + "))";
     }
 

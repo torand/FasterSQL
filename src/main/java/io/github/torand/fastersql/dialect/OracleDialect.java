@@ -29,12 +29,12 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
-    public Optional<String> getRowNumLiteral() {
+    public Optional<String> formatRowNumLiteral() {
         return Optional.of("rownum");
     }
 
     @Override
-    public String getToNumberFunction(String operand, int precision, int scale) {
+    public String formatToNumberFunction(String operand, int precision, int scale) {
         StringBuilder mask = new StringBuilder();
         if (precision-scale > 0) {
             mask.append(generate("9", precision-scale));

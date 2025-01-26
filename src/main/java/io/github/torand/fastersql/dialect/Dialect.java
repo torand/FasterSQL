@@ -20,16 +20,31 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 public interface Dialect {
+    /**
+     * Gets the name of the RDBMS product.
+     * @return the name of the RDBMS product.
+     */
     String getProductName();
 
-    Optional<String> getRowNumLiteral();
+    /**
+     * Returns the _row number_ literal formatted for a specific SQL dialect.
+     * @return the _row number_ literal formatted for a specific SQL dialect.
+     */
+    Optional<String> formatRowNumLiteral();
 
     /**
+     * Returns the 'to_number' function formatted for a specific SQL dialect.
      * @param precision the precision that represents the number of significant digits
      * @param scale the scale that that represents the number of digits after the decimal point. Must be less than or equal to the precision.
+     * @return the 'to_number' function for a specific SQL dialect.
      */
-    String getToNumberFunction(String operand, int precision, int scale);
+    String formatToNumberFunction(String operand, int precision, int scale);
 
+    /**
+     * Indicates whether a capability is supported by a specific SQL dialect.
+     * @param capability the capability to check support for
+     * @return true if specified capability is supported; else false
+     */
     boolean supports(Capability capability);
 
     static Dialect fromConnection(Connection connection) {

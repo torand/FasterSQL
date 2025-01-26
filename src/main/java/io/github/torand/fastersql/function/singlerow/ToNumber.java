@@ -49,7 +49,7 @@ public class ToNumber implements SingleRowFunction {
 
     @Override
     public String sql(Context context) {
-        return context.getDialect().getToNumberFunction(expression.sql(context), precision, scale);
+        return context.getDialect().formatToNumberFunction(expression.sql(context), precision, scale);
     }
 
     @Override
