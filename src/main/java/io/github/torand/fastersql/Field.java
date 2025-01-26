@@ -29,7 +29,7 @@ import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class Field implements Projection, LeftOperand, Expression {
+public class Field implements LeftOperand, Expression {
     private final Table<?> table;
     private final String name;
     private final String alias;
