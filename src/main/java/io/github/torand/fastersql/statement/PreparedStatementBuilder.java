@@ -45,10 +45,11 @@ public class PreparedStatementBuilder {
     }
 
     public PreparedStatement prepare(PreparableStatement statement) throws SQLException {
-        LOGGER.debug("Preparing SQL statement: {}", statement);
+        LOGGER.debug("Preparing SQL statement (ANSI/ISO SQL): {}", statement);
 
         Context context = Context.of(Dialect.fromConnection(connection));
         String sql = statement.sql(context);
+        LOGGER.debug("Generated {} SQL statement: {}", context.getDialect().getProductName(), sql);
         List<Object> params = statement.params(context);
 
         PreparedStatement stmt = connection.prepareStatement(sql);
