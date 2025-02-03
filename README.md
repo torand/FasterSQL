@@ -20,11 +20,11 @@ Java library for a faster and more efficient integration with relational databas
 
 ## Overview
 
-Writing SQL statements as Java strings and executing them with the JDBC API is tedious, time consuming, repetitive and
-thus error prone.
+Writing SQL statements as Java strings and executing them with the JDBC API is tedious, time-consuming, repetitive and
+thus error-prone.
 
 FasterSQL lets you write SQL using plain Java, by emulating the syntax and structure of SQL DQL and DML statements
-using a set of predefined classes, factories and methods representing a variety of clauses, expressions and functions
+using a set of predefined classes, factories and methods representing the clauses, expressions and functions
 from the SQL language. A Java DSL (Domain Specific Language) for database operations.
 
 ### Benefits
@@ -33,9 +33,9 @@ from the SQL language. A Java DSL (Domain Specific Language) for database operat
 * SQL authored as Java code enables SQL error detection at compile time.
 * Semantic validation at run time produces more readable error messages than the JDBC wrapped messages from the RDBMS.
 * Write SQL once, run against (almost) any database engine using the SQL dialect awareness feature. The DSL emulates
-  the ANSI/ISO SQL standard (ISO/IEC 9075), while a statement builder translates into the SQL dialect of the underlying RDBMS product.
+  the ANSI/ISO SQL standard ([ISO/IEC 9075](https://www.iso.org/standard/76583.html)), while a statement builder translates into the SQL dialect of the underlying RDBMS product.
 * Simplified passing of arguments to prepared statements. This is particularly tedious when the number of query predicates
-  are dynamic and not known at the time of programming.
+  are dynamic and not known when the code is written.
 * Light-weight, concise library not pretending to be yet another Object Relational Mapping (ORM) tool. Just easing the
   most cumbersome parts of database querying using JDBC.
 * Easily extend the API with clauses and elements not currently supported by implementing relevant interfaces - or,
@@ -78,16 +78,17 @@ Using FasterSQL this function can be simplified (and made more readable) like th
 
 ```java
 ResultSet findPersons(Connection connection) {
-  PreparableStatement stmt = select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP, nullValue().forField(ADDRESS.COUNTRY))
-      .from(PERSON)
-      .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
-      .where(PERSON.SSN.eq("17016812345")
-          .and(not(PERSON.NAME.isNull()))
-          .and(ADDRESS.ZIP.eq("7089").or(ADDRESS.ZIP.eq("7088")))
-          .and(ADDRESS.COUNTRY.in("NOR", "SWE", "DEN")))
-      .orderBy(PERSON.SSN.asc(), PERSON.NAME.desc())
-      .limit(10)
-      .offset(90);
+  PreparableStatement stmt =
+      select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP, nullValue().forField(ADDRESS.COUNTRY))
+          .from(PERSON)
+          .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
+          .where(PERSON.SSN.eq("31129912345")
+              .and(not(PERSON.NAME.isNull()))
+              .and(ADDRESS.ZIP.eq("7089").or(ADDRESS.ZIP.eq("7088")))
+              .and(ADDRESS.COUNTRY.in("NOR", "SWE", "DEN")))
+          .orderBy(PERSON.SSN.asc(), PERSON.NAME.desc())
+          .limit(10)
+          .offset(90);
 
   return using(connection).prepare(stmt).executeQuery();
 }
@@ -150,10 +151,10 @@ Include in a Maven POM file like this:
 
 ## Getting Started
 
-1. Define a database model using the Table and Field classes
-2. Write an SQL statement using the DSL factories
-3. Transform to a JDBC PreparedStatement with parameters set automatically
-4. Execute the PreparedStatement
+1. Define a database model using the [Table](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/Table.java) and [Field](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/Field.java) classes
+2. Write an SQL statement using the DSL factories. E.g. start with the [Statements.select](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/Statements.java#L32) factory method.
+3. Transform to a JDBC PreparedStatement with parameters set automatically using the [PreparedStatementBuilder](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/PreparedStatementBuilder.java) class
+4. Execute the PreparedStatement as normal.
 
 ## Logging
 
@@ -161,7 +162,7 @@ The library outputs diagnostics etc using the [SLF4J](https://www.slf4j.org/) lo
 get instructions on how to integrate with the specific log framework used by your application.
 
 The generated SQL statement in the dialect of the underlying RDBMS is logged using log level DEBUG. To make them appear
-in your application log file, allow the following logger to print DEBUG level messages:
+in your application log file, configure the following logger to print DEBUG level messages:
 
 ```
 io.github.torand.fastersql.statement.PreparedStatementBuilder
