@@ -24,7 +24,7 @@
     <packaging>jar</packaging>
 
     <name>FasterSQL</name>
-    <description>Java library to efficiently integrate with a relational database</description>
+    <description>Java library for a faster and more efficient integration with relational databases</description>
     <url>https://github.com/torand/FasterSQL</url>
 
     <licenses>
