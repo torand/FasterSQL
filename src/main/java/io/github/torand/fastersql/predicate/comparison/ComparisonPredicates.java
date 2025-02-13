@@ -19,13 +19,13 @@ import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.subquery.Subquery;
 
-import static io.github.torand.fastersql.constant.Constants.constant;
+import static io.github.torand.fastersql.constant.Constants.$;
 
 public final class ComparisonPredicates {
     private ComparisonPredicates() {}
 
     public static Eq eq(LeftOperand left, Object right) {
-        return new Eq(left, constant(right));
+        return new Eq(left, $(right));
     }
 
     public static Eq eq(LeftOperand left, Expression right) {
@@ -37,7 +37,7 @@ public final class ComparisonPredicates {
     }
 
     public static Lt lt(LeftOperand left, Object right) {
-        return new Lt(left, constant(right));
+        return new Lt(left, $(right));
     }
 
     public static Lt lt(LeftOperand left, Expression right) {
@@ -49,7 +49,7 @@ public final class ComparisonPredicates {
     }
 
     public static Le le(LeftOperand left, Object right) {
-        return new Le(left, constant(right));
+        return new Le(left, $(right));
     }
 
     public static Le le(LeftOperand left, Expression right) {
@@ -61,7 +61,7 @@ public final class ComparisonPredicates {
     }
 
     public static Gt gt(LeftOperand left, Object right) {
-        return new Gt(left, constant(right));
+        return new Gt(left, $(right));
     }
 
     public static Gt gt(LeftOperand left, Expression right) {
@@ -73,7 +73,7 @@ public final class ComparisonPredicates {
     }
 
     public static Ge ge(LeftOperand left, Object right) {
-        return new Ge(left, constant(right));
+        return new Ge(left, $(right));
     }
 
     public static Ge ge(LeftOperand left, Expression right) {

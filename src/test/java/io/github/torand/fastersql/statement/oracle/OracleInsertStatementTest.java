@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.order;
+package io.github.torand.fastersql.statement.oracle;
 
-import io.github.torand.fastersql.projection.Projection;
+import org.junit.jupiter.api.Test;
 
-public final class Orders {
-    private Orders() {}
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-    public static Ascending asc(Projection projection) {
-        return new Ascending(projection);
-    }
+public class OracleInsertStatementTest extends OracleTest {
 
-    public static Ascending asc(String alias) {
-        return new Ascending(alias);
-    }
-
-    public static Descending desc(Projection projection) {
-        return new Descending(projection);
-    }
-
-    public static Descending desc(String alias) {
-        return new Descending(alias);
+    @Test
+    void getConnection() throws SQLException {
+        try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("select * from purchase");
+            rs.next();
+        }
     }
 }

@@ -15,32 +15,32 @@
  */
 package io.github.torand.fastersql.function.aggregate;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 
 public final class Aggregates {
     private Aggregates() {}
 
-    public static Max max(Field field) {
-        return new Max(field, null);
+    public static Max max(Expression expression) {
+        return new Max(expression, null);
     }
 
-    public static Min min(Field field) {
-        return new Min(field, null);
+    public static Min min(Expression expression) {
+        return new Min(expression, null);
     }
 
-    public static Count count(Field field) {
-        return new Count(field, null);
+    public static Count count(Expression expression) {
+        return new Count(expression, null);
     }
 
     public static CountAll countAll() {
         return new CountAll(null);
     }
 
-    public static Sum sum(Field field) {
-        return new Sum(field, null);
+    public static Sum sum(Expression expression) {
+        return new Sum(expression, null);
     }
 
-    public static Avg avg(Field field) {
-        return new Avg(field, null);
+    public static Avg avg(Expression expression) {
+        return new Avg(expression, null);
     }
 }

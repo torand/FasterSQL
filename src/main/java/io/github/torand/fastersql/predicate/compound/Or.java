@@ -37,7 +37,7 @@ public class Or implements Predicate {
 
     @Override
     public String sql(Context context) {
-        return "(" + operands.stream().map(e -> e.sql(context)).collect(joining(" or ")) + ")";
+        return operands.stream().map(e -> e.sql(context)).collect(joining(" or "));
     }
 
     @Override

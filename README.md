@@ -29,7 +29,7 @@ from the SQL language. A Java DSL (Domain Specific Language) for database operat
 
 ### Benefits
 
-* Allows code completion of standard SQL clauses and your database model in the IDE.
+* Enables code completion of standard SQL clauses and your database model in the IDE.
 * SQL authored as Java code enables SQL error detection at compile time.
 * Semantic validation at run time produces more readable error messages than the JDBC wrapped messages from the RDBMS.
 * Write SQL once, run against (almost) any database engine using the SQL dialect awareness feature. The DSL emulates
@@ -48,7 +48,7 @@ Consider the follow function executing a query using JDBC constructs only:
 ```java
 ResultSet findPersons(Connection connection) {
     String sql = """
-            select upper(P.NAME) P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP, null A_COUNTRY 
+            select upper(P.NAME) P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP
             from PERSON P 
             left outer join ADDRESS A on P.ID = A.PERSON_ID 
             where P.SSN = ? 
@@ -79,7 +79,7 @@ Using FasterSQL this function can be simplified (and made more readable) like th
 ```java
 ResultSet findPersons(Connection connection) {
   PreparableStatement stmt =
-      select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP, nullValue().forField(ADDRESS.COUNTRY))
+      select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP)
           .from(PERSON)
           .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
           .where(PERSON.SSN.eq("31129912345")
@@ -108,10 +108,11 @@ The example assumes a connection to a MySQL database.
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer and right outer
-* Scalar functions: upper, lower, to_number
+* Scalar functions: upper, lower, to_number, substring
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp
 * Comparison operators: eq (=), ge (>=), gt (>), le (<=), lt (<)
+* Arithmetic operators: add (+), subtract (-), multiply (*), divide (/)
 * Logical operators: and, or, not
 * Other operators: in, is null, like, exists
 * Expressions: Any nested expression using functions, arithmetic operators and constant values supported both as projections and predicates
@@ -144,7 +145,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ```

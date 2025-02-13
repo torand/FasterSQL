@@ -21,16 +21,16 @@ import io.github.torand.fastersql.projection.Projection;
 import java.util.Collection;
 import java.util.List;
 
+import static io.github.torand.fastersql.constant.Constants.$;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asNonEmptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static io.github.torand.fastersql.constant.Constants.constant;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asNonEmptyList;
 
 public final class Statements {
     private Statements() {}
 
     public static SelectFromBuilder select(long value) {
-        return new SelectFromBuilder(false, singletonList(constant(value)));
+        return new SelectFromBuilder(false, singletonList($(value)));
     }
 
     public static SelectFromBuilder select(Projection firstProjection, Projection... moreProjections) {

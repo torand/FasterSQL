@@ -21,20 +21,28 @@ import io.github.torand.fastersql.projection.Projection;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
 public class Descending implements Order {
     private final Projection projection;
+    private final String alias;
 
     Descending(Projection projection) {
         this.projection = requireNonNull(projection, "No projection specified");
+        this.alias = projection.alias();
+    }
+
+    Descending(String alias) {
+        this.projection = null;
+        this.alias = requireNonBlank(alias, "No alias specified");
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return projection.alias() + " desc";
+        return alias + " desc";
     }
 
     @Override

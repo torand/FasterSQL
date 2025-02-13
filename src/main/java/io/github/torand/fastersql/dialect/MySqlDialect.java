@@ -29,6 +29,16 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ?");
+    }
+
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("limit ?");
+    }
+
+    @Override
     public Optional<String> formatRowNumLiteral() {
         return Optional.empty();
     }
@@ -36,6 +46,11 @@ public class MySqlDialect implements Dialect {
     @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
         return "cast(" + operand + " as decimal(" + precision + "," + scale + "))";
+    }
+
+    @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override

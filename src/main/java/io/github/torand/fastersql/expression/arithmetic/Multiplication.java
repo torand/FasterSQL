@@ -12,12 +12,12 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-public class DivideBy implements Expression {
+public class Multiplication implements Expression {
     private final Expression left;
     private final Expression right;
     private final String alias;
 
-    DivideBy(Expression left, Expression right, String alias) {
+    Multiplication(Expression left, Expression right, String alias) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
         this.alias = nonNull(alias) ? alias : defaultAlias();
@@ -27,7 +27,17 @@ public class DivideBy implements Expression {
 
     @Override
     public String sql(Context context) {
-        return left.sql(context) + " / " + right.sql(context);
+        String leftSql = left.sql(context);
+        if (left instanceof Addition || left instanceof Subtraction) {
+            leftSql = "(" + leftSql + ")";
+        }
+
+        String rightSql = right.sql(context);
+        if (right instanceof Addition || right instanceof Subtraction) {
+            rightSql = "(" + rightSql + ")";
+        }
+
+        return leftSql + " * " + rightSql;
     }
 
     @Override
@@ -40,7 +50,7 @@ public class DivideBy implements Expression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new DivideBy(left, right, alias);
+        return new Multiplication(left, right, alias);
     }
 
     @Override
@@ -56,6 +66,6 @@ public class DivideBy implements Expression {
     }
 
     private String defaultAlias() {
-        return "DIVIDE_" + (new Random().nextInt(999) + 1);
+        return "TIMES_" + (new Random().nextInt(999) + 1);
     }
 }

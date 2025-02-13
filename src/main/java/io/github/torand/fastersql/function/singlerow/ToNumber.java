@@ -54,7 +54,7 @@ public class ToNumber implements SingleRowFunction {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return expression.params(context);
     }
 
     // Projection

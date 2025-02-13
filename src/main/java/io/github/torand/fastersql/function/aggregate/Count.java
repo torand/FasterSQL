@@ -17,33 +17,38 @@ package io.github.torand.fastersql.function.aggregate;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Returns number rows where expression is not evaluated tp null
+ */
 public class Count implements AggregateFunction {
-    private final Field field;
+    private final Expression expression;
     private final String alias;
 
-    Count(Field field, String alias) {
-        this.field = requireNonNull(field, "No field specified");
-        this.alias = nonNull(alias) ? alias : defaultAlias(field);
+    Count(Expression expression, String alias) {
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonNull(alias) ? alias : defaultAlias();
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return "count(" + field.sql(context) + ")";
+        return "count(" + expression.sql(context) + ")";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return expression.params(context);
     }
 
     // Projection
@@ -51,7 +56,7 @@ public class Count implements AggregateFunction {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Count(field, alias);
+        return new Count(expression, alias);
     }
 
     @Override
@@ -63,10 +68,10 @@ public class Count implements AggregateFunction {
 
     @Override
     public Stream<Field> fieldRefs() {
-        return Stream.of(field);
+        return expression.fieldRefs();
     }
 
-    private String defaultAlias(Field field) {
-        return "COUNT_" + field.alias();
+    private String defaultAlias() {
+        return "COUNT_" + new Random().nextInt(999) + 1;
     }
 }

@@ -12,12 +12,12 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-public class Minus implements Expression {
+public class Subtraction implements Expression {
     private final Expression left;
     private final Expression right;
     private final String alias;
 
-    Minus(Expression left, Expression right, String alias) {
+    Subtraction(Expression left, Expression right, String alias) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
         this.alias = nonNull(alias) ? alias : defaultAlias();
@@ -40,7 +40,7 @@ public class Minus implements Expression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Minus(left, right, alias);
+        return new Subtraction(left, right, alias);
     }
 
     @Override

@@ -21,11 +21,35 @@ import java.util.Optional;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 public class OracleDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.noneOf(Capability.class);
+    private final EnumSet<Capability> supportedCaps;
+
+    public OracleDialect() {
+        this(EnumSet.of(Capability.LIMIT_OFFSET));
+    }
+
+    private OracleDialect(EnumSet<Capability> capabilities) {
+        this.supportedCaps = EnumSet.copyOf(capabilities);
+    }
 
     @Override
     public String getProductName() {
         return "Oracle";
+    }
+
+    /**
+     * Row offset clause is supported from Oracle 12c onwards
+     */
+    @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ? rows");
+    }
+
+    /**
+     * Row limit clause is supported from Oracle 12c onwards
+     */
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("fetch next ? rows only");
     }
 
     @Override
@@ -47,7 +71,22 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substr(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
-        return SUPPORTED_CAPS.contains(capability);
+        return supportedCaps.contains(capability);
+    }
+
+    /**
+     * Row offset and limit clauses are supported from Oracle 12c onwards.
+     * Invoke this method when using previous versions of Oracle, to simulate these clauses with subqueries.
+     */
+    public OracleDialect withLegacyRowLimiting() {
+        EnumSet<Capability> reducedCaps = EnumSet.copyOf(supportedCaps);
+        reducedCaps.remove(Capability.LIMIT_OFFSET);
+        return new OracleDialect(reducedCaps);
     }
 }

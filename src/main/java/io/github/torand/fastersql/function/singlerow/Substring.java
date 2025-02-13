@@ -13,36 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.constant;
+package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.util.contract.Requires.require;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class StringConstant implements Constant {
-    private final String value;
+public class Substring implements SingleRowFunction {
+    private final Expression expression;
+    private final int startPos;
+    private final int length;
     private final String alias;
 
-    StringConstant(String value, String alias) {
-        this.value = requireNonNull(value, "Use NullConstant to represent 'null'");
-        this.alias = alias;
+    Substring(Expression expression, int startPos, int length, String alias) {
+        require(() -> startPos >= 1, "startPos must be 1 or greater");
+        require(() -> length >= 1, "length must be 1 or greater");
+
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonBlank(alias) ? alias : defaultAlias();
+        this.startPos = startPos;
+        this.length = length;
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return "?";
+        return context.getDialect().formatSubstringFunction(expression.sql(context), startPos, length);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(value);
+        return expression.params(context);
     }
 
     // Projection
@@ -50,7 +61,7 @@ public class StringConstant implements Constant {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new StringConstant(value, alias);
+        return new Substring(expression, length, startPos, alias);
     }
 
     @Override
@@ -62,19 +73,10 @@ public class StringConstant implements Constant {
 
     @Override
     public Stream<Field> fieldRefs() {
-        return Stream.empty();
+        return expression.fieldRefs();
     }
 
-    // Constant
-
-    @Override
-    public Object value() {
-        return value;
-    }
-
-    @Override
-    public Projection forField(Field field) {
-        requireNonNull(field, "No field specified");
-        return new StringConstant(value, field.alias());
+    private String defaultAlias() {
+        return "SUBSTRING_" + new Random().nextInt(999) + 1;
     }
 }
