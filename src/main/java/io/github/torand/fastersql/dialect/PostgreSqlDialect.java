@@ -30,6 +30,16 @@ public class PostgreSqlDialect implements Dialect {
     }
 
     @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ?");
+    }
+
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("limit ?");
+    }
+
+    @Override
     public Optional<String> formatRowNumLiteral() {
         return Optional.empty();
     }
@@ -45,6 +55,11 @@ public class PostgreSqlDialect implements Dialect {
         }
 
         return "to_number(" + operand + ", '" + mask + "')";
+    }
+
+    @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override

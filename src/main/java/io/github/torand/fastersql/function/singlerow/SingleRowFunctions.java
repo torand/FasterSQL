@@ -15,24 +15,28 @@
  */
 package io.github.torand.fastersql.function.singlerow;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 
 public final class SingleRowFunctions {
     private SingleRowFunctions() {}
 
-    public static Upper upper(Field field) {
-        return new Upper(field, null);
+    public static Upper upper(Expression expression) {
+        return new Upper(expression, null);
     }
 
-    public static Lower lower(Field field) {
-        return new Lower(field, null);
+    public static Lower lower(Expression expression) {
+        return new Lower(expression, null);
     }
 
-    public static ToNumber to_number(Field field, int precision, int scale) {
-        return new ToNumber(field, precision, scale, null);
+    public static ToNumber to_number(Expression expression, int precision, int scale) {
+        return new ToNumber(expression, precision, scale, null);
     }
 
-    public static ToNumber to_number(Field field, int precision) {
-        return new ToNumber(field, precision, 0, null);
+    public static ToNumber to_number(Expression expression, int precision) {
+        return new ToNumber(expression, precision, 0, null);
+    }
+
+    public static Substring substring(Expression expression, int startPos, int length) {
+        return new Substring(expression, startPos, length, null);
     }
 }

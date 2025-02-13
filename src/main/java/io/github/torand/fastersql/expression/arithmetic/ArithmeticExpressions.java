@@ -20,19 +20,19 @@ import io.github.torand.fastersql.expression.Expression;
 public final class ArithmeticExpressions {
     private ArithmeticExpressions() {}
 
-    public static Plus plus(Expression first, Expression second) {
-        return new Plus(first, second, null);
+    public static Addition add(Expression first, Expression second) {
+        return new Addition(first, second, null);
     }
 
-    public static Minus minus(Expression first, Expression second) {
-        return new Minus(first, second, null);
+    public static Subtraction subtract(Expression first, Expression second) {
+        return new Subtraction(first, second, null);
     }
 
-    public static Times times(Expression first, Expression second) {
-        return new Times(first, second, null);
+    public static Multiplication multiply(Expression first, Expression second) {
+        return new Multiplication(first, second, null);
     }
 
-    public static DivideBy divideBy(Expression first, Expression second) {
-        return new DivideBy(first, second, null);
+    public static Division divide(Expression first, Expression second) {
+        return new Division(first, second, null);
     }
 }

@@ -24,11 +24,11 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class DecimalConstant implements Constant {
-    private final Double value;
+public class GenericConstant<T> implements Constant {
+    private final T value;
     private final String alias;
 
-    DecimalConstant(Double value, String alias) {
+    GenericConstant(T value, String alias) {
         this.value = requireNonNull(value, "Use NullConstant to represent 'null'");
         this.alias = alias;
     }
@@ -50,7 +50,7 @@ public class DecimalConstant implements Constant {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new DecimalConstant(value, alias);
+        return new GenericConstant(value, alias);
     }
 
     @Override
@@ -75,6 +75,6 @@ public class DecimalConstant implements Constant {
     @Override
     public Projection forField(Field field) {
         requireNonNull(field, "No field specified");
-        return new DecimalConstant(value, field.alias());
+        return new GenericConstant(value, field.alias());
     }
 }

@@ -17,8 +17,10 @@ package io.github.torand.fastersql.function.aggregate;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
@@ -26,24 +28,24 @@ import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 public class Avg implements AggregateFunction {
-    private final Field field;
+    private final Expression expression;
     private final String alias;
 
-    Avg(Field field, String alias) {
-        this.field = requireNonNull(field, "No field specified");
-        this.alias = nonBlank(alias) ? alias : defaultAlias(field);
+    Avg(Expression expression, String alias) {
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonBlank(alias) ? alias : defaultAlias();
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return "avg(" + field.sql(context) + ")";
+        return "avg(" + expression.sql(context) + ")";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return expression.params(context);
     }
 
     // Projection
@@ -51,7 +53,7 @@ public class Avg implements AggregateFunction {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Avg(field, alias);
+        return new Avg(expression, alias);
     }
 
     @Override
@@ -63,10 +65,10 @@ public class Avg implements AggregateFunction {
 
     @Override
     public Stream<Field> fieldRefs() {
-        return Stream.of(field);
+        return expression.fieldRefs();
     }
 
-    private String defaultAlias(Field field) {
-        return "AVG_" + field.alias();
+    private String defaultAlias() {
+        return "AVG_" + new Random().nextInt(999) + 1;
     }
 }

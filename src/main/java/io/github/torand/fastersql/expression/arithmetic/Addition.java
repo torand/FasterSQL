@@ -12,12 +12,12 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-public class Times implements Expression {
+public class Addition implements Expression {
     private final Expression left;
     private final Expression right;
     private final String alias;
 
-    Times(Expression left, Expression right, String alias) {
+    Addition(Expression left, Expression right, String alias) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
         this.alias = nonNull(alias) ? alias : defaultAlias();
@@ -27,7 +27,7 @@ public class Times implements Expression {
 
     @Override
     public String sql(Context context) {
-        return left.sql(context) + " * " + right.sql(context);
+        return left.sql(context) + " + " + right.sql(context);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class Times implements Expression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Times(left, right, alias);
+        return new Addition(left, right, alias);
     }
 
     @Override
@@ -56,6 +56,6 @@ public class Times implements Expression {
     }
 
     private String defaultAlias() {
-        return "TIMES_" + (new Random().nextInt(999) + 1);
+        return "PLUS_" + (new Random().nextInt(999) + 1);
     }
 }

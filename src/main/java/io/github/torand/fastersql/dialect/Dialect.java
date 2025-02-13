@@ -27,6 +27,18 @@ public interface Dialect {
     String getProductName();
 
     /**
+     * Returns the _row offset clause_ formatted for a specific SQL dialect.
+     * @return the _row offset clause_ formatted for a specific SQL dialect.
+     */
+    Optional<String> formatRowOffsetClause();
+
+    /**
+     * Returns the _row limit clause_ formatted for a specific SQL dialect.
+     * @return the _row limit clause_ formatted for a specific SQL dialect.
+     */
+    Optional<String> formatRowLimitClause();
+
+    /**
      * Returns the _row number_ literal formatted for a specific SQL dialect.
      * @return the _row number_ literal formatted for a specific SQL dialect.
      */
@@ -34,11 +46,21 @@ public interface Dialect {
 
     /**
      * Returns the 'to_number' function formatted for a specific SQL dialect.
+     * @param operand the string expression to be evaluated as a number
      * @param precision the precision that represents the number of significant digits
      * @param scale the scale that that represents the number of digits after the decimal point. Must be less than or equal to the precision.
      * @return the 'to_number' function for a specific SQL dialect.
      */
     String formatToNumberFunction(String operand, int precision, int scale);
+
+    /**
+     * Returns the 'substring' function formatted for a specific SQL dialect.
+     * @param operand the string expression to get substring from
+     * @param startPos the start position (1-based) of the substring
+     * @param length the length of the substring
+     * @return the 'substring' function for a specific SQL dialect.
+     */
+    String formatSubstringFunction(String operand, int startPos, int length);
 
     /**
      * Indicates whether a capability is supported by a specific SQL dialect.

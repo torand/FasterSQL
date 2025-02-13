@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.order;
+package io.github.torand.fastersql.datamodel;
 
-import io.github.torand.fastersql.projection.Projection;
+import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Table;
 
-public final class Orders {
-    private Orders() {}
+public class ProductTable extends Table<ProductTable> {
+    public final Field ID = field("ID");
+    public final Field NAME = field("NAME");
+    public final Field DESCRIPTION = field("DESCRIPTION");
+    public final Field CATEGORY = field("CATEGORY");
+    public final Field PRICE = field("PRICE");
+    public final Field STOCK_COUNT = field("STOCK_COUNT");
 
-    public static Ascending asc(Projection projection) {
-        return new Ascending(projection);
+    ProductTable(String alias) {
+        super("PRODUCT", alias, ProductTable::new);
     }
 
-    public static Ascending asc(String alias) {
-        return new Ascending(alias);
-    }
-
-    public static Descending desc(Projection projection) {
-        return new Descending(projection);
-    }
-
-    public static Descending desc(String alias) {
-        return new Descending(alias);
+    ProductTable() {
+        this("PR");
     }
 }

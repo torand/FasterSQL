@@ -24,13 +24,14 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.torand.fastersql.constant.Constants.constant;
+import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.TestDataModel.ADDRESS;
 import static io.github.torand.fastersql.datamodel.TestDataModel.PERSON;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
+import static io.github.torand.fastersql.order.Orders.asc;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static java.util.Collections.singletonList;
@@ -65,8 +66,8 @@ public class SelectStatementTest {
             and (A.ZIP = ? or A.ZIP = ?) \
             and A.COUNTRY in (?, ?, ?) \
             order by P_SSN asc, P_NAME desc \
-            limit ? \
-            offset ?""";
+            offset ? \
+            limit ?""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }
@@ -140,7 +141,7 @@ public class SelectStatementTest {
     @Test
     public void shouldHandleReplacementConstants() {
         PreparableStatement statement =
-            select(PERSON.NAME, constant("123 45 678").forField(PERSON.PHONE_NO), PERSON.SSN)
+            select(PERSON.NAME, $("123 45 678").forField(PERSON.PHONE_NO), PERSON.SSN)
                 .from(PERSON)
                 .where(PERSON.NAME.eq("Per"));
 
@@ -193,12 +194,12 @@ public class SelectStatementTest {
     @Test
     public void shouldHandleAggregatesWithGroupingAndOrdering() {
         PreparableStatement statement =
-            select(PERSON.NAME, max(ADDRESS.ZIP))
+            select(PERSON.NAME, max(ADDRESS.ZIP).as("MAX_A_ZIP"))
                 .from(ADDRESS)
                 .join(ADDRESS.PERSON_ID.on(PERSON.ID))
                 .where(PERSON.SSN.eq("17016812345"))
                 .groupBy(PERSON.NAME)
-                .orderBy(max(ADDRESS.ZIP).asc());
+                .orderBy(asc("MAX_A_ZIP"));
 
         final String expectedSql = """
             select P.NAME P_NAME, max(A.ZIP) MAX_A_ZIP \

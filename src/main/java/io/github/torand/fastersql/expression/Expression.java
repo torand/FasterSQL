@@ -21,7 +21,7 @@ import io.github.torand.fastersql.projection.Projection;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.constant.Constants.constant;
+import static io.github.torand.fastersql.constant.Constants.$;
 
 /**
  * Represents an expression resulting in a scalar value or a table with rows and columns.
@@ -31,34 +31,34 @@ public interface Expression extends Projection {
     Stream<Field> fieldRefs();
 
     default Expression plus(Object value) {
-        return ArithmeticExpressions.plus(this, constant(value));
+        return ArithmeticExpressions.add(this, $(value));
     }
 
     default Expression plus(Expression expression) {
-        return ArithmeticExpressions.plus(this, expression);
+        return ArithmeticExpressions.add(this, expression);
     }
 
     default Expression minus(Object value) {
-        return ArithmeticExpressions.minus(this, constant(value));
+        return ArithmeticExpressions.subtract(this, $(value));
     }
 
     default Expression minus(Expression expression) {
-        return ArithmeticExpressions.minus(this, expression);
+        return ArithmeticExpressions.subtract(this, expression);
     }
 
     default Expression times(Object value) {
-        return ArithmeticExpressions.times(this, constant(value));
+        return ArithmeticExpressions.multiply(this, $(value));
     }
 
     default Expression times(Expression expression) {
-        return ArithmeticExpressions.times(this, expression);
+        return ArithmeticExpressions.multiply(this, expression);
     }
 
-    default Expression divideBy(Object value) {
-        return ArithmeticExpressions.divideBy(this, constant(value));
+    default Expression dividedBy(Object value) {
+        return ArithmeticExpressions.divide(this, $(value));
     }
 
-    default Expression divideBy(Expression expression) {
-        return ArithmeticExpressions.divideBy(this, expression);
+    default Expression dividedBy(Expression expression) {
+        return ArithmeticExpressions.divide(this, expression);
     }
 }
