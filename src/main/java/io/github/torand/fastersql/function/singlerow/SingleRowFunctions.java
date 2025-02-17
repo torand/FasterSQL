@@ -60,4 +60,8 @@ public final class SingleRowFunctions {
 
         return new Concat(expressions, null);
     }
+
+    public static Length length(Expression expression) {
+        return new Length(expression, null);
+    }
 }

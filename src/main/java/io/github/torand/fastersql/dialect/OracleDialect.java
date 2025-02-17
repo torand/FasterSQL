@@ -84,6 +84,11 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatLengthFunction(String operand) {
+        return "length(" + operand + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return supportedCaps.contains(capability);
     }

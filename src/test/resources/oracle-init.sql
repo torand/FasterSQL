@@ -44,6 +44,12 @@ VALUES ('92bfca8e-2898-408c-8dd3-2b3f9d362044', 'Louis Poulsen Panthella 160 tab
 INSERT INTO product
 VALUES ('c50df894-ed38-49bc-831e-8de6453cd6f6', 'Electrolux 800 UltraCare washing machine', '', 'APPLIANCE', 7122.09, 5);
 
+INSERT INTO product
+VALUES ('dba9f942-c24f-4b6a-89b6-881236ff5438', 'Apple iPad Pro tablet', '', 'ELECTRONICS', 14999.00, 21);
+
+INSERT INTO product
+VALUES ('7a4b3e96-afee-4284-8ccd-f7461bcd602b', 'Samsung Galaxy S25 Ultra mobile phone', '', 'ELECTRONICS', 17567.25, 17);
+
 CREATE TABLE purchase (
     id VARCHAR2(36) NOT NULL,
     customer_id VARCHAR2(36) NOT NULL,

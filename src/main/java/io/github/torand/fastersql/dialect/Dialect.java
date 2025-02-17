@@ -71,6 +71,13 @@ public interface Dialect {
     String formatConcatFunction(List<String> operands);
 
     /**
+     * Returns the 'length' function formatted for a specific SQL dialect.
+     * @param operand the string expression to get length of
+     * @return the 'length' function for a specific SQL dialect.
+     */
+    String formatLengthFunction(String operand);
+
+    /**
      * Indicates whether a capability is supported by a specific SQL dialect.
      * @param capability the capability to check support for
      * @return true if specified capability is supported; else false

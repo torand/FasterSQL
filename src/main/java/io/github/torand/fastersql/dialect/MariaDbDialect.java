@@ -61,6 +61,11 @@ public class MariaDbDialect implements Dialect {
     }
 
     @Override
+    public String formatLengthFunction(String operand) {
+        return "char_length(" + operand + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return SUPPORTED_CAPS.contains(capability);
     }

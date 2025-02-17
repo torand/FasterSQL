@@ -108,7 +108,7 @@ The example assumes a connection to a MySQL database.
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer and right outer
-* Scalar functions: upper, lower, to_number, to_char, substring, concat
+* Scalar functions: upper, lower, to_number, to_char, substring, concat, length
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp
 * Comparison operators: eq (=), ge (>=), gt (>), le (<=), lt (<)
