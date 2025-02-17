@@ -16,12 +16,14 @@
 package io.github.torand.fastersql.dialect;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 
 public class MariaDbDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR);
 
     @Override
     public String getProductName() {
@@ -51,6 +53,11 @@ public class MariaDbDialect implements Dialect {
     @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substring(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
+    public String formatConcatFunction(List<String> operands) {
+        throw new UnsupportedOperationException("Use the concat infix operator for MariaDb");
     }
 
     @Override

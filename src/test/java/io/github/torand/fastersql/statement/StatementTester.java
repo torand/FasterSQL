@@ -38,6 +38,7 @@ public class StatementTester {
     private String expectedSql;
     private Object[] expectedParams;
     private ResultSetTester expectedResultSet;
+    private Integer expectedAffectedRowCount;
 
     public static StatementTester using(DataSource ds) {
         return new StatementTester(ds, null);
@@ -59,6 +60,11 @@ public class StatementTester {
 
     public StatementTester assertParams(Object... expectedParams) {
         this.expectedParams = expectedParams;
+        return this;
+    }
+
+    public StatementTester assertAffectedRowCount(int expectedAffectedRowCount) {
+        this.expectedAffectedRowCount = expectedAffectedRowCount;
         return this;
     }
 
@@ -106,13 +112,24 @@ public class StatementTester {
                 assertThat(stmt.params(context)).describedAs("Parameters").contains(expectedParams);
             }
 
-            if (nonNull(expectedResultSet)) {
-                ResultSet rs = PreparedStatementBuilder
+            if (stmt instanceof SelectStatement) {
+                if (nonNull(expectedResultSet)) {
+                    ResultSet rs = PreparedStatementBuilder
+                        .using(conn, dialect)
+                        .prepare(stmt)
+                        .executeQuery();
+
+                    expectedResultSet.verify(rs);
+                }
+            } else {
+                int affectedRowCount = PreparedStatementBuilder
                     .using(conn, dialect)
                     .prepare(stmt)
-                    .executeQuery();
+                    .executeUpdate();
 
-                expectedResultSet.verify(rs);
+                if (nonNull(expectedAffectedRowCount)) {
+                    assertThat(affectedRowCount).describedAs("Affected row count").isEqualTo(expectedAffectedRowCount);
+                }
             }
         } catch (SQLException e) {
             fail("Verifying the preparableStatement failed: " + e.getMessage());

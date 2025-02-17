@@ -16,13 +16,15 @@
 package io.github.torand.fastersql.dialect;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 public class PostgreSqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR);
 
     @Override
     public String getProductName() {
@@ -60,6 +62,11 @@ public class PostgreSqlDialect implements Dialect {
     @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substring(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
+    public String formatConcatFunction(List<String> operands) {
+        throw new UnsupportedOperationException("Use the concat infix operator for PostgreSql");
     }
 
     @Override

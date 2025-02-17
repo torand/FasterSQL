@@ -17,6 +17,12 @@ package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.expression.Expression;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+
 public final class SingleRowFunctions {
     private SingleRowFunctions() {}
 
@@ -38,5 +44,20 @@ public final class SingleRowFunctions {
 
     public static Substring substring(Expression expression, int startPos, int length) {
         return new Substring(expression, startPos, length, null);
+    }
+
+    public static ToChar toChar(Expression expression, String format) {
+        return new ToChar(expression, format, null);
+    }
+
+    public static Concat concat(Expression expression1, Expression expression2, Expression... otherExpressions) {
+        List<Expression> expressions = new ArrayList<>();
+        expressions.add(requireNonNull(expression1, "First expression is null"));
+        expressions.add(requireNonNull(expression2, "Second expression is null"));
+        if (nonNull(otherExpressions)) {
+            expressions.addAll(List.of(otherExpressions));
+        }
+
+        return new Concat(expressions, null);
     }
 }

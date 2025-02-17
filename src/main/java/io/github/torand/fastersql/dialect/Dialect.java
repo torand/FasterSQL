@@ -17,6 +17,7 @@ package io.github.torand.fastersql.dialect;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public interface Dialect {
@@ -61,6 +62,13 @@ public interface Dialect {
      * @return the 'substring' function for a specific SQL dialect.
      */
     String formatSubstringFunction(String operand, int startPos, int length);
+
+    /**
+     * Returns the 'concat' function formatted for a specific SQL dialect.
+     * @param operands the string expressions to concatenate
+     * @return the 'concat' function for a specific SQL dialect.
+     */
+    String formatConcatFunction(List<String> operands);
 
     /**
      * Indicates whether a capability is supported by a specific SQL dialect.

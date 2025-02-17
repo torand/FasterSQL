@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.dialect;
+package io.github.torand.fastersql.domainmodel;
 
-public enum Capability {
-    LIMIT_OFFSET, ROW_NUM, CONCAT_OPERATOR
+public enum PurchaseStatus {
+    REGISTERED,
+    PROCESSING,
+    DISPATCHED
 }

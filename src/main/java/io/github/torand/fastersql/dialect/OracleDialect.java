@@ -16,15 +16,18 @@
 package io.github.torand.fastersql.dialect;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
     public OracleDialect() {
-        this(EnumSet.of(Capability.LIMIT_OFFSET));
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR));
     }
 
     private OracleDialect(EnumSet<Capability> capabilities) {
@@ -76,6 +79,11 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatConcatFunction(List<String> operands) {
+        throw new UnsupportedOperationException("Use the concat infix operator for Oracle");
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return supportedCaps.contains(capability);
     }
@@ -86,7 +94,7 @@ public class OracleDialect implements Dialect {
      */
     public OracleDialect withLegacyRowLimiting() {
         EnumSet<Capability> reducedCaps = EnumSet.copyOf(supportedCaps);
-        reducedCaps.remove(Capability.LIMIT_OFFSET);
+        reducedCaps.remove(LIMIT_OFFSET);
         return new OracleDialect(reducedCaps);
     }
 }
