@@ -1,7 +1,7 @@
 -- noinspection SqlNoDataSourceInspectionForFile
 
 CREATE TABLE customer (
-    id VARCHAR2(36) NOT NULL,
+    id CHAR(36) NOT NULL,
     first_name VARCHAR2(50),
     last_name VARCHAR2(50) NOT NULL,
     street_address VARCHAR2(30),
@@ -26,7 +26,7 @@ INSERT INTO customer
 VALUES('ef17ec93-88a4-40dd-8a91-41e11d54d896', 'Björn', 'Svensson', 'Drottninggatan 14', 'SE-111 36', 'Stockholm', 'SWE', 'bjorn.svensson@email.se', '46755667788', 0, TO_TIMESTAMP('12-11-2022 16:12:12','DD-MM-YYYY HH24:MI:SS'), null);
 
 CREATE TABLE product (
-    id VARCHAR2(36) NOT NULL,
+    id CHAR(36) NOT NULL,
     name VARCHAR2(60) NOT NULL,
     description VARCHAR2(256),
     category VARCHAR2(30) NOT NULL,
@@ -51,8 +51,8 @@ INSERT INTO product
 VALUES ('7a4b3e96-afee-4284-8ccd-f7461bcd602b', 'Samsung Galaxy S25 Ultra mobile phone', '', 'ELECTRONICS', 17567.25, 17);
 
 CREATE TABLE purchase (
-    id VARCHAR2(36) NOT NULL,
-    customer_id VARCHAR2(36) NOT NULL,
+    id CHAR(36) NOT NULL,
+    customer_id CHAR(36) NOT NULL,
     status VARCHAR2(30) NOT NULL,
     created_time TIMESTAMP NOT NULL,
     shipped_time TIMESTAMP,
@@ -68,10 +68,10 @@ INSERT INTO purchase
 VALUES ('df168f1d-ed4a-4cc4-b93a-51956d9a9c56', '7f6bffb9-c65f-40b3-b007-b291b128472d', 'DISPATCHED', TO_TIMESTAMP('17-01-2024 11:55:09','DD-MM-YYYY HH24:MI:SS'), TO_TIMESTAMP('02-02-2024 07:12:55','DD-MM-YYYY HH24:MI:SS'), null);
 
 CREATE TABLE purchase_item (
-    id VARCHAR2(36) NOT NULL,
-    purchase_id VARCHAR2(36) NOT NULL,
-    product_id VARCHAR2(36) NOT NULL,
-    quantity NUMERIC(5,0) NOT NULL,
+    id CHAR(36) NOT NULL,
+    purchase_id CHAR(36) NOT NULL,
+    product_id CHAR(36) NOT NULL,
+    quantity NUMBER(5,0) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(purchase_id) REFERENCES purchase(id),
     FOREIGN KEY(product_id) REFERENCES product(id)
