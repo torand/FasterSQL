@@ -66,8 +66,8 @@ public class SelectStatementTest {
             and (A.ZIP = ? or A.ZIP = ?) \
             and A.COUNTRY in (?, ?, ?) \
             order by P_SSN asc, P_NAME desc \
-            offset ? \
-            limit ?""";
+            limit ? \
+            offset ?""";
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
     }
