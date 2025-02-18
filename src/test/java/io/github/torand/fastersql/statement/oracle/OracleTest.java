@@ -19,6 +19,9 @@ import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.statement.StatementTester;
 import oracle.jdbc.pool.OracleDataSource;
 import org.junit.jupiter.api.BeforeAll;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.oracle.OracleContainer;
@@ -28,6 +31,8 @@ import java.time.Duration;
 
 @Testcontainers
 public abstract class OracleTest {
+    private static final Logger logger = LoggerFactory.getLogger(OracleTest.class);
+
     private static final String IMAGE = "gvenzl/oracle-free:23.5-slim-faststart";
 
     @Container
@@ -35,7 +40,8 @@ public abstract class OracleTest {
         .withStartupTimeout(Duration.ofMinutes(3))
         .withUsername("testuser")
         .withPassword("testpwd")
-        .withInitScript("oracle-init.sql");
+        .withInitScript("oracle-init.sql")
+        .withLogConsumer(new Slf4jLogConsumer(logger).withSeparateOutputStreams());
 
     protected static OracleDataSource ds;
 
