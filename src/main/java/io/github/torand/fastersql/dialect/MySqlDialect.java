@@ -21,6 +21,11 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 
+/**
+ * Defines the MySQL SQL dialect.
+ *
+ * <a href="https://dev.mysql.com/doc/refman/8.4/en/" />
+ */
 public class MySqlDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
 
@@ -31,7 +36,7 @@ public class MySqlDialect implements Dialect {
 
     @Override
     public boolean offsetBeforeLimit() {
-        return true;
+        return false;
     }
 
     @Override
