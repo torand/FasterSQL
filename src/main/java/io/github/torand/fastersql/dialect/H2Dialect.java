@@ -26,6 +26,11 @@ import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
+/**
+ * Defines the H2 SQL dialect.
+ *
+ * <a href="https://www.h2database.com/html/grammar.html" />
+ */
 public class H2Dialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR);
 

@@ -23,6 +23,11 @@ import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
+/**
+ * Defines the Oracle SQL dialect.
+ *
+ * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/" />
+ */
 public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
