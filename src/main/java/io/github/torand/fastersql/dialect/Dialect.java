@@ -28,6 +28,11 @@ public interface Dialect {
     String getProductName();
 
     /**
+     * Indicates whether offset clause must be specified before limit clause; if supported.
+     * @return whether offset clause must be specified before limit clause; if supported.
+     */
+    boolean offsetBeforeLimit();
+    /**
      * Returns the _row offset clause_ formatted for a specific SQL dialect.
      * @return the _row offset clause_ formatted for a specific SQL dialect.
      */

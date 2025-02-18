@@ -39,6 +39,11 @@ public class OracleDialect implements Dialect {
         return "Oracle";
     }
 
+    @Override
+    public boolean offsetBeforeLimit() {
+        return true;
+    }
+
     /**
      * Row offset clause is supported from Oracle 12c onwards
      */

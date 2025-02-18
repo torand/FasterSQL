@@ -35,6 +35,11 @@ public class H2Dialect implements Dialect {
     }
 
     @Override
+    public boolean offsetBeforeLimit() {
+        return false;
+    }
+
+    @Override
     public Optional<String> formatRowOffsetClause() {
         return Optional.of("offset ?");
     }

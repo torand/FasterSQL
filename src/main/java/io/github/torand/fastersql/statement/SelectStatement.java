@@ -243,11 +243,13 @@ public class SelectStatement extends PreparableStatement {
 
         if (nonNull(offset) || nonNull(limit)) {
             if (context.getDialect().supports(LIMIT_OFFSET)) {
-                if (nonNull(offset)) {
-                    sb.append(" ").append(context.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row offset clause")));
-                }
-                if (nonNull(limit)) {
-                    sb.append(" ").append(context.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row limit clause")));
+                String offsetClause = nonNull(offset) ? " " + context.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row offset clause")) : "";
+                String limitClause = nonNull(limit) ? " " + context.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row limit clause")) : "";
+
+                if (context.getDialect().offsetBeforeLimit()) {
+                    sb.append(offsetClause).append(limitClause);
+                } else {
+                    sb.append(limitClause).append(offsetClause);
                 }
             } else {
                 sb = addLimitOffsetFallback(context, sb, rowFrom(), rowTo());
@@ -301,11 +303,20 @@ public class SelectStatement extends PreparableStatement {
         streamSafely(predicates).flatMap(e -> e.params(context)).forEach(params::add);
 
         if (context.getDialect().supports(LIMIT_OFFSET)) {
-            if (nonNull(offset)) {
-                params.add(offset);
-            }
-            if (nonNull(limit)) {
-                params.add(limit);
+            if (context.getDialect().offsetBeforeLimit()) {
+                if (nonNull(offset)) {
+                    params.add(offset);
+                }
+                if (nonNull(limit)) {
+                    params.add(limit);
+                }
+            } else {
+                if (nonNull(limit)) {
+                    params.add(limit);
+                }
+                if (nonNull(offset)) {
+                    params.add(offset);
+                }
             }
         } else {
             if (nonNull(limit)) {

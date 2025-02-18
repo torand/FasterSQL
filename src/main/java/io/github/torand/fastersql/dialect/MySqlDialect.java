@@ -30,6 +30,11 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
+    public boolean offsetBeforeLimit() {
+        return true;
+    }
+
+    @Override
     public Optional<String> formatRowOffsetClause() {
         return Optional.of("offset ?");
     }
