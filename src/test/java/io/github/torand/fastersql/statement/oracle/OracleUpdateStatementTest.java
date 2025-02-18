@@ -52,7 +52,7 @@ public class OracleUpdateStatementTest extends OracleTest {
                 set DESCRIPTION = ?, STOCK_COUNT = ? \
                 where ID = ?"""
             )
-            .assertParams(id, "Fresh from the factory", 42)
+            .assertParams("Fresh from the factory", 42, id)
             .assertAffectedRowCount(1)
             .verify(stmt);
 

@@ -272,7 +272,7 @@ public class OracleSelectStatementTest extends OracleTest {
     public void shouldHandleSubqueriesInFromClause() {
         PreparableStatement stmt =
             select(countAll().as("CUSTOMER_COUNT"))
-                .from(select(1)
+                .from(select($(1))
                     .from(CUSTOMER)
                     .where(CUSTOMER.LAST_NAME.like("ordm")), "MATCHES");
 
@@ -284,7 +284,7 @@ public class OracleSelectStatementTest extends OracleTest {
                 where C.LAST_NAME like ?\
                 ) MATCHES"""
             )
-            .assertParams("%ordm%")
+            .assertParams(1, "%ordm%")
             .assertRowCount(1)
             .assertRow(1,
                 "CUSTOMER_COUNT", isNumber(1)

@@ -122,7 +122,7 @@ public class SelectStatementTest {
     public void shouldHandleSubqueriesInFromClause() {
         PreparableStatement statement =
             select(countAll().as("ANTALL"))
-                .from(select(1)
+                .from(select($(1))
                     .from(PERSON)
                     .where(PERSON.NAME.like("or")), "TREFF");
 
@@ -132,7 +132,7 @@ public class SelectStatementTest {
             from PERSON P \
             where P.NAME like ?\
             ) TREFF""";
-        Object[] expectedParams = {1L, "%or%"};
+        Object[] expectedParams = {1, "%or%"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
         assertThat(statement.params(context())).contains(expectedParams);
@@ -158,7 +158,7 @@ public class SelectStatementTest {
     @Test
     public void shouldHandleSingleConstantSelect() {
         PreparableStatement statement =
-            select(1)
+            select($(1))
                 .from(PERSON)
                 .where(PERSON.NAME.eq("Per"));
 
@@ -166,7 +166,7 @@ public class SelectStatementTest {
             select ? \
             from PERSON P \
             where P.NAME = ?""";
-        Object[] expectedParams = {1L, "Per"};
+        Object[] expectedParams = {1, "Per"};
 
         assertThat(statement.sql(context())).isEqualTo(expectedSql);
         assertThat(statement.params(context())).contains(expectedParams);
