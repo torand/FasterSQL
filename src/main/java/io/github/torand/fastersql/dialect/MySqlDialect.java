@@ -60,13 +60,18 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
+    public String formatToCharFunction(String operand, String format) {
+        throw new UnsupportedOperationException("MySQL does not support the to_char() function");
+    }
+
+    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        return "concat(%s)".format(String.join(",", operands));
+        return "concat(%s)".formatted(String.join(", ", operands));
     }
 
     @Override

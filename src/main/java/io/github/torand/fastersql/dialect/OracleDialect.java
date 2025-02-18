@@ -84,13 +84,18 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatToCharFunction(String operand, String format) {
+        return "to_char(" + operand + ", " + format + ")";
+    }
+
+    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substr(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        throw new UnsupportedOperationException("Use the concat infix operator for Oracle");
+        throw new UnsupportedOperationException("Oracle does not support the concat() function (use the concat infix operator instead)");
     }
 
     @Override

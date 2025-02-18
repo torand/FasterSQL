@@ -56,13 +56,18 @@ public class MariaDbDialect implements Dialect {
     }
 
     @Override
+    public String formatToCharFunction(String operand, String format) {
+        throw new UnsupportedOperationException("MariaDb does not support the to_char() function");
+    }
+
+    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        throw new UnsupportedOperationException("Use the concat infix operator for MariaDb");
+        throw new UnsupportedOperationException("MariaDb does not support the concat() function (use the concat infix operator instead)");
     }
 
     @Override

@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Reversed limit - offset clause ordering for H2 and MySQL dialects.
+- Throws when using to_char() in MySQL and MariaDb dialects.
 
 ## [1.1.0] - 2025-02-13
 

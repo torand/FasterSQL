@@ -73,13 +73,18 @@ public class H2Dialect implements Dialect {
     }
 
     @Override
+    public String formatToCharFunction(String operand, String format) {
+        return "to_char(" + operand + ", " + format + ")";
+    }
+
+    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
         return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        throw new UnsupportedOperationException("Use the concat infix operator for H2");
+        throw new UnsupportedOperationException("H2 does not support the concat() function (use the concat infix operator instead)");
     }
 
     @Override

@@ -42,7 +42,7 @@ public class ToChar implements SingleRowFunction {
 
     @Override
     public String sql(Context context) {
-        return "to_char(" + expression.sql(context) + ", ?)";
+        return context.getDialect().formatToCharFunction(expression.sql(context), "?");
     }
 
     @Override

@@ -60,6 +60,14 @@ public interface Dialect {
     String formatToNumberFunction(String operand, int precision, int scale);
 
     /**
+     * Returns the 'to_char' function formatted for a specific SQL dialect.
+     * @param operand the expression to be evaluated as a string
+     * @param format the vendor-specific format mask
+     * @return the 'to_char' function for a specific SQL dialect.
+     */
+    String formatToCharFunction(String operand, String format);
+
+    /**
      * Returns the 'substring' function formatted for a specific SQL dialect.
      * @param operand the string expression to get substring from
      * @param startPos the start position (1-based) of the substring
