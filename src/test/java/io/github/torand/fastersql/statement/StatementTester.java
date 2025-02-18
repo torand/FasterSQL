@@ -86,7 +86,7 @@ public class StatementTester {
         return this;
     }
 
-    public void logResultSet(PreparableStatement stmt) throws SQLException {
+    public void logResultSet(PreparableStatement stmt) {
         try (Connection conn = ds.getConnection()) {
             Dialect dialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
 
@@ -96,6 +96,8 @@ public class StatementTester {
                 .executeQuery();
 
             resultSetTester().log(rs);
+        } catch (SQLException e) {
+            fail("Logging the result set failed: " + e.getMessage());
         }
     }
 
@@ -109,7 +111,7 @@ public class StatementTester {
             }
 
             if (nonNull(expectedParams)) {
-                assertThat(stmt.params(context)).describedAs("Parameters").contains(expectedParams);
+                assertThat(stmt.params(context)).describedAs("Parameters").containsExactly(expectedParams);
             }
 
             if (stmt instanceof SelectStatement) {

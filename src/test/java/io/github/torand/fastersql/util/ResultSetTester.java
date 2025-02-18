@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,7 +77,7 @@ public class ResultSetTester {
             for (int colNo = 1; colNo <= colCount; colNo++) {
                 String colLabel = rs.getMetaData().getColumnLabel(colNo);
                 Object value = rs.getObject(colNo);
-                rowValues.add(colLabel + ":" + value);
+                rowValues.add(colLabel + ":" + value + " (" + getValueType(value) + ")");
             }
 
             rows.add("Row " + rowNo + ": " + String.join(", ", rowValues));
@@ -114,5 +115,13 @@ public class ResultSetTester {
         if (nonNull(expectedRowCount)) {
             assertThat(actualRowCount).describedAs("Row count").isEqualTo(expectedRowCount);
         }
+    }
+
+    private String getValueType(Object value) {
+        if (isNull(value)) {
+            return "?";
+        }
+        String fullTypeName = value.getClass().getName();
+        return fullTypeName.substring(fullTypeName.lastIndexOf('.') + 1);
     }
 }

@@ -78,6 +78,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <testcontainers.version>1.20.1</testcontainers.version>
         <oracle.version>23.5.0.24.07</oracle.version>
+        <h2.version>2.1.214</h2.version>
     </properties>
 
     <dependencies>
@@ -138,6 +139,12 @@
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ucp</artifactId>
             <version>${oracle.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

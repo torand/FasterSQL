@@ -28,6 +28,14 @@ import static org.hamcrest.Matchers.closeTo;
 public final class RowValueMatchers {
     private RowValueMatchers() {}
 
+    public static Matcher<?> isLong(long number) {
+        return is(number);
+    }
+
+    public static Matcher<?> isDouble(double number) {
+        return is(number);
+    }
+
     public static Matcher<?> isNumber(long number) {
         return is(BigDecimal.valueOf(number));
     }
