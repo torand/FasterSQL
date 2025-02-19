@@ -33,7 +33,7 @@ import java.time.Duration;
 public abstract class MySqlTest {
     private static final Logger logger = LoggerFactory.getLogger(MySqlTest.class);
 
-    private static final String IMAGE = "mysql:8.0.36";
+    private static final String IMAGE = "mysql:8.2.0";
 
     @Container
     protected static MySQLContainer mySqlContainer = (MySQLContainer) new MySQLContainer(IMAGE)
