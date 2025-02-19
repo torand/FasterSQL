@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.statement.mariadb;
+package io.github.torand.fastersql.statement.postgresql;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,7 +21,7 @@ import io.github.torand.fastersql.statement.StatementTester;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -30,15 +30,15 @@ import javax.sql.DataSource;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class MariaDbTest {
-    private static final Logger logger = LoggerFactory.getLogger(MariaDbTest.class);
+public abstract class PostgreSqlTest {
+    private static final Logger logger = LoggerFactory.getLogger(PostgreSqlTest.class);
 
     @Container
-    protected static MariaDBContainer mariaDBContainer = (MariaDBContainer) new MariaDBContainer()
+    protected static PostgreSQLContainer postgreSqlContainer = (PostgreSQLContainer) new PostgreSQLContainer()
         .withDatabaseName("testdb")
         .withUsername("testuser")
         .withPassword("testpwd")
-        .withInitScript("mariadb-init.sql")
+        .withInitScript("postgresql-init.sql")
         .withStartupTimeout(Duration.ofMinutes(3))
         .withLogConsumer(new Slf4jLogConsumer(logger).withSeparateOutputStreams());
 
@@ -46,13 +46,13 @@ public abstract class MariaDbTest {
 
     @BeforeAll
     static void setUp() {
-        mariaDBContainer.start();
+        postgreSqlContainer.start();
 
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(mariaDBContainer.getJdbcUrl());
-        hikariConfig.setUsername(mariaDBContainer.getUsername());
-        hikariConfig.setPassword(mariaDBContainer.getPassword());
-        hikariConfig.setDriverClassName(mariaDBContainer.getDriverClassName());
+        hikariConfig.setJdbcUrl(postgreSqlContainer.getJdbcUrl());
+        hikariConfig.setUsername(postgreSqlContainer.getUsername());
+        hikariConfig.setPassword(postgreSqlContainer.getPassword());
+        hikariConfig.setDriverClassName(postgreSqlContainer.getDriverClassName());
 
         ds = new HikariDataSource(hikariConfig);
     }

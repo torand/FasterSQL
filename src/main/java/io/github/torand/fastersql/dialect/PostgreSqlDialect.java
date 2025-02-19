@@ -23,6 +23,11 @@ import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
+/**
+ * Defines the PostgreSQL SQL dialect
+ *
+ * <a href="https://www.postgresql.org/docs/current/" />
+ */
 public class PostgreSqlDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR);
 
@@ -76,7 +81,7 @@ public class PostgreSqlDialect implements Dialect {
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        throw new UnsupportedOperationException("PostgreSql does not support the concat() function (use the concat infix operator instead)");
+        throw new UnsupportedOperationException("PostgreSQL does not support the concat() function (use the concat infix operator instead)");
     }
 
     @Override

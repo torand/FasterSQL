@@ -28,6 +28,10 @@ import static org.hamcrest.Matchers.closeTo;
 public final class RowValueMatchers {
     private RowValueMatchers() {}
 
+    public static Matcher<?> isInteger(int number) {
+        return is(number);
+    }
+
     public static Matcher<?> isLong(long number) {
         return is(number);
     }
