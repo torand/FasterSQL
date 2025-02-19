@@ -22,7 +22,7 @@ import java.util.Optional;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 
 /**
- * Defines the MAriaDb SQL dialect.
+ * Defines the MAriaDB SQL dialect.
  *
  * <a href="https://mariadb.com/kb/en/sql-statements/" />
  */
@@ -61,7 +61,7 @@ public class MariaDbDialect implements Dialect {
 
     @Override
     public String formatToCharFunction(String operand, String format) {
-        throw new UnsupportedOperationException("MariaDb does not support the to_char() function");
+        throw new UnsupportedOperationException("MariaDB does not support the to_char() function");
     }
 
     @Override

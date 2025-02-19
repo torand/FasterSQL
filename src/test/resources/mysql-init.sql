@@ -10,20 +10,20 @@ CREATE TABLE CUSTOMER (
     country_code CHAR(3),
     email_address VARCHAR(50) NOT NULL,
     mobile_no VARCHAR(15),
-    mobile_no_verified NUMERIC(1,0),
+    mobile_no_verified BOOLEAN,
     created_time TIMESTAMP,
     last_login_time TIMESTAMP,
     PRIMARY KEY(id)
 );
 
 INSERT INTO CUSTOMER
-VALUES('9df03cd1-245f-4257-95e2-85cb5bd39ad8', 'Ola', 'Nordmann', 'Karl Johansgt 12', 'N-0123', 'Oslo', 'NOR', 'ola.nordmann@email.no', '4798765432', 1, TIMESTAMP('2020-09-10 14:10:10'), null);
+VALUES('9df03cd1-245f-4257-95e2-85cb5bd39ad8', 'Ola', 'Nordmann', 'Karl Johansgt 12', 'N-0123', 'Oslo', 'NOR', 'ola.nordmann@email.no', '4798765432', true, TIMESTAMP('2020-09-10 14:10:10'), null);
 
 INSERT INTO CUSTOMER
-VALUES('7f6bffb9-c65f-40b3-b007-b291b128472d', 'Jens', 'Hansen', 'Nørrebrogade 13', 'DK-1360', 'København', 'DEN', 'jens.hansen@email.dk', '4522334455', 1, TIMESTAMP('2021-10-11 15:11:11'), null);
+VALUES('7f6bffb9-c65f-40b3-b007-b291b128472d', 'Jens', 'Hansen', 'Nørrebrogade 13', 'DK-1360', 'København', 'DEN', 'jens.hansen@email.dk', '4522334455', true, TIMESTAMP('2021-10-11 15:11:11'), null);
 
 INSERT INTO CUSTOMER
-VALUES('ef17ec93-88a4-40dd-8a91-41e11d54d896', 'Björn', 'Svensson', 'Drottninggatan 14', 'SE-111 36', 'Stockholm', 'SWE', 'bjorn.svensson@email.se', '46755667788', 0, TIMESTAMP('2022-11-12 16:12:12'), null);
+VALUES('ef17ec93-88a4-40dd-8a91-41e11d54d896', 'Björn', 'Svensson', 'Drottninggatan 14', 'SE-111 36', 'Stockholm', 'SWE', 'bjorn.svensson@email.se', '46755667788', false, TIMESTAMP('2022-11-12 16:12:12'), null);
 
 CREATE TABLE PRODUCT (
     id CHAR(36) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE PRODUCT (
     description VARCHAR(256),
     category VARCHAR(30) NOT NULL,
     price NUMERIC(9,2) NOT NULL,
-    stock_count NUMERIC(5,0) NOT NULL,
+    stock_count INTEGER NOT NULL,
     PRIMARY KEY(id)
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE PURCHASE_ITEM (
     id CHAR(36) NOT NULL,
     purchase_id CHAR(36) NOT NULL,
     product_id CHAR(36) NOT NULL,
-    quantity NUMERIC(5,0) NOT NULL,
+    quantity INTEGER NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(purchase_id) REFERENCES PURCHASE(id),
     FOREIGN KEY(product_id) REFERENCES PRODUCT(id)

@@ -10,7 +10,7 @@ CREATE TABLE customer (
     country_code CHAR(3),
     email_address VARCHAR2(50) NOT NULL,
     mobile_no VARCHAR2(15),
-    mobile_no_verified NUMBER(1,0),
+    mobile_no_verified NUMBER(1),
     created_time TIMESTAMP,
     last_login_time TIMESTAMP,
     PRIMARY KEY(id)
@@ -31,7 +31,7 @@ CREATE TABLE product (
     description VARCHAR2(256),
     category VARCHAR2(30) NOT NULL,
     price NUMBER(9,2) NOT NULL,
-    stock_count NUMBER(5,0) NOT NULL,
+    stock_count NUMBER(5) NOT NULL,
     PRIMARY KEY(id)
 );
 
@@ -71,7 +71,7 @@ CREATE TABLE purchase_item (
     id CHAR(36) NOT NULL,
     purchase_id CHAR(36) NOT NULL,
     product_id CHAR(36) NOT NULL,
-    quantity NUMBER(5,0) NOT NULL,
+    quantity NUMBER(5) NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(purchase_id) REFERENCES purchase(id),
     FOREIGN KEY(product_id) REFERENCES product(id)

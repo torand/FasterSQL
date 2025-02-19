@@ -27,8 +27,8 @@ import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.concat;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.update;
+import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -61,7 +61,7 @@ public class MySqlUpdateStatementTest extends MySqlTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_DESCRIPTION", is("Fresh from the factory"),
-                "PR_STOCK_COUNT", isNumber(42)
+                "PR_STOCK_COUNT", isInteger(42)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.DESCRIPTION, PRODUCT.STOCK_COUNT)
@@ -158,7 +158,7 @@ public class MySqlUpdateStatementTest extends MySqlTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_NAME", allOf(startsWith("Louis Poulsen"), endsWith("table lamp")),
-                "PR_STOCK_COUNT", isNumber(123)
+                "PR_STOCK_COUNT", isInteger(123)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.NAME, PRODUCT.STOCK_COUNT)

@@ -40,6 +40,7 @@ import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.n
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.util.RowValueMatchers.isCloseTo;
 import static io.github.torand.fastersql.util.RowValueMatchers.isDouble;
+import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isLong;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
@@ -88,11 +89,11 @@ public class H2SelectStatementTest extends H2Test {
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
                 "PR_NAME", is("Louis Poulsen Panthella 160 table lamp"),
-                "PI_QUANTITY", isNumber(3))
+                "PI_QUANTITY", isInteger(3))
             .assertRow(2,
                 "C_LAST_NAME", is("Nordmann"),
                 "PR_NAME", is("Ekornes Stressless resting chair"),
-                "PI_QUANTITY", isNumber(1))
+                "PI_QUANTITY", isInteger(1))
             .verify(stmt);
     }
 

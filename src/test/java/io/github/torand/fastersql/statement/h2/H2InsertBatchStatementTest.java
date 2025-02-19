@@ -26,6 +26,7 @@ import java.util.UUID;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.statement.Statements.insertBatch;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static java.util.Arrays.asList;
@@ -68,7 +69,7 @@ public class H2InsertBatchStatementTest extends H2Test {
                 "PR_DESCRIPTION", is("TBD"),
                 "PR_CATEGORY", is("FURNITURE"),
                 "PR_PRICE", isNumber(1234.56),
-                "PR_STOCK_COUNT", isNumber(46)
+                "PR_STOCK_COUNT", isInteger(46)
             )
             .assertRow(2,
                 "PR_ID", is(id2.toString()),
@@ -76,7 +77,7 @@ public class H2InsertBatchStatementTest extends H2Test {
                 "PR_DESCRIPTION", isNull(),
                 "PR_CATEGORY", is("APPLIANCE"),
                 "PR_PRICE", isNumber(4567.89),
-                "PR_STOCK_COUNT", isNumber(34)
+                "PR_STOCK_COUNT", isInteger(34)
             )
             .assertRow(3,
                 "PR_ID", is(id3.toString()),
@@ -84,7 +85,7 @@ public class H2InsertBatchStatementTest extends H2Test {
                 "PR_DESCRIPTION", is("Power and portability"),
                 "PR_CATEGORY", is("ELECTRONICS"),
                 "PR_PRICE", isNumber(9012.34),
-                "PR_STOCK_COUNT", isNumber(9)
+                "PR_STOCK_COUNT", isInteger(9)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.NAME, PRODUCT.DESCRIPTION, PRODUCT.CATEGORY, PRODUCT.PRICE, PRODUCT.STOCK_COUNT)
