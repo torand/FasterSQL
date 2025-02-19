@@ -81,6 +81,7 @@
         <h2.version>2.1.214</h2.version>
         <mysql-connector-j.version>8.0.33</mysql-connector-j.version>
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
+        <mariadb-java-client.version>3.5.2</mariadb-java-client.version>
     </properties>
 
     <dependencies>
@@ -165,6 +166,18 @@
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>${mysql-connector-j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mariadb</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb-java-client.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

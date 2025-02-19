@@ -19,11 +19,15 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 
+/**
+ * Defines the MAriaDb SQL dialect.
+ *
+ * <a href="https://mariadb.com/kb/en/sql-statements/" />
+ */
 public class MariaDbDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
 
     @Override
     public String getProductName() {
@@ -32,7 +36,7 @@ public class MariaDbDialect implements Dialect {
 
     @Override
     public boolean offsetBeforeLimit() {
-        return true;
+        return false;
     }
 
     @Override
@@ -67,7 +71,7 @@ public class MariaDbDialect implements Dialect {
 
     @Override
     public String formatConcatFunction(List<String> operands) {
-        throw new UnsupportedOperationException("MariaDb does not support the concat() function (use the concat infix operator instead)");
+        return "concat(%s)".formatted(String.join(", ", operands));
     }
 
     @Override
