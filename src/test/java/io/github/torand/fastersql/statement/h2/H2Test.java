@@ -32,7 +32,7 @@ import java.time.Duration;
 public abstract class H2Test {
     private static final Logger logger = LoggerFactory.getLogger(H2Test.class);
 
-    private static final String IMAGE = "torandon/h2database:2.1.214";
+    private static final String IMAGE = "torandon/h2database:2.3.232";
 
     @Container
     protected static GenericContainer h2Container = (GenericContainer) new GenericContainer(IMAGE)
