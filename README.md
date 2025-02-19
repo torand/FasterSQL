@@ -107,7 +107,7 @@ The example assumes a connection to a MySQL database.
 ### Supported SQL Features
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
-* Joins: inner, left outer and right outer
+* Joins: inner, left outer, right outer
 * Scalar functions: upper, lower, to_number, to_char, substring, concat, length
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp
@@ -115,24 +115,25 @@ The example assumes a connection to a MySQL database.
 * Arithmetic operators: add (+), subtract (-), multiply (*), divide (/)
 * Logical operators: and, or, not
 * Other operators: in, is null, like, exists
-* Expressions: Any nested expression using functions, arithmetic operators and constant values supported both as projections and predicates
+* Expressions: Any nested expression using functions, arithmetic operators and constant values
 * Ordering: asc, desc
 * Grouping: group by
 * Subqueries: Supported both in the FROM clause and as right operand of predicates
 
 ### Supported Statement Parameters
 
-Uses PreparedStatement.setObject by default. Overrides:
+Statemetn parameter values are fed unchanged into a PreparedStatement object using the setObject method, by default. Some Java standard types are transformed
+into their Java SQL counterparts, as specified by the table below:
 
-| Java Standard Type | Java SQL Type | Parameter setter |
-|--------------------|---------------|------------------|
-| Instant            | Timestamp     | setTimestamp     |
-| LocalDateTime      | Timestamp     | setTimestamp     |
-| LocalDate          | Date          | setDate          |
-| UUID               | String        | setObject        |
-| URI                | String        | setObject        |
-| Enum               | String        | setObject        |
-| InputStream        | Blob          | setBinaryStream  |
+| Java Standard Type | Java SQL Type | Parameter method  |
+|--------------------|---------------|-------------------|
+| Instant            | Timestamp     | setTimestamp      |
+| LocalDateTime      | Timestamp     | setTimestamp      |
+| LocalDate          | Date          | setDate           |
+| UUID               | String        | setObject         |
+| URI                | String        | setObject         |
+| Enum               | String        | setObject         |
+| InputStream        | Blob          | setBinaryStream   |
 
 ## Usage
 
@@ -145,7 +146,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
   </dependency>
 </dependencies>
 ```

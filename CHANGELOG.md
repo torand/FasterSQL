@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Supporting the 'to_char', 'concat' and 'length' scalar functions.
-- INSERT and UPDATE now support any expression as field values.
+- ...
 
 ### Changed
 - ...
@@ -20,6 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - ...
+
+### Fixed
+- ...
+
+## [1.2.0] - 2025-02-19
+
+### Added
+- Supporting the 'to_char', 'concat' and 'length' scalar functions.
+- INSERT and UPDATE now support any expression as field values.
 
 ### Fixed
 - Reversed limit - offset clause ordering for H2 and MySQL dialects.
