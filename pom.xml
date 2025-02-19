@@ -78,7 +78,7 @@
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <testcontainers.version>1.20.4</testcontainers.version>
         <oracle.version>23.7.0.25.01</oracle.version>
-        <h2.version>2.1.214</h2.version>
+        <h2.version>2.2.220</h2.version>
         <mysql-connector-j.version>8.2.0</mysql-connector-j.version>
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
         <mariadb-java-client.version>3.5.2</mariadb-java-client.version>
