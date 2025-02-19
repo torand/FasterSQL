@@ -38,11 +38,11 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.u
 import static io.github.torand.fastersql.order.Orders.asc;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
-import static io.github.torand.fastersql.util.RowValueMatchers.isCloseTo;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimalCloseTo;
 import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isLong;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -143,16 +143,16 @@ public class MySqlSelectStatementTest extends MySqlTest {
             .assertRow(1,
                 "C_LAST_NAME", is("HANSEN"),
                 "C_FIRST_NAME", is("jens"),
-                "TOTAL", isCloseTo(11335.35, 0.01),
+                "TOTAL", isBigDecimalCloseTo(11335.35, 0.01),
                 "C_ZIP_CODE", isNull(),
-                "PI", isNumber(3.14)
+                "PI", isBigDecimal(3.14)
             )
             .assertRow(2,
                 "C_LAST_NAME", is("NORDMANN"),
                 "C_FIRST_NAME", is("ola"),
-                "TOTAL", isCloseTo(5433.5, 0.01),
+                "TOTAL", isBigDecimalCloseTo(5433.5, 0.01),
                 "C_ZIP_CODE", isNull(),
-                "PI", isNumber(3.14)
+                "PI", isBigDecimal(3.14)
             )
             .verify(stmt);
     }
@@ -282,7 +282,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
             .assertParams(10000)
             .assertRowCount(1)
             .assertRow(1,
-                "MAX_PRICE", isNumber(7122.09)
+                "MAX_PRICE", isBigDecimal(7122.09)
             )
             .verify(stmt);
     }
@@ -307,11 +307,11 @@ public class MySqlSelectStatementTest extends MySqlTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isCloseTo(5433.5, 0.01)
+                "PURCHASED_VALUE", isBigDecimalCloseTo(5433.5, 0.01)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isCloseTo(11335.35, 0.01)
+                "PURCHASED_VALUE", isBigDecimalCloseTo(11335.35, 0.01)
             )
             .verify(stmt);
     }

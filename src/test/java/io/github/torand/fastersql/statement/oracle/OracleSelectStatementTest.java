@@ -19,6 +19,7 @@ import io.github.torand.fastersql.datamodel.CustomerTable;
 import io.github.torand.fastersql.dialect.OracleDialect;
 import io.github.torand.fastersql.statement.PreparableStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
+import io.github.torand.fastersql.util.RowValueMatchers;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -39,8 +40,8 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.u
 import static io.github.torand.fastersql.order.Orders.asc;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -86,11 +87,11 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
                 "PR_NAME", is("Louis Poulsen Panthella 160 table lamp"),
-                "PI_QUANTITY", isNumber(3))
+                "PI_QUANTITY", RowValueMatchers.isBigDecimal(3))
             .assertRow(2,
                 "C_LAST_NAME", is("Nordmann"),
                 "PR_NAME", is("Ekornes Stressless resting chair"),
-                "PI_QUANTITY", isNumber(1))
+                "PI_QUANTITY", RowValueMatchers.isBigDecimal(1))
             .verify(stmt);
     }
 
@@ -169,16 +170,16 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRow(1,
                 "C_LAST_NAME", is("HANSEN"),
                 "C_FIRST_NAME", is("jens"),
-                "TOTAL", isNumber(11335.35),
+                "TOTAL", isBigDecimal(11335.35),
                 "C_ZIP_CODE", isNull(),
-                "PI", isNumber(3.14)
+                "PI", isBigDecimal(3.14)
             )
             .assertRow(2,
                 "C_LAST_NAME", is("NORDMANN"),
                 "C_FIRST_NAME", is("ola"),
-                "TOTAL", isNumber(5433.5),
+                "TOTAL", isBigDecimal(5433.5),
                 "C_ZIP_CODE", isNull(),
-                "PI", isNumber(3.14)
+                "PI", isBigDecimal(3.14)
             )
             .verify(stmt);
     }
@@ -287,7 +288,7 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertParams(1, "%ordm%")
             .assertRowCount(1)
             .assertRow(1,
-                "CUSTOMER_COUNT", isNumber(1)
+                "CUSTOMER_COUNT", RowValueMatchers.isBigDecimal(1)
             )
             .verify(stmt);
     }
@@ -308,7 +309,7 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertParams(10000)
             .assertRowCount(1)
             .assertRow(1,
-                "MAX_PRICE", isNumber(7122.09)
+                "MAX_PRICE", isBigDecimal(7122.09)
             )
             .verify(stmt);
     }
@@ -333,11 +334,11 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isNumber(5433.5)
+                "PURCHASED_VALUE", isBigDecimal(5433.5)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isNumber(11335.35)
+                "PURCHASED_VALUE", isBigDecimal(11335.35)
             )
             .verify(stmt);
     }

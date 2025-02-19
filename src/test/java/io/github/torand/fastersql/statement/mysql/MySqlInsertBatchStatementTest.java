@@ -26,9 +26,9 @@ import java.util.UUID;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.statement.Statements.insertBatch;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 
@@ -68,7 +68,7 @@ public class MySqlInsertBatchStatementTest extends MySqlTest {
                 "PR_NAME", is("IKEA Billy bookshelf"),
                 "PR_DESCRIPTION", is("TBD"),
                 "PR_CATEGORY", is("FURNITURE"),
-                "PR_PRICE", isNumber(1234.56),
+                "PR_PRICE", isBigDecimal(1234.56),
                 "PR_STOCK_COUNT", isInteger(46)
             )
             .assertRow(2,
@@ -76,7 +76,7 @@ public class MySqlInsertBatchStatementTest extends MySqlTest {
                 "PR_NAME", is("Siemens IQ500 dishwasher"),
                 "PR_DESCRIPTION", isNull(),
                 "PR_CATEGORY", is("APPLIANCE"),
-                "PR_PRICE", isNumber(4567.89),
+                "PR_PRICE", isBigDecimal(4567.89),
                 "PR_STOCK_COUNT", isInteger(34)
             )
             .assertRow(3,
@@ -84,7 +84,7 @@ public class MySqlInsertBatchStatementTest extends MySqlTest {
                 "PR_NAME", is("HP Elitebook 830 laptop"),
                 "PR_DESCRIPTION", is("Power and portability"),
                 "PR_CATEGORY", is("ELECTRONICS"),
-                "PR_PRICE", isNumber(9012.34),
+                "PR_PRICE", isBigDecimal(9012.34),
                 "PR_STOCK_COUNT", isInteger(9)
             )
             .verify(

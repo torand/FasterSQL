@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.statement.oracle;
 
 import io.github.torand.fastersql.statement.PreparableStatement;
+import io.github.torand.fastersql.util.RowValueMatchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -28,7 +29,6 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.c
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.update;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -61,7 +61,7 @@ public class OracleUpdateStatementTest extends OracleTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_DESCRIPTION", is("Fresh from the factory"),
-                "PR_STOCK_COUNT", isNumber(42)
+                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(42)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.DESCRIPTION, PRODUCT.STOCK_COUNT)
@@ -157,7 +157,7 @@ public class OracleUpdateStatementTest extends OracleTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_NAME", allOf(startsWith("Louis Poulsen"), endsWith("table lamp")),
-                "PR_STOCK_COUNT", isNumber(123)
+                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(123)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.NAME, PRODUCT.STOCK_COUNT)

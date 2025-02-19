@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement.oracle;
 import io.github.torand.fastersql.domainmodel.Product;
 import io.github.torand.fastersql.domainmodel.ProductCategory;
 import io.github.torand.fastersql.statement.PreparableStatement;
+import io.github.torand.fastersql.util.RowValueMatchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
@@ -26,8 +27,8 @@ import java.util.UUID;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.statement.Statements.insertBatch;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 
@@ -70,24 +71,24 @@ public class OracleInsertBatchStatementTest extends OracleTest {
                 "PR_NAME", is("IKEA Billy bookshelf"),
                 "PR_DESCRIPTION", is("TBD"),
                 "PR_CATEGORY", is("FURNITURE"),
-                "PR_PRICE", isNumber(1234.56),
-                "PR_STOCK_COUNT", isNumber(46)
+                "PR_PRICE", isBigDecimal(1234.56),
+                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(46)
             )
             .assertRow(2,
                 "PR_ID", is(id2.toString()),
                 "PR_NAME", is("Siemens IQ500 dishwasher"),
                 "PR_DESCRIPTION", isNull(),
                 "PR_CATEGORY", is("APPLIANCE"),
-                "PR_PRICE", isNumber(4567.89),
-                "PR_STOCK_COUNT", isNumber(34)
+                "PR_PRICE", isBigDecimal(4567.89),
+                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(34)
             )
             .assertRow(3,
                 "PR_ID", is(id3.toString()),
                 "PR_NAME", is("HP Elitebook 830 laptop"),
                 "PR_DESCRIPTION", is("Power and portability"),
                 "PR_CATEGORY", is("ELECTRONICS"),
-                "PR_PRICE", isNumber(9012.34),
-                "PR_STOCK_COUNT", isNumber(9)
+                "PR_PRICE", isBigDecimal(9012.34),
+                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(9)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.NAME, PRODUCT.DESCRIPTION, PRODUCT.CATEGORY, PRODUCT.PRICE, PRODUCT.STOCK_COUNT)

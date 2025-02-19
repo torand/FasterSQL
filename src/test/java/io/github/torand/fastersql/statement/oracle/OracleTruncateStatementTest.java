@@ -16,13 +16,13 @@
 package io.github.torand.fastersql.statement.oracle;
 
 import io.github.torand.fastersql.statement.PreparableStatement;
+import io.github.torand.fastersql.util.RowValueMatchers;
 import org.junit.jupiter.api.Test;
 
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.truncate;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNumber;
 
 public class OracleTruncateStatementTest extends OracleTest {
 
@@ -39,7 +39,7 @@ public class OracleTruncateStatementTest extends OracleTest {
 
         statementTester()
             .assertRowCount(1)
-            .assertRow(1, "NUM_ITEMS", isNumber(0))
+            .assertRow(1, "NUM_ITEMS", RowValueMatchers.isBigDecimal(0))
             .verify(
                 select(countAll().as("NUM_ITEMS"))
                     .from(PURCHASE_ITEM)

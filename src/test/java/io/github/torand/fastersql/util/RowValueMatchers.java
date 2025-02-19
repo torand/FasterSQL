@@ -40,15 +40,15 @@ public final class RowValueMatchers {
         return is(number);
     }
 
-    public static Matcher<?> isNumber(long number) {
+    public static Matcher<?> isBigDecimal(long number) {
         return is(BigDecimal.valueOf(number));
     }
 
-    public static Matcher<?> isNumber(double number) {
+    public static Matcher<?> isBigDecimal(double number) {
         return is(BigDecimal.valueOf(number));
     }
 
-    public static Matcher<?> isCloseTo(double number, double error) {
+    public static Matcher<?> isBigDecimalCloseTo(double number, double error) {
         return is(closeTo(BigDecimal.valueOf(number), BigDecimal.valueOf(error)));
     }
 
