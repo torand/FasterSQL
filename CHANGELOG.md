@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Statement parameters of type OffsetDateTime and ZonedDateTime are converted into Timestamp.
+- supporting the 'current_date' and 'current_time' system functions.
 
 ### Changed
 - ...

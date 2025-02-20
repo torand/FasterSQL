@@ -19,6 +19,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 
 /**
@@ -27,7 +28,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
  * <a href="https://dev.mysql.com/doc/refman/8.4/en/" />
  */
 public class MySqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME);
 
     @Override
     public String getProductName() {

@@ -15,6 +15,27 @@
  */
 package io.github.torand.fastersql.dialect;
 
+/**
+ * Defines capabilities of an SQL dialect.
+ */
 public enum Capability {
-    LIMIT_OFFSET, ROW_NUM, CONCAT_OPERATOR
+    /**
+     * Supports row limiting clauses
+     */
+    LIMIT_OFFSET,
+
+    /**
+     * Supports a row number literal or function
+     */
+    ROW_NUM,
+
+    /**
+     * Supports a string concatenation infix operator
+     */
+    CONCAT_OPERATOR,
+
+    /**
+     * Supports a current time literal or function
+     */
+    CURRENT_TIME
 }

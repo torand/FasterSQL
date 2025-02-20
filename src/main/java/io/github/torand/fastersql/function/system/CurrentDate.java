@@ -15,18 +15,35 @@
  */
 package io.github.torand.fastersql.function.system;
 
-public final class SystemFunctions {
-    private SystemFunctions() {}
+import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.projection.Projection;
 
-    public static CurrentTimestamp currentTimestamp() {
-        return new CurrentTimestamp(null);
+import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+
+public class CurrentDate implements SystemFunction {
+    private final String alias;
+
+    CurrentDate(String alias) {
+        this.alias = alias;
     }
 
-    public static CurrentDate currentDate() {
-        return new CurrentDate(null);
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "current_date";
     }
 
-    public static CurrentTime currentTime() {
-        return new CurrentTime(null);
+    // Projection
+
+    @Override
+    public Projection as(String alias) {
+        requireNonBlank(alias, "No alias specified");
+        return new CurrentDate(alias);
+    }
+
+    @Override
+    public String alias() {
+        return alias;
     }
 }

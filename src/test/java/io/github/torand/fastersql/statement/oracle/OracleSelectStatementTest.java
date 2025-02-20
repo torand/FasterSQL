@@ -37,6 +37,8 @@ import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
+import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
+import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
 import static io.github.torand.fastersql.order.Orders.asc;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
@@ -359,6 +361,22 @@ public class OracleSelectStatementTest extends OracleTest {
                 for update"""
             )
             .assertParams("XXX")
+            .assertRowCount(3)
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleSystemFunctions() {
+        // Oracle does not support CURRENT_TIME
+        PreparableStatement stmt =
+            select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentDate().as("CD"))
+                .from(CUSTOMER);
+
+        statementTester()
+            .assertSql("""
+                select C.ID C_ID, current_timestamp CTS, current_date CD \
+                from CUSTOMER C"""
+            )
             .assertRowCount(3)
             .verify(stmt);
     }

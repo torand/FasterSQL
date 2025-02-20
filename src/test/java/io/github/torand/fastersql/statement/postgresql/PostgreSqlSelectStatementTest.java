@@ -35,6 +35,9 @@ import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
+import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
+import static io.github.torand.fastersql.function.system.SystemFunctions.currentTime;
+import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
 import static io.github.torand.fastersql.order.Orders.asc;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
@@ -333,6 +336,21 @@ public class PostgreSqlSelectStatementTest extends PostgreSqlTest {
                 for update"""
             )
             .assertParams("XXX")
+            .assertRowCount(3)
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleSystemFunctions() {
+        PreparableStatement stmt =
+            select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentTime().as("CT"), currentDate().as("CD"))
+                .from(CUSTOMER);
+
+        statementTester()
+            .assertSql("""
+                select C.ID C_ID, current_timestamp CTS, current_time CT, current_date CD \
+                from CUSTOMER C"""
+            )
             .assertRowCount(3)
             .verify(stmt);
     }
