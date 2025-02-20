@@ -30,6 +30,9 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -72,6 +75,10 @@ public class PreparedStatementBuilder {
                 stmt.setTimestamp(i, Timestamp.valueOf(localDateTime));
             } else if (param instanceof LocalDate localDate) {
                 stmt.setDate(i, Date.valueOf(localDate));
+            } else if (param instanceof OffsetDateTime offsetDateTime) {
+                stmt.setTimestamp(i, Timestamp.valueOf(offsetDateTime.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
+            } else if (param instanceof ZonedDateTime zonedDateTime) {
+                stmt.setTimestamp(i, Timestamp.valueOf(zonedDateTime.toLocalDateTime()));
             } else if (param instanceof UUID uuid) {
                 stmt.setObject(i, uuid.toString());
             } else if (param instanceof URI uri) {

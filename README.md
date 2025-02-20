@@ -122,18 +122,20 @@ The example assumes a connection to a MySQL database.
 
 ### Supported Statement Parameters
 
-Statemetn parameter values are fed unchanged into a PreparedStatement object using the setObject method, by default. Some Java standard types are transformed
-into their Java SQL counterparts, as specified by the table below:
+Statement parameter values are registered with a PreparedStatement using the setObject method, by default. Some Java standard types are transformed
+into their Java SQL counterparts before registration, as specified by the table below:
 
-| Java Standard Type | Java SQL Type | Parameter method  |
-|--------------------|---------------|-------------------|
-| Instant            | Timestamp     | setTimestamp      |
-| LocalDateTime      | Timestamp     | setTimestamp      |
-| LocalDate          | Date          | setDate           |
-| UUID               | String        | setObject         |
-| URI                | String        | setObject         |
-| Enum               | String        | setObject         |
-| InputStream        | Blob          | setBinaryStream   |
+| Java Standard Type | Java SQL Type | Parameter method |
+|--------------------|---------------|------------------|
+| Instant            | Timestamp     | setTimestamp     |
+| LocalDateTime      | Timestamp     | setTimestamp     |
+| LocalDate          | Date          | setDate          |
+| OffsetDateTime     | Timestamp     | setTimestamp     |
+| ZonedDateTime      | Timestamp     | setTimestamp     |
+| UUID               | String        | setObject        |
+| URI                | String        | setObject        |
+| Enum               | String        | setObject        |
+| InputStream        | Blob          | setBinaryStream  |
 
 ## Usage
 
