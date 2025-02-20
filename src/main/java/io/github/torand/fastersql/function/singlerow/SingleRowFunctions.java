@@ -64,4 +64,8 @@ public final class SingleRowFunctions {
     public static Length length(Expression expression) {
         return new Length(expression, null);
     }
+
+    public static Round round(Expression expression) {
+        return new Round(expression, null);
+    }
 }

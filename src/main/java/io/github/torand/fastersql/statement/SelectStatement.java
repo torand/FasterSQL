@@ -346,6 +346,19 @@ public class SelectStatement extends PreparableStatement {
             validateFieldTableRelations(streamSafely(joins).flatMap(Join::fieldRefs));
         }
 
+        if (nonNull(orders)) {
+            Set<String> orderableAliases = streamSafely(projections)
+                .map(Projection::alias)
+                .collect(toSet());
+
+            streamSafely(orders)
+                .filter(o -> !orderableAliases.contains(o.alias()))
+                .findFirst()
+                .ifPresent(o -> {
+                    throw new IllegalStateException("Order alias " + o.alias() + " is not specified in the SELECT clause");
+                });
+        }
+
         validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));
         validateFieldTableRelations(streamSafely(groups));
         validateFieldTableRelations(streamSafely(orders).flatMap(Order::fieldRefs));

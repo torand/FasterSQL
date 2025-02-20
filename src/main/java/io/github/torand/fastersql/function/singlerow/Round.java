@@ -13,52 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.order;
+package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class Ascending implements Order {
-    private final Projection projection;
+public class Round implements SingleRowFunction {
+    private final Expression expression;
     private final String alias;
 
-    Ascending(Projection projection) {
-        this.projection = requireNonNull(projection, "No projection specified");
-        this.alias = projection.alias();
-    }
-
-    Ascending(String alias) {
-        this.projection = null;
-        this.alias = requireNonBlank(alias, "No alias specified");
+    Round(Expression expression, String alias) {
+        this.expression = requireNonNull(expression, "No expression specified");
+        this.alias = nonBlank(alias) ? alias : defaultAlias();
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return alias + " asc";
+        return "round(%s)".formatted(expression.sql(context));
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return expression.params(context);
     }
 
-    // Order
+    // Projection
+
+    @Override
+    public Projection as(String alias) {
+        requireNonBlank(alias, "No alias specified");
+        return new Round(expression, alias);
+    }
 
     @Override
     public String alias() {
         return alias;
     }
 
+    // Expression
+
     @Override
     public Stream<Field> fieldRefs() {
-        return projection instanceof Field ? Stream.of((Field)projection) : Stream.empty();
+        return expression.fieldRefs();
+    }
+
+    private String defaultAlias() {
+        return "ROUND_" + new Random().nextInt(999) + 1;
     }
 }

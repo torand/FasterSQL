@@ -35,6 +35,7 @@ import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
@@ -378,6 +379,27 @@ public class OracleSelectStatementTest extends OracleTest {
                 from CUSTOMER C"""
             )
             .assertRowCount(3)
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleScalarMathFunctions() {
+        PreparableStatement stmt =
+            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND_PRICE"))
+                .from(PRODUCT)
+                .orderBy(PRODUCT.NAME.asc());
+
+        statementTester()
+            .assertSql("""
+                select PR.NAME PR_NAME, round(PR.PRICE) ROUND_PRICE \
+                from PRODUCT PR \
+                order by PR_NAME asc"""
+            )
+            .assertRowCount(5)
+            .assertRow(2,
+               "ROUND_PRICE", isBigDecimal(5434))
+            .assertRow(3,
+               "ROUND_PRICE", isBigDecimal(7122))
             .verify(stmt);
     }
 }

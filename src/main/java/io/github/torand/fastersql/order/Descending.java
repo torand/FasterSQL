@@ -53,6 +53,11 @@ public class Descending implements Order {
     // Order
 
     @Override
+    public String alias() {
+        return alias;
+    }
+
+    @Override
     public Stream<Field> fieldRefs() {
         return projection instanceof Field ? Stream.of((Field)projection) : Stream.empty();
     }
