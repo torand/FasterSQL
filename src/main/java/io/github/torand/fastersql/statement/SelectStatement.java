@@ -177,7 +177,7 @@ public class SelectStatement extends PreparableStatement {
     }
 
     public SelectStatement forUpdate() {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, true);
     }
 
     @Override

@@ -316,4 +316,24 @@ public class PostgreSqlSelectStatementTest extends PostgreSqlTest {
             )
             .verify(stmt);
     }
+
+    @Test
+    public void shouldHandleForUpdate() {
+        PreparableStatement stmt =
+            select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
+                .from(CUSTOMER)
+                .where(CUSTOMER.COUNTRY_CODE.le("XXX"))
+                .forUpdate();
+
+        statementTester()
+            .assertSql("""
+                select C.LAST_NAME C_LAST_NAME, C.FIRST_NAME C_FIRST_NAME \
+                from CUSTOMER C \
+                where C.COUNTRY_CODE <= ? \
+                for update"""
+            )
+            .assertParams("XXX")
+            .assertRowCount(3)
+            .verify(stmt);
+    }
 }
