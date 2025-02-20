@@ -16,15 +16,15 @@
 package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.dialect.Dialect;
-import io.github.torand.fastersql.dialect.MySqlDialect;
 
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.joining;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
+import static java.util.stream.Collectors.joining;
 
 public abstract class PreparableStatement {
     abstract String sql(Context context);
@@ -42,6 +42,6 @@ public abstract class PreparableStatement {
 
     @Override
     public String toString() {
-        return toString(new MySqlDialect());
+        return toString(new AnsiIsoDialect());
     }
 }
