@@ -149,7 +149,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
   </dependency>
 </dependencies>
 ```
