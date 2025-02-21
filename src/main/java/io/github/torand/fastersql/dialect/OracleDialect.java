@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
@@ -32,7 +33,7 @@ public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
     public OracleDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR));
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING));
     }
 
     private OracleDialect(EnumSet<Capability> capabilities) {

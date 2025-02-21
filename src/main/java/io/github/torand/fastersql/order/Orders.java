@@ -15,24 +15,42 @@
  */
 package io.github.torand.fastersql.order;
 
+import io.github.torand.fastersql.constant.IntegerConstant;
+import io.github.torand.fastersql.constant.StringConstant;
 import io.github.torand.fastersql.projection.Projection;
 
 public final class Orders {
     private Orders() {}
 
+    public static OrderBuilder alias(String alias) {
+        return new OrderBuilder(alias);
+    }
+
+    public static OrderBuilder index(Integer index) {
+        return new OrderBuilder(index);
+    }
+
     public static Ascending asc(Projection projection) {
         return new Ascending(projection);
     }
 
-    public static Ascending asc(String alias) {
-        return new Ascending(alias);
+    public static Ascending asc(StringConstant alias) {
+        return new Ascending(alias.value());
+    }
+
+    public static Ascending asc(IntegerConstant index) {
+        return new Ascending(index.value());
     }
 
     public static Descending desc(Projection projection) {
         return new Descending(projection);
     }
 
-    public static Descending desc(String alias) {
-        return new Descending(alias);
+    public static Descending desc(StringConstant alias) {
+        return new Descending(alias.value());
+    }
+
+    public static Descending desc(IntegerConstant index) {
+        return new Descending(index.value());
     }
 }

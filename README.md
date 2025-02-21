@@ -117,7 +117,7 @@ The example assumes a connection to a MySQL database.
 * Logical operators: and, or, not
 * Other operators: in, is null, like, exists
 * Expressions: Any nested expression using functions, arithmetic operators and constant values
-* Ordering: asc, desc
+* Ordering: asc, desc, nulls first/last
 * Grouping: group by
 * Subqueries: Supported both in the FROM clause and as right operand of predicates
 

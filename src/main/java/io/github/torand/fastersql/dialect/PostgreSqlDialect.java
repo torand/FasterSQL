@@ -22,6 +22,7 @@ import java.util.Optional;
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
@@ -30,7 +31,7 @@ import static io.github.torand.fastersql.util.lang.StringHelper.generate;
  * <a href="https://www.postgresql.org/docs/current/" />
  */
 public class PostgreSqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME, NULL_ORDERING);
 
     @Override
     public String getProductName() {

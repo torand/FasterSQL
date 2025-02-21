@@ -17,32 +17,62 @@ package io.github.torand.fastersql.order;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.dialect.Capability;
 import io.github.torand.fastersql.projection.Projection;
 
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 public class Descending implements Order {
     private final Projection projection;
     private final String alias;
+    private final Integer index;
+    private final Boolean nullsFirst;
 
     Descending(Projection projection) {
-        this.projection = requireNonNull(projection, "No projection specified");
-        this.alias = projection.alias();
+        this(requireNonNull(projection, "No projection specified"), projection.alias(), null, null);
     }
 
     Descending(String alias) {
-        this.projection = null;
-        this.alias = requireNonBlank(alias, "No alias specified");
+        this(null, requireNonBlank(alias, "No alias specified"), null, null);
+    }
+
+    Descending(Integer index) {
+        this(null, null, requireNonNull(index, "No index specified"), null);
+    }
+
+    private Descending(Projection projection, String alias, Integer index, Boolean nullsFirst) {
+        this.projection = projection;
+        this.alias = alias;
+        this.index = index;
+        this.nullsFirst = nullsFirst;
+    }
+
+    public Descending nullsFirst() {
+        return new Descending(projection, alias, index, true);
+    }
+
+    public Descending nullsLast() {
+        return new Descending(projection, alias, index, false);
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return alias + " desc";
+        if (nonNull(nullsFirst) && !context.getDialect().supports(Capability.NULL_ORDERING)) {
+            throw new UnsupportedOperationException("%s does not support 'nulls first' or 'nulls last'".formatted(context.getDialect().getProductName()));
+        }
+
+        return (nonNull(index) ? index : alias)
+            + " desc"
+            + (TRUE.equals(nullsFirst) ? " nulls first" : "")
+            + (FALSE.equals(nullsFirst) ? " nulls last" : "");
     }
 
     @Override

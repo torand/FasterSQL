@@ -13,18 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.order;
+package io.github.torand.fastersql.constant;
 
-import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.order.Order;
+import io.github.torand.fastersql.order.Orders;
 
-import java.util.stream.Stream;
+public class IntegerConstant extends GenericConstant<Integer> {
 
-public interface Order extends Sql {
-    Order nullsFirst();
-    Order nullsLast();
+    IntegerConstant(int value, String alias) {
+        super(value, alias);
+    }
 
-    String alias();
+    public Order asc() {
+        return Orders.asc(this);
+    }
 
-    Stream<Field> fieldRefs();
+    public Order desc() {
+        return Orders.desc(this);
+    }
 }

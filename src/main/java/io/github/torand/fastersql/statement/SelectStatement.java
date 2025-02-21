@@ -352,6 +352,7 @@ public class SelectStatement extends PreparableStatement {
                 .collect(toSet());
 
             streamSafely(orders)
+                .filter(o -> nonNull(o.alias()))
                 .filter(o -> !orderableAliases.contains(o.alias()))
                 .findFirst()
                 .ifPresent(o -> {

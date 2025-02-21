@@ -37,5 +37,10 @@ public enum Capability {
     /**
      * Supports a current time literal or function
      */
-    CURRENT_TIME
+    CURRENT_TIME,
+
+    /**
+     * Supports "nulls First" and "nulls last" for NULL ordering
+     */
+    NULL_ORDERING
 }

@@ -39,9 +39,10 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.u
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTime;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
-import static io.github.torand.fastersql.order.Orders.asc;
+import static io.github.torand.fastersql.order.Orders.alias;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.statement.Statements.select;
+import static io.github.torand.fastersql.statement.Statements.selectDistinct;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimalCloseTo;
 import static io.github.torand.fastersql.util.RowValueMatchers.isDouble;
@@ -301,7 +302,7 @@ public class H2SelectStatementTest extends H2Test {
                 .from(PRODUCT)
                 .join(PRODUCT.ID.on(PURCHASE_ITEM.PRODUCT_ID))
                 .groupBy(PRODUCT.NAME)
-                .orderBy(asc("PURCHASED_VALUE"));
+                .orderBy(alias("PURCHASED_VALUE").asc());
 
         statementTester()
             .assertSql("""
@@ -320,6 +321,46 @@ public class H2SelectStatementTest extends H2Test {
                 "PR_NAME", containsString("Louis Poulsen"),
                 "PURCHASED_VALUE", isBigDecimalCloseTo(11335.35, 0.01)
             )
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleDistinct() {
+        PreparableStatement stmt =
+            selectDistinct(PRODUCT.CATEGORY)
+                .from(PRODUCT)
+                .orderBy($(1).asc());
+
+        statementTester()
+            .assertSql("""
+                select distinct PR.CATEGORY PR_CATEGORY \
+                from PRODUCT PR \
+                order by 1 asc"""
+            )
+            .assertRowCount(4)
+            .assertRow(1, "PR_CATEGORY", is("APPLIANCE"))
+            .assertRow(2, "PR_CATEGORY", is("ELECTRONICS"))
+            .assertRow(3, "PR_CATEGORY", is("FURNITURE"))
+            .assertRow(4, "PR_CATEGORY", is("LAMP"))
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleOrderByNulls() {
+        PreparableStatement stmt =
+            select(PURCHASE.NOTES)
+                .from(PURCHASE)
+                .orderBy($(1).asc().nullsFirst());
+
+        statementTester()
+            .assertSql("""
+                select PU.NOTES PU_NOTES \
+                from PURCHASE PU \
+                order by 1 asc nulls first"""
+            )
+            .assertRowCount(2)
+            .assertRow(1, "PU_NOTES", isNull())
+            .assertRow(2, "PU_NOTES", is("TBD"))
             .verify(stmt);
     }
 

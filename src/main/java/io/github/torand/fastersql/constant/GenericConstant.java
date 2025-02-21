@@ -22,14 +22,15 @@ import io.github.torand.fastersql.projection.Projection;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 public class GenericConstant<T> implements Constant {
-    private final T value;
+    protected final T value;
     private final String alias;
 
     GenericConstant(T value, String alias) {
-        this.value = requireNonNull(value, "Use NullConstant to represent 'null'");
+        this.value = value;
         this.alias = alias;
     }
 
@@ -37,12 +38,12 @@ public class GenericConstant<T> implements Constant {
 
     @Override
     public String sql(Context context) {
-        return "?";
+        return isNull(value) ? "null" : "?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(value);
+        return isNull(value) ? Stream.empty() : Stream.of(value);
     }
 
     // Projection
@@ -68,7 +69,7 @@ public class GenericConstant<T> implements Constant {
     // Constant
 
     @Override
-    public Object value() {
+    public T value() {
         return value;
     }
 
