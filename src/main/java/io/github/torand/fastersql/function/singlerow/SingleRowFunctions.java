@@ -68,4 +68,8 @@ public final class SingleRowFunctions {
     public static Round round(Expression expression) {
         return new Round(expression, null);
     }
+
+    public static Abs abs(Expression expression) {
+        return new Abs(expression, null);
+    }
 }
