@@ -25,6 +25,7 @@ import java.util.Optional;
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
@@ -34,7 +35,7 @@ import static io.github.torand.fastersql.util.lang.StringHelper.generate;
  * <a href="https://www.h2database.com/html/grammar.html" />
  */
 public class H2Dialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME, NULL_ORDERING);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
 
     @Override
     public String getProductName() {
@@ -97,6 +98,11 @@ public class H2Dialect implements Dialect {
     @Override
     public String formatCeilFunction(String operand) {
         return "ceiling(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        throw new UnsupportedOperationException("H2 does not support the mod() function (use the modulo infix operator instead)");
     }
 
     @Override

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 
 /**
  * Defines the MySQL SQL dialect.
@@ -28,7 +29,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
  * <a href="https://dev.mysql.com/doc/refman/8.4/en/" />
  */
 public class MySqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR);
 
     @Override
     public String getProductName() {
@@ -83,6 +84,11 @@ public class MySqlDialect implements Dialect {
     @Override
     public String formatCeilFunction(String operand) {
         return "ceil(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        throw new UnsupportedOperationException("MySQL does not support the mod() function (use the modulo infix operator instead)");
     }
 
     @Override

@@ -35,6 +35,11 @@ public enum Capability {
     CONCAT_OPERATOR,
 
     /**
+     * Supports a numeric modulo infix operator
+     */
+    MODULO_OPERATOR,
+
+    /**
      * Supports a current time literal or function
      */
     CURRENT_TIME,

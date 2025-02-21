@@ -113,7 +113,7 @@ The example assumes a connection to a MySQL database.
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp, current_date, current_time
 * Comparison operators: eq (=), ge (>=), gt (>), le (<=), lt (<)
-* Arithmetic operators: add (+), subtract (-), multiply (*), divide (/)
+* Arithmetic operators: add (+), subtract (-), multiply (*), divide (/), modulo (%)
 * Logical operators: and, or, not
 * Other operators: in, is null, like, exists
 * Expressions: Any nested expression using functions, arithmetic operators and constant values

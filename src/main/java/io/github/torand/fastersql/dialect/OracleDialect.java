@@ -110,6 +110,11 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        return "mod(" + divisor + ", " + dividend + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return supportedCaps.contains(capability);
     }

@@ -61,4 +61,12 @@ public interface Expression extends Projection {
     default Expression dividedBy(Expression expression) {
         return ArithmeticExpressions.divide(this, expression);
     }
+
+    default Expression mod(Object value) {
+        return ArithmeticExpressions.mod(this, $(value));
+    }
+
+    default Expression mod(Expression expression) {
+        return ArithmeticExpressions.mod(this, expression);
+    }
 }

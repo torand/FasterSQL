@@ -98,6 +98,14 @@ public interface Dialect {
     String formatCeilFunction(String operand);
 
     /**
+     * Returns the 'mod' function formatted for a specific SQL dialect.
+     * @param divisor the numeric expression for divisor operand
+     * @param dividend the numeric expression for dividend operand
+     * @return the 'mod' function for a specific SQL dialect.
+     */
+    String formatModuloFunction(String divisor, String dividend);
+
+    /**
      * Indicates whether a capability is supported by a specific SQL dialect.
      * @param capability the capability to check support for
      * @return true if specified capability is supported; else false

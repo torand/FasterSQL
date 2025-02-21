@@ -35,4 +35,8 @@ public final class ArithmeticExpressions {
     public static Division divide(Expression first, Expression second) {
         return new Division(first, second, null);
     }
+
+    public static Modulo mod(Expression first, Expression second) {
+        return new Modulo(first, second, null);
+    }
 }

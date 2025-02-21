@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 
 /**
  * Defines the ANSI/ISO (ISO/IEC 9075) SQL dialect.
@@ -27,7 +28,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
  * <a href="https://standards.iso.org/iso-iec/9075/-2/ed-6/en/ISO_IEC_9075-2(E)_Foundation.bnf.txt" />
  */
 public class AnsiIsoDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, MODULO_OPERATOR);
 
     @Override
     public String getProductName() {
@@ -82,6 +83,11 @@ public class AnsiIsoDialect implements Dialect {
     @Override
     public String formatCeilFunction(String operand) {
         return "ceil(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        throw new UnsupportedOperationException("ANSI/ISO SQL does not support the mod() function (use the modulo infix operator instead)");
     }
 
     @Override

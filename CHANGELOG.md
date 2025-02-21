@@ -9,12 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Statement parameters of type OffsetDateTime and ZonedDateTime are converted into Timestamp.
-- Supporting the 'current_date' and 'current_time' system functions.
-- Supporting the 'round', 'abs', 'ceil' and 'floor' scalar functions
-- Validates that order aliases are specified in the SELECT clause.
-- Orders.asc and Orders.desc now accept column indices.
-- Supporting the 'nulls first' and 'nulls last' order clauses.
+- ...
 
 ### Changed
 - ...
@@ -24,6 +19,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - ...
+
+### Fixed
+- ...
+
+## [1.3.0] - 2025-02-21
+
+### Added
+- Statement parameters of type OffsetDateTime and ZonedDateTime are converted into Timestamp.
+- Supporting the 'current_date' and 'current_time' system functions.
+- Supporting the 'round', 'abs', 'ceil' and 'floor' scalar functions
+- Validates that order aliases are specified in the SELECT clause.
+- Orders.asc and Orders.desc now accept column indices.
+- Supporting the 'nulls first' and 'nulls last' order clauses.
+- Supporting the modulo arithmetic operator.
 
 ### Fixed
 - Correctly generates SQL for SELECT FOR UPDATE.

@@ -426,4 +426,28 @@ public class H2SelectStatementTest extends H2Test {
                 "ROUND", isBigDecimal(7122))
             .verify(stmt);
     }
+
+    @Test
+    public void shouldHandleArithmeticOperators() {
+        PreparableStatement stmt =
+            select(PRODUCT.NAME, PRODUCT.PRICE.plus(1).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"))
+                .from(PRODUCT)
+                .orderBy(PRODUCT.NAME.asc());
+
+        statementTester()
+            .assertSql("""
+                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, PR.PRICE % ? MOD_ \
+                from PRODUCT PR \
+                order by PR_NAME asc"""
+            )
+            .assertParams(1, 2, 3, 4, 5)
+            .assertRowCount(5)
+            .assertRow(2,
+                "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
+                "MINUS_", isBigDecimalCloseTo(5431.5, 0.01),
+                "TIMES_", isBigDecimalCloseTo(16300.5, 0.01),
+                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.01),
+                "MOD_", isBigDecimalCloseTo(3.50, 0.01))
+            .verify(stmt);
+    }
 }
