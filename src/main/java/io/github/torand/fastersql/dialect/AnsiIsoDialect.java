@@ -80,6 +80,11 @@ public class AnsiIsoDialect implements Dialect {
     }
 
     @Override
+    public String formatCeilFunction(String operand) {
+        return "ceil(" + operand + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return SUPPORTED_CAPS.contains(capability);
     }

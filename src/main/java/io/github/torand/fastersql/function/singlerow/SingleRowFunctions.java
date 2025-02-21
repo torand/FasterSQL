@@ -72,4 +72,12 @@ public final class SingleRowFunctions {
     public static Abs abs(Expression expression) {
         return new Abs(expression, null);
     }
+
+    public static Ceil ceil(Expression expression) {
+        return new Ceil(expression, null);
+    }
+
+    public static Floor floor(Expression expression) {
+        return new Floor(expression, null);
+    }
 }

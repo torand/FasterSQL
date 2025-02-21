@@ -91,6 +91,13 @@ public interface Dialect {
     String formatLengthFunction(String operand);
 
     /**
+     * Returns the 'ceil' function formatted for a specific SQL dialect.
+     * @param operand the numeric expression to get ceiling of
+     * @return the 'ceil' function for a specific SQL dialect.
+     */
+    String formatCeilFunction(String operand);
+
+    /**
      * Indicates whether a capability is supported by a specific SQL dialect.
      * @param capability the capability to check support for
      * @return true if specified capability is supported; else false

@@ -33,6 +33,8 @@ import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
 import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
@@ -381,24 +383,25 @@ public class MariaDbSelectStatementTest extends MariaDbTest {
     @Test
     public void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
-            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND_PRICE"), abs($(-1)).as("ABS"))
+            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, round(PR.PRICE) ROUND_PRICE, abs(?) ABS \
+                select PR.NAME PR_NAME, round(PR.PRICE) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR \
                 from PRODUCT PR \
                 order by PR_NAME asc"""
             )
             .assertParams(-1)
             .assertRowCount(5)
             .assertRow(2,
-                "ROUND_PRICE", isBigDecimal(5434),
-                "ABS", isInteger(1))
+                "ROUND", isBigDecimal(5434),
+                "ABS", isInteger(1),
+                "CEIL", isLong(5434),
+                "FLOOR", isLong(5433))
             .assertRow(3,
-                "ROUND_PRICE", isBigDecimal(7122))
-            //.logResultSet(stmt);
+                "ROUND", isBigDecimal(7122))
             .verify(stmt);
     }
 }

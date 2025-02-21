@@ -95,6 +95,11 @@ public class H2Dialect implements Dialect {
     }
 
     @Override
+    public String formatCeilFunction(String operand) {
+        return "ceiling(" + operand + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
         return SUPPORTED_CAPS.contains(capability);
     }
