@@ -21,4 +21,12 @@ public final class SystemFunctions {
     public static CurrentTimestamp currentTimestamp() {
         return new CurrentTimestamp(null);
     }
+
+    public static CurrentDate currentDate() {
+        return new CurrentDate(null);
+    }
+
+    public static CurrentTime currentTime() {
+        return new CurrentTime(null);
+    }
 }

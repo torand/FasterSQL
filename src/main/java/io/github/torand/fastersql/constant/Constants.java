@@ -15,93 +15,34 @@
  */
 package io.github.torand.fastersql.constant;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.UUID;
-
 import static java.util.Objects.isNull;
 
 public final class Constants {
 
     private Constants() {}
 
-    public static Constant constant(Object value) {
-        if (isNull(value)) {
-            return nullValue();
-        }
-
-        if (value instanceof String string) {
-            return constant(string);
-        }
-
-        if (value instanceof Integer integer) {
-            return constant(Long.valueOf(integer));
-        }
-
-        if (value instanceof Long longValue) {
-            return constant(longValue);
-        }
-
-        if (value instanceof BigInteger biginteger) {
-            return constant(biginteger.longValue());
-        }
-
-        if (value instanceof Float floatValue) {
-            return constant(Double.valueOf(floatValue));
-        }
-
-        if (value instanceof Double doubleValue) {
-            return constant(doubleValue);
-        }
-
-        if (value instanceof BigDecimal bigdecimal) {
-            return constant(bigdecimal.doubleValue());
-        }
-
-        if (value instanceof UUID uuid) {
-            return constant(uuid);
-        }
-
-        if (value instanceof Enum enumValue) {
-            return constant(enumValue);
-        }
-
-        throw new IllegalArgumentException("Unsupported constant type: " + value.getClass());
-    }
-
-    public static Constant constant(UUID value) {
-        if (isNull(value)) {
-            return nullValue();
-        }
-        return new StringConstant(value.toString(), null);
-    }
-
-    public static Constant constant(Enum<? extends Enum<?>> value) {
-        if (isNull(value)) {
-            return nullValue();
-        }
-        return new StringConstant(value.name(), null);
-    }
-
-    public static Constant constant(String value) {
-        if (isNull(value)) {
-            return nullValue();
-        }
-        return new StringConstant(value, null);
-    }
-
-    public static Constant constant(Long value) {
-        if (isNull(value)) {
-            return nullValue();
-        }
+    public static IntegerConstant $(int value) {
         return new IntegerConstant(value, null);
     }
 
-    public static Constant constant(Double value) {
+    public static StringConstant $(String value) {
+        return new StringConstant(value, null);
+    }
+
+    public static <T> Constant $(T value) {
         if (isNull(value)) {
             return nullValue();
         }
-        return new DecimalConstant(value, null);
+
+        return new GenericConstant<>(value, null);
+    }
+
+    public static <T> Constant constant(T value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+
+        return new GenericConstant<>(value, null);
     }
 
     public static Constant nullValue() {

@@ -22,10 +22,17 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.net.URI;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,19 +42,26 @@ import java.util.UUID;
 public class PreparedStatementBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(PreparedStatementBuilder.class);
     private final Connection connection;
+    private final Dialect dialect;
 
     public static PreparedStatementBuilder using(Connection connection) {
-        return new PreparedStatementBuilder(connection);
+        return new PreparedStatementBuilder(connection, Dialect.fromConnection(connection));
     }
 
-    private PreparedStatementBuilder(Connection connection) {
+    public static PreparedStatementBuilder using(Connection connection, Dialect dialect) {
+        return new PreparedStatementBuilder(connection, dialect);
+    }
+
+    private PreparedStatementBuilder(Connection connection, Dialect dialect) {
         this.connection = connection;
+        this.dialect = dialect;
     }
 
     public PreparedStatement prepare(PreparableStatement statement) throws SQLException {
         LOGGER.debug("Preparing SQL statement (ANSI/ISO SQL): {}", statement);
 
-        Context context = Context.of(Dialect.fromConnection(connection));
+        Context context = Context.of(dialect);
+
         String sql = statement.sql(context);
         LOGGER.debug("Generated {} SQL statement: {}", context.getDialect().getProductName(), sql);
         List<Object> params = statement.params(context);
@@ -61,6 +75,10 @@ public class PreparedStatementBuilder {
                 stmt.setTimestamp(i, Timestamp.valueOf(localDateTime));
             } else if (param instanceof LocalDate localDate) {
                 stmt.setDate(i, Date.valueOf(localDate));
+            } else if (param instanceof OffsetDateTime offsetDateTime) {
+                stmt.setTimestamp(i, Timestamp.valueOf(offsetDateTime.atZoneSameInstant(ZoneOffset.UTC).toLocalDateTime()));
+            } else if (param instanceof ZonedDateTime zonedDateTime) {
+                stmt.setTimestamp(i, Timestamp.valueOf(zonedDateTime.toLocalDateTime()));
             } else if (param instanceof UUID uuid) {
                 stmt.setObject(i, uuid.toString());
             } else if (param instanceof URI uri) {

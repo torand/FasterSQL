@@ -43,4 +43,16 @@ public final class StringHelper {
         }
         return b.toString();
     }
+
+    public static String quote(String string) {
+        return "\"" + string + "\"";
+    }
+
+    public static Object quoteIfString(Object value) {
+        if (value instanceof String string) {
+            return quote(string);
+        }
+
+        return value;
+    }
 }

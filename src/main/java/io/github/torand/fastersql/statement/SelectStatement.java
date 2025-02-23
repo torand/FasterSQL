@@ -36,7 +36,11 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.isEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.require;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static io.github.torand.fastersql.util.functional.Functions.castTo;
@@ -45,7 +49,9 @@ import static io.github.torand.fastersql.util.functional.Predicates.instanceOf;
 import static io.github.torand.fastersql.util.functional.Predicates.not;
 import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
-import static java.util.Objects.*;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
@@ -171,7 +177,7 @@ public class SelectStatement extends PreparableStatement {
     }
 
     public SelectStatement forUpdate() {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, true);
     }
 
     @Override
@@ -237,11 +243,13 @@ public class SelectStatement extends PreparableStatement {
 
         if (nonNull(offset) || nonNull(limit)) {
             if (context.getDialect().supports(LIMIT_OFFSET)) {
-                if (nonNull(limit)) {
-                    sb.append(" limit ?");
-                }
-                if (nonNull(offset)) {
-                    sb.append(" offset ?");
+                String offsetClause = nonNull(offset) ? " " + context.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row offset clause")) : "";
+                String limitClause = nonNull(limit) ? " " + context.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row limit clause")) : "";
+
+                if (context.getDialect().offsetBeforeLimit()) {
+                    sb.append(offsetClause).append(limitClause);
+                } else {
+                    sb.append(limitClause).append(offsetClause);
                 }
             } else {
                 sb = addLimitOffsetFallback(context, sb, rowFrom(), rowTo());
@@ -265,11 +273,11 @@ public class SelectStatement extends PreparableStatement {
 
     private StringBuilder addLimitOffsetFallback(Context context, StringBuilder innerSql, Long rowFrom, Long rowTo) {
         String rowNum = context.getDialect().formatRowNumLiteral()
-            .orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no ROWNUM literal"));
+            .orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row number literal"));
 
         if (nonNull(rowFrom) && nonNull(rowTo)) {
-            String limitSql = "select original.*, {ROWNUM} row_no from ( " + innerSql.toString() + " ) original where {ROWNUM} <= ?";
-            String offsetSql = "select * from ( " + limitSql + " ) where row_no >= ?";
+            String limitSql = "select ORIGINAL.*, {ROWNUM} ROW_NO from ( " + innerSql.toString() + " ) ORIGINAL where {ROWNUM} <= ?";
+            String offsetSql = "select * from ( " + limitSql + " ) where ROW_NO >= ?";
             return new StringBuilder(offsetSql.replace("{ROWNUM}", rowNum));
         } else if (nonNull(rowFrom)) {
             String offsetSql = "select * from ( " + innerSql.toString() + " ) where {ROWNUM} >= ?";
@@ -294,17 +302,27 @@ public class SelectStatement extends PreparableStatement {
 
         streamSafely(predicates).flatMap(e -> e.params(context)).forEach(params::add);
 
-        if (nonNull(limit)) {
-            if (context.getDialect().supports(LIMIT_OFFSET)) {
-                params.add(limit);
+        if (context.getDialect().supports(LIMIT_OFFSET)) {
+            if (context.getDialect().offsetBeforeLimit()) {
+                if (nonNull(offset)) {
+                    params.add(offset);
+                }
+                if (nonNull(limit)) {
+                    params.add(limit);
+                }
             } else {
+                if (nonNull(limit)) {
+                    params.add(limit);
+                }
+                if (nonNull(offset)) {
+                    params.add(offset);
+                }
+            }
+        } else {
+            if (nonNull(limit)) {
                 params.add(rowTo());
             }
-        }
-        if (nonNull(offset)) {
-            if (context.getDialect().supports(LIMIT_OFFSET)) {
-                params.add(offset);
-            } else {
+            if (nonNull(offset)) {
                 params.add(rowFrom());
             }
         }
@@ -326,6 +344,20 @@ public class SelectStatement extends PreparableStatement {
 
         if (nonNull(joins)) {
             validateFieldTableRelations(streamSafely(joins).flatMap(Join::fieldRefs));
+        }
+
+        if (nonNull(orders)) {
+            Set<String> orderableAliases = streamSafely(projections)
+                .map(Projection::alias)
+                .collect(toSet());
+
+            streamSafely(orders)
+                .filter(o -> nonNull(o.alias()))
+                .filter(o -> !orderableAliases.contains(o.alias()))
+                .findFirst()
+                .ifPresent(o -> {
+                    throw new IllegalStateException("Order alias " + o.alias() + " is not specified in the SELECT clause");
+                });
         }
 
         validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));

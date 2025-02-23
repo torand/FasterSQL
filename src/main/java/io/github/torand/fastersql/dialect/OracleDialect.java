@@ -16,16 +16,54 @@
 package io.github.torand.fastersql.dialect;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
+/**
+ * Defines the Oracle SQL dialect.
+ *
+ * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/" />
+ */
 public class OracleDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.noneOf(Capability.class);
+    private final EnumSet<Capability> supportedCaps;
+
+    public OracleDialect() {
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING));
+    }
+
+    private OracleDialect(EnumSet<Capability> capabilities) {
+        this.supportedCaps = EnumSet.copyOf(capabilities);
+    }
 
     @Override
     public String getProductName() {
         return "Oracle";
+    }
+
+    @Override
+    public boolean offsetBeforeLimit() {
+        return true;
+    }
+
+    /**
+     * Row offset clause is supported from Oracle 12c onwards
+     */
+    @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ? rows");
+    }
+
+    /**
+     * Row limit clause is supported from Oracle 12c onwards
+     */
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("fetch next ? rows only");
     }
 
     @Override
@@ -47,7 +85,47 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
+    public String formatToCharFunction(String operand, String format) {
+        return "to_char(" + operand + ", " + format + ")";
+    }
+
+    @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substr(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
+    public String formatConcatFunction(List<String> operands) {
+        throw new UnsupportedOperationException("Oracle does not support the concat() function (use the concat infix operator instead)");
+    }
+
+    @Override
+    public String formatLengthFunction(String operand) {
+        return "length(" + operand + ")";
+    }
+
+    @Override
+    public String formatCeilFunction(String operand) {
+        return "ceil(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        return "mod(" + divisor + ", " + dividend + ")";
+    }
+
+    @Override
     public boolean supports(Capability capability) {
-        return SUPPORTED_CAPS.contains(capability);
+        return supportedCaps.contains(capability);
+    }
+
+    /**
+     * Row offset and limit clauses are supported from Oracle 12c onwards.
+     * Invoke this method when using previous versions of Oracle, to simulate these clauses with subqueries.
+     */
+    public OracleDialect withLegacyRowLimiting() {
+        EnumSet<Capability> reducedCaps = EnumSet.copyOf(supportedCaps);
+        reducedCaps.remove(LIMIT_OFFSET);
+        return new OracleDialect(reducedCaps);
     }
 }

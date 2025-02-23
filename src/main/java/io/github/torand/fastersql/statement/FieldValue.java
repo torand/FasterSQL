@@ -17,11 +17,10 @@ package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
-import io.github.torand.fastersql.function.Function;
+import io.github.torand.fastersql.expression.Expression;
 
-import java.util.Optional;
+import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -29,33 +28,22 @@ import static java.util.Objects.requireNonNull;
  */
 class FieldValue {
     private final Field field;
-    private final Object value;
+    private final Expression expression;
 
-    FieldValue(Field field, Object value) {
+    FieldValue(Field field, Expression expression) {
         this.field = requireNonNull(field, "No field specified");
-        this.value = value;
+        this.expression = requireNonNull(expression, "No expression specified");
     }
 
     Field field() {
         return field;
     }
 
-    Optional<Object> param() {
-        return isParameterized() ? Optional.ofNullable(value) : Optional.empty();
+    Stream<Object> params(Context context) {
+        return expression.params(context);
     }
 
     String valueSql(Context context) {
-        if (isNull(value)) {
-            return "null";
-        } else if (isParameterized()) {
-            return "?";
-        } else {
-            Function function = (Function)value;
-            return function.sql(context);
-        }
-    }
-
-    private boolean isParameterized() {
-        return !(value instanceof Function);
+        return expression.sql(context);
     }
 }

@@ -17,24 +17,62 @@ package io.github.torand.fastersql.order;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.dialect.Capability;
 import io.github.torand.fastersql.projection.Projection;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
 public class Ascending implements Order {
     private final Projection projection;
+    private final String alias;
+    private final Integer index;
+    private final Boolean nullsFirst;
 
     Ascending(Projection projection) {
-        this.projection = requireNonNull(projection, "No projection specified");
+        this(requireNonNull(projection, "No projection specified"), projection.alias(), null, null);
+    }
+
+    Ascending(String alias) {
+        this(null, requireNonBlank(alias, "No alias specified"), null, null);
+    }
+
+    Ascending(Integer index) {
+        this(null, null, requireNonNull(index, "No index specified"), null);
+    }
+
+    private Ascending(Projection projection, String alias, Integer index, Boolean nullsFirst) {
+        this.projection = projection;
+        this.alias = alias;
+        this.index = index;
+        this.nullsFirst = nullsFirst;
+    }
+
+    public Ascending nullsFirst() {
+        return new Ascending(projection, alias, index, true);
+    }
+
+    public Ascending nullsLast() {
+        return new Ascending(projection, alias, index, false);
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return projection.alias() + " asc";
+        if (nonNull(nullsFirst) && !context.getDialect().supports(Capability.NULL_ORDERING)) {
+            throw new UnsupportedOperationException("%s does not support 'nulls first' or 'nulls last'".formatted(context.getDialect().getProductName()));
+        }
+
+        return (nonNull(index) ? index : alias)
+            + " asc"
+            + (TRUE.equals(nullsFirst) ? " nulls first" : "")
+            + (FALSE.equals(nullsFirst) ? " nulls last" : "");
     }
 
     @Override
@@ -43,6 +81,11 @@ public class Ascending implements Order {
     }
 
     // Order
+
+    @Override
+    public String alias() {
+        return alias;
+    }
 
     @Override
     public Stream<Field> fieldRefs() {

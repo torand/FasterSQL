@@ -19,17 +19,42 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
+/**
+ * Defines the H2 SQL dialect.
+ *
+ * <a href="https://www.h2database.com/html/grammar.html" />
+ */
 public class H2Dialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
 
     @Override
     public String getProductName() {
         return "H2";
+    }
+
+    @Override
+    public boolean offsetBeforeLimit() {
+        return false;
+    }
+
+    @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ?");
+    }
+
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("limit ?");
     }
 
     @Override
@@ -48,6 +73,36 @@ public class H2Dialect implements Dialect {
         }
 
         return "to_number(" + operand + ", '" + mask + "')";
+    }
+
+    @Override
+    public String formatToCharFunction(String operand, String format) {
+        return "to_char(" + operand + ", " + format + ")";
+    }
+
+    @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substring(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
+    public String formatConcatFunction(List<String> operands) {
+        throw new UnsupportedOperationException("H2 does not support the concat() function (use the concat infix operator instead)");
+    }
+
+    @Override
+    public String formatLengthFunction(String operand) {
+        return "char_length(" + operand + ")";
+    }
+
+    @Override
+    public String formatCeilFunction(String operand) {
+        return "ceiling(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        throw new UnsupportedOperationException("H2 does not support the mod() function (use the modulo infix operator instead)");
     }
 
     @Override

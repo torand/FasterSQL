@@ -37,7 +37,9 @@ public class And implements Predicate {
 
     @Override
     public String sql(Context context) {
-        return operands.stream().map(e -> e.sql(context)).collect(joining(" and "));
+        return operands.stream()
+            .map(e -> e instanceof Or ? "(" + e.sql(context) + ")" : e.sql(context))
+            .collect(joining(" and "));
     }
 
     @Override

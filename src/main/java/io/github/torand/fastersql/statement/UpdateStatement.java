@@ -18,11 +18,9 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
-import io.github.torand.fastersql.constant.Constant;
-import io.github.torand.fastersql.function.Function;
+import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
-import io.github.torand.fastersql.util.functional.Optionals;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +28,12 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.UPDATE;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
+import static io.github.torand.fastersql.constant.Constants.$;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.isEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -46,26 +49,18 @@ public class UpdateStatement extends PreparableStatement {
         this.predicates = asList(predicates);
     }
 
-    public UpdateStatement set(Field field, Constant constant) {
+    public UpdateStatement set(Field field, Expression expression) {
         requireNonNull(field, "No field specified");
-        requireNonNull(constant, "No constant specified");
+        requireNonNull(expression, "No expression specified");
 
-        List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, constant.value()));
-        return new UpdateStatement(table, concatenated, predicates);
-    }
-
-    public UpdateStatement set(Field field, Function function) {
-        requireNonNull(field, "No field specified");
-        requireNonNull(function, "No function specified");
-
-        List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, function));
+        List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, expression));
         return new UpdateStatement(table, concatenated, predicates);
     }
 
     public UpdateStatement set(Field field, Object value) {
         requireNonNull(field, "No field specified");
 
-        List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, value));
+        List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, $(value)));
         return new UpdateStatement(table, concatenated, predicates);
     }
 
@@ -74,7 +69,7 @@ public class UpdateStatement extends PreparableStatement {
         requireNonNull(maybeValue, "No value specified");
 
         if (maybeValue.isPresent()) {
-            List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, maybeValue.get()));
+            List<FieldValue> concatenated = concat(this.fieldValues, new FieldValue(field, $(maybeValue.get())));
             return new UpdateStatement(table, concatenated, predicates);
         } else {
             return this;
@@ -120,7 +115,11 @@ public class UpdateStatement extends PreparableStatement {
 
     @Override
     List<Object> params(Context context) {
-        return Stream.concat(streamSafely(fieldValues).map(FieldValue::param).flatMap(Optionals::stream), streamSafely(predicates).flatMap(e -> e.params(context))).toList();
+        final Context localContext = context.withCommand(UPDATE);
+        return Stream.concat(
+                streamSafely(fieldValues).flatMap(fv -> fv.params(localContext)),
+                streamSafely(predicates).flatMap(p -> p.params(localContext)))
+            .toList();
     }
 
     private void validate() {

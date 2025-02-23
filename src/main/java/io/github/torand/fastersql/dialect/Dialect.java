@@ -17,6 +17,7 @@ package io.github.torand.fastersql.dialect;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public interface Dialect {
@@ -27,6 +28,23 @@ public interface Dialect {
     String getProductName();
 
     /**
+     * Indicates whether offset clause must be specified before limit clause; if supported.
+     * @return whether offset clause must be specified before limit clause; if supported.
+     */
+    boolean offsetBeforeLimit();
+    /**
+     * Returns the _row offset clause_ formatted for a specific SQL dialect.
+     * @return the _row offset clause_ formatted for a specific SQL dialect.
+     */
+    Optional<String> formatRowOffsetClause();
+
+    /**
+     * Returns the _row limit clause_ formatted for a specific SQL dialect.
+     * @return the _row limit clause_ formatted for a specific SQL dialect.
+     */
+    Optional<String> formatRowLimitClause();
+
+    /**
      * Returns the _row number_ literal formatted for a specific SQL dialect.
      * @return the _row number_ literal formatted for a specific SQL dialect.
      */
@@ -34,11 +52,58 @@ public interface Dialect {
 
     /**
      * Returns the 'to_number' function formatted for a specific SQL dialect.
+     * @param operand the string expression to be evaluated as a number
      * @param precision the precision that represents the number of significant digits
      * @param scale the scale that that represents the number of digits after the decimal point. Must be less than or equal to the precision.
      * @return the 'to_number' function for a specific SQL dialect.
      */
     String formatToNumberFunction(String operand, int precision, int scale);
+
+    /**
+     * Returns the 'to_char' function formatted for a specific SQL dialect.
+     * @param operand the expression to be evaluated as a string
+     * @param format the vendor-specific format mask
+     * @return the 'to_char' function for a specific SQL dialect.
+     */
+    String formatToCharFunction(String operand, String format);
+
+    /**
+     * Returns the 'substring' function formatted for a specific SQL dialect.
+     * @param operand the string expression to get substring from
+     * @param startPos the start position (1-based) of the substring
+     * @param length the length of the substring
+     * @return the 'substring' function for a specific SQL dialect.
+     */
+    String formatSubstringFunction(String operand, int startPos, int length);
+
+    /**
+     * Returns the 'concat' function formatted for a specific SQL dialect.
+     * @param operands the string expressions to concatenate
+     * @return the 'concat' function for a specific SQL dialect.
+     */
+    String formatConcatFunction(List<String> operands);
+
+    /**
+     * Returns the 'length' function formatted for a specific SQL dialect.
+     * @param operand the string expression to get length of
+     * @return the 'length' function for a specific SQL dialect.
+     */
+    String formatLengthFunction(String operand);
+
+    /**
+     * Returns the 'ceil' function formatted for a specific SQL dialect.
+     * @param operand the numeric expression to get ceiling of
+     * @return the 'ceil' function for a specific SQL dialect.
+     */
+    String formatCeilFunction(String operand);
+
+    /**
+     * Returns the 'mod' function formatted for a specific SQL dialect.
+     * @param divisor the numeric expression for divisor operand
+     * @param dividend the numeric expression for dividend operand
+     * @return the 'mod' function for a specific SQL dialect.
+     */
+    String formatModuloFunction(String divisor, String dividend);
 
     /**
      * Indicates whether a capability is supported by a specific SQL dialect.

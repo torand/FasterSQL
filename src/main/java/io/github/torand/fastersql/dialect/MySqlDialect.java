@@ -16,16 +16,39 @@
 package io.github.torand.fastersql.dialect;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 
+/**
+ * Defines the MySQL SQL dialect.
+ *
+ * <a href="https://dev.mysql.com/doc/refman/8.4/en/" />
+ */
 public class MySqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR);
 
     @Override
     public String getProductName() {
         return "MySQL";
+    }
+
+    @Override
+    public boolean offsetBeforeLimit() {
+        return false;
+    }
+
+    @Override
+    public Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ?");
+    }
+
+    @Override
+    public Optional<String> formatRowLimitClause() {
+        return Optional.of("limit ?");
     }
 
     @Override
@@ -36,6 +59,36 @@ public class MySqlDialect implements Dialect {
     @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
         return "cast(" + operand + " as decimal(" + precision + "," + scale + "))";
+    }
+
+    @Override
+    public String formatToCharFunction(String operand, String format) {
+        throw new UnsupportedOperationException("MySQL does not support the to_char() function");
+    }
+
+    @Override
+    public String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substring(" + operand + ", " + startPos + ", " + length + ")";
+    }
+
+    @Override
+    public String formatConcatFunction(List<String> operands) {
+        return "concat(%s)".formatted(String.join(", ", operands));
+    }
+
+    @Override
+    public String formatLengthFunction(String operand) {
+        return "char_length(" + operand + ")";
+    }
+
+    @Override
+    public String formatCeilFunction(String operand) {
+        return "ceil(" + operand + ")";
+    }
+
+    @Override
+    public String formatModuloFunction(String divisor, String dividend) {
+        throw new UnsupportedOperationException("MySQL does not support the mod() function (use the modulo infix operator instead)");
     }
 
     @Override
