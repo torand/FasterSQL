@@ -15,10 +15,12 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Join;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.alias.Alias;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
 import io.github.torand.fastersql.order.Order;
@@ -29,6 +31,7 @@ import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -46,12 +49,11 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static io.github.torand.fastersql.util.functional.Functions.castTo;
 import static io.github.torand.fastersql.util.functional.Optionals.mapIfNonNull;
 import static io.github.torand.fastersql.util.functional.Predicates.instanceOf;
-import static io.github.torand.fastersql.util.functional.Predicates.not;
-import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
@@ -60,21 +62,23 @@ public class SelectStatement extends PreparableStatement {
     private final List<Table<?>> tables;
     private final List<Join> joins;
     private final Subquery subqueryFrom;
-    private final List<Predicate> predicates;
-    private final List<Field> groups;
+    private final List<Predicate> wherePredicates;
+    private final List<Column> groups;
+    private final List<Predicate> havingPredicates;
     private final List<Order> orders;
     private final boolean distinct;
     private final Long limit;
     private final Long offset;
     private final boolean forUpdate;
 
-    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Predicate> predicates, List<Field> groups, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
+    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Predicate> wherePredicates, List<Column> groups, List<Predicate> havingPredicates, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
         this.projections = asList(projections);
         this.tables = asList(tables);
         this.joins = asList(joins);
         this.subqueryFrom = subqueryFrom;
-        this.predicates = asList(predicates);
+        this.wherePredicates = asList(wherePredicates);
         this.groups = asList(groups);
+        this.havingPredicates = asList(havingPredicates);
         this.orders = asList(orders);
         this.distinct = distinct;
         this.limit = limit;
@@ -87,7 +91,7 @@ public class SelectStatement extends PreparableStatement {
         require(() -> isNull(subqueryFrom), "Can't combine a subquery FROM clause with joins");
 
         List<Join> concatenated = concat(this.joins, joins);
-        return new SelectStatement(projections, tables, concatenated, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, concatenated, subqueryFrom, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement leftOuterJoin(Join join) {
@@ -106,78 +110,120 @@ public class SelectStatement extends PreparableStatement {
         require(() -> isNull(subqueryFrom), "Can't combine a subquery FROM clause with joins");
         if (condition) {
             List<Join> concatenated = concat(this.joins, unwrapSuppliers(joinSuppliers));
-            return new SelectStatement(projections, tables, concatenated, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+            return new SelectStatement(projections, tables, concatenated, subqueryFrom, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
         } else {
             return this;
         }
     }
 
     /**
-     * Adds one or more predicates to the where clause.
-     * @param predicates the predicates to add
+     * Adds one or more predicates to the WHERE clause.
+     * @param predicates the WHERE predicates to add
      * @return updated statement, for method chaining
      */
     public SelectStatement where(Predicate... predicates) {
-        requireNonEmpty(predicates, "No predicates specified");
+        requireNonEmpty(predicates, "No WHERE predicates specified");
 
-        List<Predicate> concatenated = concat(this.predicates, predicates);
-        return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
+        List<Predicate> concatenated = concat(this.wherePredicates, predicates);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause predicates that are present.
-     * @param maybePredicates the predicate that may be present or not
+     * Same as other method of same name, but only adds to the WHERE clause predicates that are present.
+     * @param maybePredicates the WHERE predicate that may be present or not
      * @return updated statement, for method chaining
      */
     @SafeVarargs
     public final SelectStatement where(OptionalPredicate... maybePredicates) {
-        requireNonEmpty(maybePredicates, "No optional predicates specified");
+        requireNonEmpty(maybePredicates, "No optional WHERE predicates specified");
 
-        List<Predicate> concatenated = concat(this.predicates, OptionalPredicate.unwrap(maybePredicates));
-        return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
+        List<Predicate> concatenated = concat(this.wherePredicates, OptionalPredicate.unwrap(maybePredicates));
+        return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
     /**
-     * Adds one or more predicates to the where clause, if a predicate is true.
+     * Adds one or more predicates to the WHERE clause, if a predicate is true.
      * @param condition the condition that must be true for predicates to be added
-     * @param predicateSuppliers the suppliers providing predicates to add
+     * @param predicateSuppliers the suppliers providing WHERE predicates to add
      * @return updatet statement, for method chaining
      */
     @SafeVarargs
     public final SelectStatement whereIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
-        requireNonEmpty(predicateSuppliers, "No predicate suppliers specified");
+        requireNonEmpty(predicateSuppliers, "No WHERE predicate suppliers specified");
         if (condition) {
-            List<Predicate> concatenated = concat(this.predicates, unwrapSuppliers(predicateSuppliers));
-            return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, orders, distinct, limit, offset, forUpdate);
+            List<Predicate> concatenated = concat(this.wherePredicates, unwrapSuppliers(predicateSuppliers));
+            return new SelectStatement(projections, tables, joins, subqueryFrom, concatenated, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
         } else {
             return this;
         }
     }
 
-    public SelectStatement groupBy(Field... groups) {
+    public SelectStatement groupBy(Column... groups) {
         requireNonEmpty(groups, "No groups specified");
 
-        List<Field> concatenated = concat(this.groups, groups);
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, concatenated, orders, distinct, limit, offset, forUpdate);
+        List<Column> concatenated = concat(this.groups, groups);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, concatenated, havingPredicates, orders, distinct, limit, offset, forUpdate);
+    }
+
+    /**
+     * Adds one or more predicates to the HAVING clause.
+     * @param predicates the HAVING predicates to add
+     * @return updated statement, for method chaining
+     */
+    public SelectStatement having(Predicate... predicates) {
+        requireNonEmpty(predicates, "No HAVING predicates specified");
+
+        List<Predicate> concatenated = concat(this.havingPredicates, predicates);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, concatenated, orders, distinct, limit, offset, forUpdate);
+    }
+
+    /**
+     * Same as other method of same name, but only adds to the HAVING clause predicates that are present.
+     * @param maybePredicates the HAVING predicate that may be present or not
+     * @return updated statement, for method chaining
+     */
+    @SafeVarargs
+    public final SelectStatement having(OptionalPredicate... maybePredicates) {
+        requireNonEmpty(maybePredicates, "No optional HAVING predicates specified");
+
+        List<Predicate> concatenated = concat(this.havingPredicates, OptionalPredicate.unwrap(maybePredicates));
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, concatenated, orders, distinct, limit, offset, forUpdate);
+    }
+
+    /**
+     * Adds one or more predicates to the HAVING clause, if a predicate is true.
+     * @param condition the condition that must be true for predicates to be added
+     * @param predicateSuppliers the suppliers providing HAVING predicates to add
+     * @return updatet statement, for method chaining
+     */
+    @SafeVarargs
+    public final SelectStatement havingIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
+        requireNonEmpty(predicateSuppliers, "No HAVING predicate suppliers specified");
+        if (condition) {
+            List<Predicate> concatenated = concat(this.havingPredicates, unwrapSuppliers(predicateSuppliers));
+            return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, concatenated, orders, distinct, limit, offset, forUpdate);
+        } else {
+            return this;
+        }
     }
 
     public SelectStatement orderBy(Order... orders) {
         requireNonEmpty(orders, "No orders specified");
 
         List<Order> concatenated = concat(this.orders, orders);
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, concatenated, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, havingPredicates, concatenated, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement limit(long limit) {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement offset(long offset) {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, forUpdate);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
     public SelectStatement forUpdate() {
-        return new SelectStatement(projections, tables, joins, subqueryFrom, predicates, groups, orders, distinct, limit, offset, true);
+        return new SelectStatement(projections, tables, joins, subqueryFrom, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, true);
     }
 
     @Override
@@ -192,7 +238,7 @@ public class SelectStatement extends PreparableStatement {
         }
 
         sb.append(streamSafely(projections)
-            .map(p -> p.sql(localContext) + (isBlank(p.alias()) ? "" : " " + p.alias()))
+            .map(p -> p.sql(localContext) + (p.alias().isEmpty() ? "" : " " + p.alias().map(a -> a.sql(localContext)).get()))
             .collect(joining(", ")));
 
         sb.append(" from ");
@@ -220,10 +266,10 @@ public class SelectStatement extends PreparableStatement {
             }
         }
 
-        if (nonEmpty(predicates)) {
+        if (nonEmpty(wherePredicates)) {
             sb.append(" where ");
-            sb.append(streamSafely(predicates)
-                .map(e -> e.sql(localContext))
+            sb.append(streamSafely(wherePredicates)
+                .map(p -> p.sql(localContext))
                 .collect(joining(" and ")));
         }
 
@@ -232,6 +278,13 @@ public class SelectStatement extends PreparableStatement {
             sb.append(streamSafely(groups)
                 .map(g -> g.sql(localContext))
                 .collect(joining(", ")));
+        }
+
+        if (nonEmpty(havingPredicates)) {
+            sb.append(" having ");
+            sb.append(streamSafely(havingPredicates)
+                .map(p -> p.sql(localContext))
+                .collect(joining(" and ")));
         }
 
         if (nonEmpty(orders)) {
@@ -300,7 +353,9 @@ public class SelectStatement extends PreparableStatement {
             subqueryFrom.params(context).forEach(params::add);
         }
 
-        streamSafely(predicates).flatMap(e -> e.params(context)).forEach(params::add);
+        streamSafely(wherePredicates).flatMap(p -> p.params(context)).forEach(params::add);
+
+        streamSafely(havingPredicates).flatMap(p -> p.params(context)).forEach(params::add);
 
         if (context.getDialect().supports(LIMIT_OFFSET)) {
             if (context.getDialect().offsetBeforeLimit()) {
@@ -335,34 +390,37 @@ public class SelectStatement extends PreparableStatement {
             throw new IllegalStateException("No FROM clause specified");
         }
 
-        List<Field> projectedFields = streamSafely(projections)
+        Stream<Column> projectedColumns = streamSafely(projections)
             .filter(instanceOf(Expression.class))
             .map(castTo(Expression.class))
-            .flatMap(Expression::fieldRefs)
-            .toList();
-        validateFieldTableRelations(streamSafely(projectedFields));
+            .flatMap(Expression::columnRefs);
+        validateColumnTableRelations(projectedColumns);
 
         if (nonNull(joins)) {
-            validateFieldTableRelations(streamSafely(joins).flatMap(Join::fieldRefs));
+            validateColumnTableRelations(streamSafely(joins).flatMap(Join::columnRefs));
         }
 
         if (nonNull(orders)) {
             Set<String> orderableAliases = streamSafely(projections)
                 .map(Projection::alias)
+                .flatMap(Optional::stream)
+                .map(Alias::name)
                 .collect(toSet());
 
             streamSafely(orders)
-                .filter(o -> nonNull(o.alias()))
-                .filter(o -> !orderableAliases.contains(o.alias()))
+                .flatMap(o -> o.aliasRefs())
+                .map(ColumnAlias::name)
+                .filter(a -> !orderableAliases.contains(a))
                 .findFirst()
-                .ifPresent(o -> {
-                    throw new IllegalStateException("Order alias " + o.alias() + " is not specified in the SELECT clause");
+                .ifPresent(a -> {
+                    throw new IllegalStateException("ORDER BY column alias " + a + " is not specified in the SELECT clause");
                 });
         }
 
-        validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));
-        validateFieldTableRelations(streamSafely(groups));
-        validateFieldTableRelations(streamSafely(orders).flatMap(Order::fieldRefs));
+        validateColumnTableRelations(streamSafely(wherePredicates).flatMap(Predicate::columnRefs));
+        validateColumnTableRelations(streamSafely(groups));
+        validateColumnTableRelations(streamSafely(havingPredicates).flatMap(Predicate::columnRefs));
+        validateColumnTableRelations(streamSafely(orders).flatMap(Order::columnRefs));
 
         if (forUpdate) {
             if (distinct || nonEmpty(groups) || streamSafely(projections).anyMatch(instanceOf(AggregateFunction.class))) {
@@ -371,16 +429,16 @@ public class SelectStatement extends PreparableStatement {
         }
     }
 
-    private void validateFieldTableRelations(Stream<Field> fields) {
+    private void validateColumnTableRelations(Stream<Column> columns) {
         Set<String> tableNames = Stream.concat(streamSafely(tables), streamSafely(joins).map(Join::joined))
             .map(Table::name)
             .collect(toSet());
 
-        fields
-            .filter(f -> !tableNames.contains(f.table().name()))
+        columns
+            .filter(c -> !tableNames.contains(c.table().name()))
             .findFirst()
-            .ifPresent(f -> {
-                throw new IllegalStateException("Field " + f.name() + " belongs to table " + f.table().name() + ", but is not specified in a FROM or JOIN clause");
+            .ifPresent(c -> {
+                throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but is not specified in a FROM or JOIN clause");
             });
     }
 }

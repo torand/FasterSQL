@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.Collection;
@@ -39,7 +38,7 @@ public final class Predicates {
         return new Like(left, right);
     }
 
-    public static IsNull isNull(Field operand) {
+    public static IsNull isNull(LeftOperand operand) {
         return new IsNull(operand);
     }
 }

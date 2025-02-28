@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.expression.Expression;
 
 import java.util.stream.Stream;
@@ -24,19 +24,19 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A field-value pair used in UPDATE and INSERT statements.
+ * A column-value pair used in UPDATE and INSERT statements.
  */
-class FieldValue {
-    private final Field field;
+class ColumnValue {
+    private final Column column;
     private final Expression expression;
 
-    FieldValue(Field field, Expression expression) {
-        this.field = requireNonNull(field, "No field specified");
+    ColumnValue(Column column, Expression expression) {
+        this.column = requireNonNull(column, "No column specified");
         this.expression = requireNonNull(expression, "No expression specified");
     }
 
-    Field field() {
-        return field;
+    Column column() {
+        return column;
     }
 
     Stream<Object> params(Context context) {

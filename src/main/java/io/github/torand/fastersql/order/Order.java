@@ -15,16 +15,12 @@
  */
 package io.github.torand.fastersql.order;
 
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Sql;
 
-import java.util.stream.Stream;
-
+/**
+ * Represents an ordering specification for the ORDER BY clause.
+ */
 public interface Order extends Sql {
     Order nullsFirst();
     Order nullsLast();
-
-    String alias();
-
-    Stream<Field> fieldRefs();
 }

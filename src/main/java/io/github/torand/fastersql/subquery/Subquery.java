@@ -15,8 +15,11 @@
  */
 package io.github.torand.fastersql.subquery;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.alias.TableAlias;
 import io.github.torand.fastersql.statement.SelectStatement;
 
 import java.util.stream.Stream;
@@ -27,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 public class Subquery implements Sql {
     private final SelectStatement selectStatement;
-    private final String alias;
+    private final TableAlias alias; // When used as projection (scalar value) this is interpreted as a column alias
 
     public Subquery(SelectStatement selectStatement) {
         this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
@@ -36,7 +39,7 @@ public class Subquery implements Sql {
 
     private Subquery(SelectStatement selectStatement, String alias) {
         this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
-        this.alias = requireNonBlank(alias, "No alias specified");
+        this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));
     }
 
     // Sql
@@ -51,13 +54,23 @@ public class Subquery implements Sql {
         return streamSafely(selectStatement.params(context));
     }
 
-    // Projection
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
+
+    // "Projection"
 
     public Subquery as(String alias) {
         return new Subquery(selectStatement, alias);
     }
 
     public String alias() {
-        return alias;
+        return alias.name();
     }
 }

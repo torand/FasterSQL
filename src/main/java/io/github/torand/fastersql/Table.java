@@ -15,12 +15,14 @@
  */
 package io.github.torand.fastersql;
 
+import io.github.torand.fastersql.alias.TableAlias;
+
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 
 public abstract class Table<ENTITY extends Table<?>> {
     private final String name;
-    private final String alias;
+    private final TableAlias alias;
     private final TableFactory<ENTITY> tableFactory;
 
     protected Table(String name, TableFactory<ENTITY> tableFactory) {
@@ -31,7 +33,7 @@ public abstract class Table<ENTITY extends Table<?>> {
 
     protected Table(String name, String alias, TableFactory<ENTITY> tableFactory) {
         this.name = requireNonBlank(name, "No name specified");
-        this.alias = requireNonBlank(alias, "No name specified");
+        this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));
         this.tableFactory = tableFactory;
     }
 
@@ -39,8 +41,8 @@ public abstract class Table<ENTITY extends Table<?>> {
         return tableFactory.newInstance(alias);
     }
 
-    public Field field(String name) {
-        return new Field(this, name);
+    public Column column(String name) {
+        return new Column(this, name);
     }
 
     public String name() {
@@ -48,19 +50,19 @@ public abstract class Table<ENTITY extends Table<?>> {
     }
 
     public String alias() {
-        return alias;
+        return alias.name();
     }
 
     public String sql(Context context) {
         if (context.isCommand(SELECT)) {
-            return name + " " + alias;
+            return name + " " + alias.sql(context);
         } else {
             return name;
         }
     }
 
-    private String defaultAlias(String name) {
-        return name;
+    private TableAlias defaultAlias(String name) {
+        return new TableAlias(name);
     }
 
     @FunctionalInterface

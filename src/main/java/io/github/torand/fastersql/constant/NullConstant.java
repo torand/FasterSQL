@@ -15,20 +15,24 @@
  */
 package io.github.torand.fastersql.constant;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.Alias;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 public class NullConstant implements Constant {
-    private final String alias;
+    private final ColumnAlias alias;
 
     NullConstant(String alias) {
-        this.alias = alias;
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : null;
     }
 
     // Sql
@@ -43,6 +47,16 @@ public class NullConstant implements Constant {
         return Stream.empty();
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
+
     // Projection
 
     @Override
@@ -52,15 +66,8 @@ public class NullConstant implements Constant {
     }
 
     @Override
-    public String alias() {
-        return alias;
-    }
-
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.empty();
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
     // Constant
@@ -71,8 +78,8 @@ public class NullConstant implements Constant {
     }
 
     @Override
-    public Projection forField(Field field) {
-        requireNonNull(field, "No field specified");
-        return new NullConstant(field.alias());
+    public Projection forColumn(Column column) {
+        requireNonNull(column, "No column specified");
+        return new NullConstant(column.alias().map(Alias::name).orElse(null));
     }
 }

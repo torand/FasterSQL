@@ -22,10 +22,12 @@ import io.github.torand.fastersql.subquery.Subquery;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asNonEmptyList;
-import static io.github.torand.fastersql.util.contract.Requires.*;
+import static io.github.torand.fastersql.util.contract.Requires.require;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Objects.requireNonNull;
 
 public class SelectFromBuilder {
     private final boolean distinct;
@@ -46,17 +48,17 @@ public class SelectFromBuilder {
     public SelectStatement from(Table<?> firstTable, Table<?>... moreTables) {
         requireNonNull(firstTable, "First table is null");
         List<Table<?>> tables = asNonEmptyList(firstTable, moreTables);
-        return new SelectStatement(projections, tables, null, null, null, null, null, distinct, null, null, false);
+        return new SelectStatement(projections, tables, null, null, null, null, null, null, distinct, null, null, false);
     }
 
     public SelectStatement from(SelectStatement inner) {
         requireNonNull(inner, "No select statement specified");
-        return new SelectStatement(projections, null, null, new Subquery(inner), null, null, null, distinct, null, null, false);
+        return new SelectStatement(projections, null, null, new Subquery(inner), null, null, null, null, distinct, null, null, false);
     }
 
     public SelectStatement from(SelectStatement inner, String alias) {
         requireNonNull(inner, "No select statement specified");
         requireNonBlank(alias, "No alias specified");
-        return new SelectStatement(projections, null, null, new Subquery(inner).as(alias), null, null, null, distinct, null, null, false);
+        return new SelectStatement(projections, null, null, new Subquery(inner).as(alias), null, null, null, null, distinct, null, null, false);
     }
 }

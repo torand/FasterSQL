@@ -15,12 +15,13 @@
  */
 package io.github.torand.fastersql.function.singlerow;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.require;
@@ -32,14 +33,14 @@ public class Substring implements SingleRowFunction {
     private final Expression expression;
     private final int startPos;
     private final int length;
-    private final String alias;
+    private final ColumnAlias alias;
 
     Substring(Expression expression, int startPos, int length, String alias) {
         require(() -> startPos >= 1, "startPos must be 1 or greater");
         require(() -> length >= 1, "length must be 1 or greater");
 
         this.expression = requireNonNull(expression, "No expression specified");
-        this.alias = nonBlank(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
         this.startPos = startPos;
         this.length = length;
     }
@@ -56,6 +57,16 @@ public class Substring implements SingleRowFunction {
         return expression.params(context);
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return expression.columnRefs();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return expression.aliasRefs();
+    }
+
     // Projection
 
     @Override
@@ -65,18 +76,11 @@ public class Substring implements SingleRowFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return expression.fieldRefs();
-    }
-
-    private String defaultAlias() {
-        return "SUBSTRING_" + new Random().nextInt(999) + 1;
+    private ColumnAlias defaultAlias() {
+        return ColumnAlias.generate("SUBSTRING_");
     }
 }

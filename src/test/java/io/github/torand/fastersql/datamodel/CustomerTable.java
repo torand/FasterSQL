@@ -15,22 +15,22 @@
  */
 package io.github.torand.fastersql.datamodel;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Table;
 
 public class CustomerTable extends Table<CustomerTable> {
-    public final Field ID = field("ID");
-    public final Field FIRST_NAME = field("FIRST_NAME");
-    public final Field LAST_NAME = field("LAST_NAME");
-    public final Field STREET_ADDRESS = field("STREET_ADDRESS");
-    public final Field ZIP_CODE = field("ZIP_CODE");
-    public final Field CITY = field("CITY");
-    public final Field COUNTRY_CODE = field("COUNTRY_CODE");
-    public final Field EMAIL_ADDRESS = field("EMAIL_ADDRESS");
-    public final Field MOBILE_NO = field("MOBILE_NO");
-    public final Field MOBILE_NO_VERIFIED = field("MOBILE_NO_VERIFIED");
-    public final Field CREATED_TIME = field("CREATED_TIME");
-    public final Field LAST_LOGIN_TIME = field("LAST_LOGIN_TIME");
+    public final Column ID = column("ID");
+    public final Column FIRST_NAME = column("FIRST_NAME");
+    public final Column LAST_NAME = column("LAST_NAME");
+    public final Column STREET_ADDRESS = column("STREET_ADDRESS");
+    public final Column ZIP_CODE = column("ZIP_CODE");
+    public final Column CITY = column("CITY");
+    public final Column COUNTRY_CODE = column("COUNTRY_CODE");
+    public final Column EMAIL_ADDRESS = column("EMAIL_ADDRESS");
+    public final Column MOBILE_NO = column("MOBILE_NO");
+    public final Column MOBILE_NO_VERIFIED = column("MOBILE_NO_VERIFIED");
+    public final Column CREATED_TIME = column("CREATED_TIME");
+    public final Column LAST_LOGIN_TIME = column("LAST_LOGIN_TIME");
 
     CustomerTable(String alias) {
         super("CUSTOMER", alias, CustomerTable::new);

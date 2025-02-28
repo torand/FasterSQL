@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -25,19 +25,19 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A field-value pair used in INSERT batch statements.
+ * A column-value pair used in INSERT batch statements.
  */
-class FieldValueExtractor<T> {
-    private final Field field;
+class ColumnValueExtractor<T> {
+    private final Column column;
     private final Function<? super T, Object> valueExtractor;
 
-    public FieldValueExtractor(Field field, Function<? super T, Object> valueExtractor) {
-        this.field = requireNonNull(field, "No field specified");
+    public ColumnValueExtractor(Column column, Function<? super T, Object> valueExtractor) {
+        this.column = requireNonNull(column, "No column specified");
         this.valueExtractor = requireNonNull(valueExtractor, "No valueExtractor specified");
     }
 
-    Field field() {
-        return field;
+    Column column() {
+        return column;
     }
 
     Optional<Object> param(T entity) {

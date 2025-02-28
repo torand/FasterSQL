@@ -15,11 +15,8 @@
  */
 package io.github.torand.fastersql.expression;
 
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.expression.arithmetic.ArithmeticExpressions;
 import io.github.torand.fastersql.projection.Projection;
-
-import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.constant.Constants.$;
 
@@ -27,8 +24,6 @@ import static io.github.torand.fastersql.constant.Constants.$;
  * Represents an expression resulting in a scalar value or a table with rows and columns.
  */
 public interface Expression extends Projection {
-
-    Stream<Field> fieldRefs();
 
     default Expression plus(Object value) {
         return ArithmeticExpressions.add(this, $(value));

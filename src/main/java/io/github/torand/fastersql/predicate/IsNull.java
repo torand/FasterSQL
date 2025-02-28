@@ -15,17 +15,18 @@
  */
 package io.github.torand.fastersql.predicate;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
 public class IsNull implements Predicate {
-    private final Field operand;
+    private final LeftOperand operand;
 
-    IsNull(Field operand) {
+    IsNull(LeftOperand operand) {
         this.operand = requireNonNull(operand, "No operand specified");
     }
 
@@ -38,7 +39,17 @@ public class IsNull implements Predicate {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
+        return operand.params(context);
+    }
+
+    @Override
+    public Stream<Column> columnRefs() {
+        return operand.columnRefs();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return operand.aliasRefs();
     }
 
     // Predicate
@@ -46,10 +57,5 @@ public class IsNull implements Predicate {
     @Override
     public String negatedSql(Context context) {
         return operand.sql(context) + " is not null";
-    }
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.empty();
     }
 }

@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.alias.Aliases.alias;
 import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
@@ -42,8 +43,8 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.u
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTime;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
-import static io.github.torand.fastersql.order.Orders.alias;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
+import static io.github.torand.fastersql.projection.Projections.colPos;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
@@ -88,7 +89,7 @@ public class H2SelectStatementTest extends H2Test {
                 and C.COUNTRY_CODE in (?, ?) \
                 and (PR.CATEGORY = ? or PR.CATEGORY = ?) \
                 and PU.CREATED_TIME > ? \
-                order by C_LAST_NAME asc, PR_NAME desc \
+                order by C.LAST_NAME asc, PR.NAME desc \
                 limit ? \
                 offset ?"""
             )
@@ -129,7 +130,7 @@ public class H2SelectStatementTest extends H2Test {
     @Test
     void shouldHandleExpressionsInProjection() {
         SelectStatement stmt =
-            select(upper(CUSTOMER.LAST_NAME).as("C_LAST_NAME"), lower(CUSTOMER.FIRST_NAME).as("C_FIRST_NAME"), PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY).as("TOTAL"), nullValue().forField(CUSTOMER.ZIP_CODE), $(3.14).as("PI"))
+            select(upper(CUSTOMER.LAST_NAME).as("C_LAST_NAME"), lower(CUSTOMER.FIRST_NAME).as("C_FIRST_NAME"), PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY).as("TOTAL"), nullValue().forColumn(CUSTOMER.ZIP_CODE), $(3.14).as("PI"))
                 .from(CUSTOMER)
                 .join(CUSTOMER.ID.on(PURCHASE.CUSTOMER_ID))
                 .join(PURCHASE.ID.on(PURCHASE_ITEM.PURCHASE_ID))
@@ -145,7 +146,7 @@ public class H2SelectStatementTest extends H2Test {
                 inner join PURCHASE_ITEM PI on PU.ID = PI.PURCHASE_ID \
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
                 where C.COUNTRY_CODE in (?, ?) \
-                order by C_LAST_NAME asc"""
+                order by C.LAST_NAME asc"""
             )
             .assertParams(3.14, "NOR", "DEN")
             .assertRowCount(2)
@@ -188,7 +189,7 @@ public class H2SelectStatementTest extends H2Test {
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
                 where PR.PRICE > ? * (? + ?) \
                 and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substring(?, 1, 3)) \
-                order by C_LAST_NAME asc"""
+                order by C.LAST_NAME asc"""
             )
             .assertParams(5, 9, 11, "nor", "DENMARK")
             .assertRowCount(2)
@@ -328,11 +329,45 @@ public class H2SelectStatementTest extends H2Test {
     }
 
     @Test
+    public void shouldHandleFilteredGroups() {
+        PreparableStatement stmt =
+            select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"), max(PURCHASE_ITEM.QUANTITY).as("MAX_QNTY"))
+                .from(PRODUCT)
+                .join(PRODUCT.ID.on(PURCHASE_ITEM.PRODUCT_ID))
+                .groupBy(PRODUCT.NAME)
+                .having(alias("PURCHASED_VALUE").gt(1).and(max(PURCHASE_ITEM.QUANTITY).lt(100)))
+                .orderBy(alias("PURCHASED_VALUE").asc());
+
+        statementTester()
+            .assertSql("""
+                select PR.NAME PR_NAME, sum(PR.PRICE * PI.QUANTITY) PURCHASED_VALUE, max(PI.QUANTITY) MAX_QNTY \
+                from PRODUCT PR \
+                inner join PURCHASE_ITEM PI on PR.ID = PI.PRODUCT_ID \
+                group by PR.NAME \
+                having PURCHASED_VALUE > ? and max(PI.QUANTITY) < ? \
+                order by PURCHASED_VALUE asc"""
+            )
+            .assertParams(1, 100)
+            .assertRowCount(2)
+            .assertRow(1,
+                "PR_NAME", containsString("Ekornes Stressless"),
+                "PURCHASED_VALUE", isBigDecimalCloseTo(5433.5, 0.01),
+                "MAX_QNTY", isInteger(1)
+            )
+            .assertRow(2,
+                "PR_NAME", containsString("Louis Poulsen"),
+                "PURCHASED_VALUE", isBigDecimalCloseTo(11335.35, 0.01),
+                "MAX_QNTY", isInteger(3)
+            )
+            .verify(stmt);
+    }
+
+    @Test
     public void shouldHandleDistinct() {
         PreparableStatement stmt =
             selectDistinct(PRODUCT.CATEGORY)
                 .from(PRODUCT)
-                .orderBy($(1).asc());
+                .orderBy(colPos(1).asc());
 
         statementTester()
             .assertSql("""
@@ -353,7 +388,7 @@ public class H2SelectStatementTest extends H2Test {
         PreparableStatement stmt =
             select(PURCHASE.NOTES)
                 .from(PURCHASE)
-                .orderBy($(1).asc().nullsFirst());
+                .orderBy(colPos(1).asc().nullsFirst());
 
         statementTester()
             .assertSql("""
@@ -413,7 +448,7 @@ public class H2SelectStatementTest extends H2Test {
             .assertSql("""
                 select PR.NAME PR_NAME, round(PR.PRICE) ROUND, abs(?) ABS, ceiling(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR \
                 from PRODUCT PR \
-                order by PR_NAME asc"""
+                order by PR.NAME asc"""
             )
             .assertParams(-1)
             .assertRowCount(5)
@@ -438,7 +473,7 @@ public class H2SelectStatementTest extends H2Test {
             .assertSql("""
                 select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, PR.PRICE % ? MOD_ \
                 from PRODUCT PR \
-                order by PR_NAME asc"""
+                order by PR.NAME asc"""
             )
             .assertParams(1, 2, 3, 4, 5)
             .assertRowCount(5)

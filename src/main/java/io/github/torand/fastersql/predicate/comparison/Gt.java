@@ -15,8 +15,9 @@
  */
 package io.github.torand.fastersql.predicate.comparison;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.predicate.Predicate;
@@ -49,16 +50,21 @@ public class Gt implements Predicate {
         return Stream.concat(left.params(localContext), right.params(localContext));
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.concat(left.columnRefs(), right.columnRefs());
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+    }
+
     // Predicate
 
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
         return left.sql(localContext) + " <= " + right.sql(localContext);
-    }
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.concat(left.fieldRefs(), right.fieldRefs());
     }
 }

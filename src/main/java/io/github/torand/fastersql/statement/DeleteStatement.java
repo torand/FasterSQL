@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
@@ -28,7 +28,10 @@ import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.DELETE;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
@@ -88,7 +91,7 @@ public class DeleteStatement extends PreparableStatement {
         if (nonEmpty(predicates)) {
             sb.append(" where ");
             sb.append(streamSafely(predicates)
-                .map(e -> e.sql(localContext))
+                .map(p -> p.sql(localContext))
                 .collect(joining(" and ")));
         }
 
@@ -98,7 +101,7 @@ public class DeleteStatement extends PreparableStatement {
     @Override
     List<Object> params(Context context) {
         return streamSafely(predicates)
-            .flatMap(e -> e.params(context))
+            .flatMap(p -> p.params(context))
             .toList();
     }
 
@@ -109,15 +112,15 @@ public class DeleteStatement extends PreparableStatement {
 
         // TODO: Verify that deleteTables is subset of fromTables
 
-        validateFieldTableRelations(streamSafely(predicates).flatMap(Predicate::fieldRefs));
+        validateColumnTableRelations(streamSafely(predicates).flatMap(Predicate::columnRefs));
     }
 
-    private void validateFieldTableRelations(Stream<Field> fields) {
-        fields
-            .filter(f -> !fromTable.name().equalsIgnoreCase(f.table().name()))
+    private void validateColumnTableRelations(Stream<Column> columns) {
+        columns
+            .filter(c -> !fromTable.name().equalsIgnoreCase(c.table().name()))
             .findFirst()
-            .ifPresent(f -> {
-                throw new IllegalStateException("Field " + f.name() + " belongs to table " + f.table().name() + ", but table is not specified in the FROM clause");
+            .ifPresent(c -> {
+                throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but table is not specified in the FROM clause");
             });
     }
 }

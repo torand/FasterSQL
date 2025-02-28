@@ -15,14 +15,16 @@
  */
 package io.github.torand.fastersql.function.singlerow;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
@@ -34,11 +36,11 @@ import static java.util.stream.Collectors.joining;
 
 public class Concat implements SingleRowFunction {
     private final List<Expression> expressions;
-    private final String alias;
+    private final ColumnAlias alias;
 
     Concat(List<Expression> expressions, String alias) {
         this.expressions = new ArrayList<>(requireNonEmpty(expressions, "No expression specified"));
-        this.alias = nonBlank(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
     // Sql
@@ -58,6 +60,16 @@ public class Concat implements SingleRowFunction {
         return streamSafely(expressions).flatMap(e -> e.params(context));
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return streamSafely(expressions).flatMap(Sql::columnRefs);
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return streamSafely(expressions).flatMap(Sql::aliasRefs);
+    }
+
     // Projection
 
     @Override
@@ -67,18 +79,11 @@ public class Concat implements SingleRowFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return streamSafely(expressions).flatMap(e -> e.fieldRefs());
-    }
-
-    private String defaultAlias() {
-        return "CONCAT_" + new Random().nextInt(999) + 1;
+    private ColumnAlias defaultAlias() {
+        return ColumnAlias.generate("CONCAT_");
     }
 }

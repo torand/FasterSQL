@@ -15,16 +15,16 @@
  */
 package io.github.torand.fastersql.datamodel;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Table;
 
 public class ProductTable extends Table<ProductTable> {
-    public final Field ID = field("ID");
-    public final Field NAME = field("NAME");
-    public final Field DESCRIPTION = field("DESCRIPTION");
-    public final Field CATEGORY = field("CATEGORY");
-    public final Field PRICE = field("PRICE");
-    public final Field STOCK_COUNT = field("STOCK_COUNT");
+    public final Column ID = column("ID");
+    public final Column NAME = column("NAME");
+    public final Column DESCRIPTION = column("DESCRIPTION");
+    public final Column CATEGORY = column("CATEGORY");
+    public final Column PRICE = column("PRICE");
+    public final Column STOCK_COUNT = column("STOCK_COUNT");
 
     ProductTable(String alias) {
         super("PRODUCT", alias, ProductTable::new);

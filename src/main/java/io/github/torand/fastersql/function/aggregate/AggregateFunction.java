@@ -15,11 +15,11 @@
  */
 package io.github.torand.fastersql.function.aggregate;
 
-import io.github.torand.fastersql.function.FieldFunction;
+import io.github.torand.fastersql.function.ColumnFunction;
 
 /**
  * A function that returns a single value based upon a set of other values fetched from multiple rows.
  */
-public interface AggregateFunction extends FieldFunction {
+public interface AggregateFunction extends ColumnFunction {
 
 }

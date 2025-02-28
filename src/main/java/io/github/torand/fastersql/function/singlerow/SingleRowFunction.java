@@ -15,12 +15,11 @@
  */
 package io.github.torand.fastersql.function.singlerow;
 
-import io.github.torand.fastersql.function.FieldFunction;
-import io.github.torand.fastersql.predicate.LeftOperand;
+import io.github.torand.fastersql.function.ColumnFunction;
 
 /**
- * A function that returns a single value based upon one value from a single row.
+ * Represents a function that returns a single value based upon one value from a single row.
  */
-public interface SingleRowFunction extends FieldFunction, LeftOperand {
+public interface SingleRowFunction extends ColumnFunction {
 
 }

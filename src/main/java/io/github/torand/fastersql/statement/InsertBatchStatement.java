@@ -15,40 +15,43 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.dialect.OracleDialect;
-import io.github.torand.fastersql.util.functional.Optionals;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.Command.INSERT;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.isEmpty;
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
+import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
-import static io.github.torand.fastersql.Command.INSERT;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.*;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 
 public class InsertBatchStatement<T> extends PreparableStatement {
     private final Table<?> table;
-    private final List<FieldValueExtractor<? super T>> fieldValueExtractors;
+    private final List<ColumnValueExtractor<? super T>> columnValueExtractors;
     private final List<? extends T> entities;
 
-    InsertBatchStatement(Collection<? extends T> entities, Table<?> table, Collection<FieldValueExtractor<? super T>> fieldValueExtractors) {
+    InsertBatchStatement(Collection<? extends T> entities, Table<?> table, Collection<ColumnValueExtractor<? super T>> columnValueExtractors) {
         this.entities = asList(requireNonEmpty(entities, "No entities specified"));
         this.table = requireNonNull(table, "No table specified");
-        this.fieldValueExtractors = asList(fieldValueExtractors);
+        this.columnValueExtractors = asList(columnValueExtractors);
     }
 
-    public InsertBatchStatement<T> value(Field field, Function<? super T, Object> valueExtractor) {
-        requireNonNull(field, "No field specified");
-        requireNonNull(valueExtractor, "No valueExtractor specified");
+    public InsertBatchStatement<T> value(Column column, Function<? super T, Object> valueExtractor) {
+        requireNonNull(column, "No column specified");
+        requireNonNull(valueExtractor, "No value extractor specified");
 
-        List<FieldValueExtractor<? super T>> concatenated = concat(fieldValueExtractors, new FieldValueExtractor<>(field, valueExtractor));
+        List<ColumnValueExtractor<? super T>> concatenated = concat(columnValueExtractors, new ColumnValueExtractor<>(column, valueExtractor));
         return new InsertBatchStatement<>(entities, table, concatenated);
     }
 
@@ -70,9 +73,9 @@ public class InsertBatchStatement<T> extends PreparableStatement {
             entities().forEach(e -> {
                 sb.append(" into ").append(table.sql(localContext));
                 sb.append(" (");
-                sb.append(fieldValueExtractors().map(fve -> fve.field().sql(localContext)).collect(joining(", ")));
+                sb.append(columnValueExtractors().map(cve -> cve.column().sql(localContext)).collect(joining(", ")));
                 sb.append(") values (");
-                sb.append(fieldValueExtractors().map(fve -> fve.valueSql(localContext, e)).collect(joining(", ")));
+                sb.append(columnValueExtractors().map(cve -> cve.valueSql(localContext, e)).collect(joining(", ")));
                 sb.append(")");
             });
 
@@ -91,10 +94,10 @@ public class InsertBatchStatement<T> extends PreparableStatement {
             StringBuilder sb = new StringBuilder();
             sb.append("insert into ").append(table.sql(context));
             sb.append(" (");
-            sb.append(fieldValueExtractors().map(fve -> fve.field().sql(localContext)).collect(joining(", ")));
+            sb.append(columnValueExtractors().map(cve -> cve.column().sql(localContext)).collect(joining(", ")));
             sb.append(") values ");
             sb.append(entities().map(e -> "("
-                + fieldValueExtractors().map(fve -> fve.valueSql(localContext, e)).collect(joining(", "))
+                + columnValueExtractors().map(cve -> cve.valueSql(localContext, e)).collect(joining(", "))
                 + ")")
                 .collect(joining(", ")));
 
@@ -106,16 +109,16 @@ public class InsertBatchStatement<T> extends PreparableStatement {
         return streamSafely(entities);
     }
 
-    private Stream<FieldValueExtractor<? super T>> fieldValueExtractors() {
-        return streamSafely(fieldValueExtractors);
+    private Stream<ColumnValueExtractor<? super T>> columnValueExtractors() {
+        return streamSafely(columnValueExtractors);
     }
 
     @Override
     List<Object> params(Context context) {
         return entities()
-            .flatMap(e -> fieldValueExtractors()
-                .map(fve -> fve.param(e))
-                .flatMap(Optionals::stream))
+            .flatMap(e -> columnValueExtractors()
+                .map(cve -> cve.param(e))
+                .flatMap(Optional::stream))
             .toList();
     }
 
@@ -123,18 +126,18 @@ public class InsertBatchStatement<T> extends PreparableStatement {
         if (isNull(table)) {
             throw new IllegalStateException("No table specified");
         }
-        if (isEmpty(fieldValueExtractors)) {
+        if (isEmpty(columnValueExtractors)) {
             throw new IllegalStateException("No values specified");
         }
-        validateFieldTableRelations(fieldValueExtractors().map(FieldValueExtractor::field));
+        validateColumnTableRelations(columnValueExtractors().map(ColumnValueExtractor::column));
     }
 
-    private void validateFieldTableRelations(Stream<Field> fields) {
-        fields
-            .filter(f -> !table.name().equals(f.table().name()))
+    private void validateColumnTableRelations(Stream<Column> columns) {
+        columns
+            .filter(c -> !table.name().equals(c.table().name()))
             .findFirst()
-            .ifPresent(f -> {
-                throw new IllegalStateException("Field " + f.name() + " belongs to table " + f.table().name() + ", not the table specified by the INTO clause");
+            .ifPresent(c -> {
+                throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", not the table specified by the INTO clause");
             });
     }
 }

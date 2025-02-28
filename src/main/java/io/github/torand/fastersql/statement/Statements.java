@@ -27,10 +27,6 @@ import static java.util.Objects.requireNonNull;
 public final class Statements {
     private Statements() {}
 
-    /*public static SelectFromBuilder select(Object value) {
-        return new SelectFromBuilder(false, singletonList($(value)));
-    }*/
-
     public static SelectFromBuilder select(Projection firstProjection, Projection... moreProjections) {
         requireNonNull(firstProjection, "First projection is null");
         List<Projection> projections = asNonEmptyList(firstProjection, moreProjections);

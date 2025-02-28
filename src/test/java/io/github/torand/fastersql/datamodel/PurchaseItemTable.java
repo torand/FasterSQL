@@ -15,14 +15,14 @@
  */
 package io.github.torand.fastersql.datamodel;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Table;
 
 public class PurchaseItemTable extends Table<PurchaseItemTable> {
-    public final Field ID = field("ID");
-    public final Field PURCHASE_ID = field("PURCHASE_ID");
-    public final Field PRODUCT_ID = field("PRODUCT_ID");
-    public final Field QUANTITY = field("QUANTITY");
+    public final Column ID = column("ID");
+    public final Column PURCHASE_ID = column("PURCHASE_ID");
+    public final Column PRODUCT_ID = column("PRODUCT_ID");
+    public final Column QUANTITY = column("QUANTITY");
 
     PurchaseItemTable(String alias) {
         super("PURCHASE_ITEM", alias, PurchaseItemTable::new);
