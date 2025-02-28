@@ -15,35 +15,46 @@
  */
 package io.github.torand.fastersql;
 
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.order.Order;
-import io.github.torand.fastersql.order.Orders;
+import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
-import io.github.torand.fastersql.predicate.Predicate;
-import io.github.torand.fastersql.predicate.Predicates;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class Field implements LeftOperand, Expression {
+public class Column implements LeftOperand, Expression, OrderExpression {
     private final Table<?> table;
     private final String name;
-    private final String alias;
+    private final ColumnAlias alias;
 
-    public Field(Table<?> table, String name) {
+    public Column(Table<?> table, String name) {
         this.table = requireNonNull(table, "No table specified");
         this.name = requireNonBlank(name, "No name specified");
         this.alias = defaultAlias(table, name);
     }
 
-    private Field(Table<?> table, String name, String alias) {
+    private Column(Table<?> table, String name, String alias) {
         this.table = requireNonNull(table, "No table specified");
         this.name = requireNonBlank(name, "No name specified");
-        this.alias = requireNonBlank(alias, "No alias specified");
+        this.alias = new ColumnAlias(requireNonBlank(alias, "No alias specified"));
+    }
+
+    public Join on(Column other) {
+        return new Join(this, other);
+    }
+
+    public String name() {
+        return name;
+    }
+
+    public Table<?> table() {
+        return table;
     }
 
     // Sql
@@ -62,54 +73,29 @@ public class Field implements LeftOperand, Expression {
         return Stream.empty();
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.of(this);
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.of(alias);
+    }
+
     // Projection
 
     @Override
     public Projection as(String alias) {
-        return new Field(table, name, alias);
+        return new Column(table, name, alias);
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // LeftOperand / Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.of(this);
-    }
-
-    public Predicate isNull() {
-        return Predicates.isNull(this);
-    }
-
-    public Join on(Field other) {
-        return new Join(this, other);
-    }
-
-    public Order asc() {
-        return Orders.asc(this);
-    }
-
-    public Order ascIf(boolean condition) {
-        return condition ? asc() : desc();
-    }
-
-    public Order desc() {
-        return Orders.desc(this);
-    }
-
-    public String name() {
-        return name;
-    }
-
-    public Table<?> table() {
-        return table;
-    }
-
-    private String defaultAlias(Table<?> table, String name) {
-        return (table.alias() + "_" + name).toUpperCase();
+    private ColumnAlias defaultAlias(Table<?> table, String name) {
+        return new ColumnAlias((table.alias() + "_" + name).toUpperCase());
     }
 }

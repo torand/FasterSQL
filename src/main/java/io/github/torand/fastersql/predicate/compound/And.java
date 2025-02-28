@@ -15,8 +15,10 @@
  */
 package io.github.torand.fastersql.predicate.compound;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.predicate.Predicate;
 
 import java.util.List;
@@ -47,15 +49,20 @@ public class And implements Predicate {
         return operands.stream().flatMap(o -> o.params(context));
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return operands.stream().flatMap(Sql::columnRefs);
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return operands.stream().flatMap(Sql::aliasRefs);
+    }
+
     // Predicate
 
     @Override
     public String negatedSql(Context context) {
         return "not (" + sql(context) + ")";
-    }
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return operands.stream().flatMap(Predicate::fieldRefs);
     }
 }

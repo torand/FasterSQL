@@ -15,21 +15,23 @@
  */
 package io.github.torand.fastersql.function.aggregate;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
 public class CountAll implements AggregateFunction {
-    private final String alias;
+    private final ColumnAlias alias;
 
     CountAll(String alias) {
-        this.alias = nonBlank(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
     // Sql
@@ -44,6 +46,16 @@ public class CountAll implements AggregateFunction {
         return Stream.empty();
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
+
     // Projection
 
     @Override
@@ -53,11 +65,11 @@ public class CountAll implements AggregateFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // FieldFunction
+    // OrderExpression
 
     @Override
     public Order ascIf(boolean condition) {
@@ -74,14 +86,7 @@ public class CountAll implements AggregateFunction {
         throw new UnsupportedOperationException("The 'count(*)' function can't be used in an 'order by' clause");
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.empty();
-    }
-
-    private String defaultAlias() {
-        return "COUNT_ALL";
+    private ColumnAlias defaultAlias() {
+        return new ColumnAlias("COUNT_ALL");
     }
 }

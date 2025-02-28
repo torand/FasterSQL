@@ -116,9 +116,9 @@ The example assumes a connection to a MySQL database.
 * Arithmetic operators: add (+), subtract (-), multiply (*), divide (/), modulo (%)
 * Logical operators: and, or, not
 * Other operators: in, is null, like, exists
-* Expressions: Any nested expression using functions, arithmetic operators and constant values
+* Expressions: Any nested expression using functions, operators and constant values
 * Ordering: asc, desc, nulls first/last
-* Grouping: group by
+* Grouping: group by, having
 * Subqueries: Supported both in the FROM clause and as right operand of predicates
 
 ### Supported Statement Parameters

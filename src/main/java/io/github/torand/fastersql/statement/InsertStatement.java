@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.expression.Expression;
 
@@ -37,34 +37,34 @@ import static java.util.stream.Collectors.joining;
 
 public class InsertStatement extends PreparableStatement {
     private final Table<?> table;
-    private final List<FieldValue> fieldValues;
+    private final List<ColumnValue> columnValues;
 
-    InsertStatement(Table<?> table, Collection<FieldValue> fieldValues) {
+    InsertStatement(Table<?> table, Collection<ColumnValue> columnValues) {
         this.table = requireNonNull(table, "No table specified");
-        this.fieldValues = asList(fieldValues);
+        this.columnValues = asList(columnValues);
     }
 
-    public InsertStatement value(Field field, Expression expression) {
-        requireNonNull(field, "No field specified");
+    public InsertStatement value(Column column, Expression expression) {
+        requireNonNull(column, "No column specified");
         requireNonNull(expression, "No expression specified");
 
-        List<FieldValue> concatenated = concat(fieldValues, new FieldValue(field, expression));
+        List<ColumnValue> concatenated = concat(columnValues, new ColumnValue(column, expression));
         return new InsertStatement(table, concatenated);
     }
 
-    public InsertStatement value(Field field, Object value) {
-        requireNonNull(field, "No field specified");
+    public InsertStatement value(Column column, Object value) {
+        requireNonNull(column, "No column specified");
 
-        List<FieldValue> concatenated = concat(fieldValues, new FieldValue(field, $(value)));
+        List<ColumnValue> concatenated = concat(columnValues, new ColumnValue(column, $(value)));
         return new InsertStatement(table, concatenated);
     }
 
-    public InsertStatement value(Field field, Optional<?> maybeValue) {
-        requireNonNull(field, "No field specified");
+    public InsertStatement value(Column column, Optional<?> maybeValue) {
+        requireNonNull(column, "No column specified");
         requireNonNull(maybeValue, "No value specified");
 
         if (maybeValue.isPresent()) {
-            List<FieldValue> concatenated = concat(fieldValues, new FieldValue(field, $(maybeValue.get())));
+            List<ColumnValue> concatenated = concat(columnValues, new ColumnValue(column, $(maybeValue.get())));
             return new InsertStatement(table, concatenated);
         } else {
             return this;
@@ -79,8 +79,8 @@ public class InsertStatement extends PreparableStatement {
         StringBuilder sb = new StringBuilder();
         sb.append("insert into ").append(table.sql(context));
         sb.append(" (");
-        sb.append(streamSafely(fieldValues).map(fv -> fv.field().sql(localContext)).collect(joining(", ")));
-        sb.append(") values (").append(streamSafely(fieldValues).map(fv -> fv.valueSql(localContext)).collect(joining(", ")));
+        sb.append(streamSafely(columnValues).map(cv -> cv.column().sql(localContext)).collect(joining(", ")));
+        sb.append(") values (").append(streamSafely(columnValues).map(cv -> cv.valueSql(localContext)).collect(joining(", ")));
         sb.append(")");
 
         return sb.toString();
@@ -89,8 +89,8 @@ public class InsertStatement extends PreparableStatement {
     @Override
     List<Object> params(Context context) {
         final Context localContext = context.withCommand(INSERT);
-        return streamSafely(fieldValues)
-            .flatMap(fv -> fv.params(localContext))
+        return streamSafely(columnValues)
+            .flatMap(cv -> cv.params(localContext))
             .toList();
     }
 
@@ -98,18 +98,18 @@ public class InsertStatement extends PreparableStatement {
         if (isNull(table)) {
             throw new IllegalStateException("No table specified");
         }
-        if (isEmpty(fieldValues)) {
+        if (isEmpty(columnValues)) {
             throw new IllegalStateException("No values specified");
         }
-        validateFieldTableRelations(streamSafely(fieldValues).map(FieldValue::field));
+        validateColumnTableRelations(streamSafely(columnValues).map(ColumnValue::column));
     }
 
-    private void validateFieldTableRelations(Stream<Field> fields) {
-        fields
-            .filter(f -> !table.name().equals(f.table().name()))
+    private void validateColumnTableRelations(Stream<Column> columns) {
+        columns
+            .filter(c -> !table.name().equals(c.table().name()))
             .findFirst()
-            .ifPresent(f -> {
-                throw new IllegalStateException("Field " + f.name() + " belongs to table " + f.table().name() + ", not the table specified by the INTO clause");
+            .ifPresent(c -> {
+                throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", not the table specified by the INTO clause");
             });
     }
 }

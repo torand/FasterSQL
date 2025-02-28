@@ -15,12 +15,15 @@
  */
 package io.github.torand.fastersql.constant;
 
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
+/**
+ * Defines a constant value.
+ */
 public interface Constant extends Expression {
-    Projection forField(Field field);
+    Projection forColumn(Column column);
 
     Object value();
 }

@@ -9,8 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- ...
-
+- Supporting the HAVING clause.
+- IS NULL operator now supports any expression as operand.
+- ORDER BY now supports expressions as order expression.
+ 
 ### Changed
 - ...
 
@@ -29,9 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Statement parameters of type OffsetDateTime and ZonedDateTime are converted into Timestamp.
 - Supporting the 'current_date' and 'current_time' system functions.
 - Supporting the 'round', 'abs', 'ceil' and 'floor' scalar functions
-- Validates that order aliases are specified in the SELECT clause.
-- Orders.asc and Orders.desc now accept column indices.
-- Supporting the 'nulls first' and 'nulls last' order clauses.
+- Validates that column aliases in ORDER BY are specified in the SELECT clause.
+- ORDER BY now supports column position as order expression.
+- ORDER BY now supports the 'nulls first' and 'nulls last' clauses.
 - Supporting the modulo arithmetic operator.
 
 ### Fixed
@@ -41,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Supporting the 'to_char', 'concat' and 'length' scalar functions.
-- INSERT and UPDATE now support any expression as field values.
+- INSERT and UPDATE now support any expression as column values.
 
 ### Fixed
 - Reversed limit - offset clause ordering for H2 and MySQL dialects.
@@ -52,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Constants (scalar values) can be specified using the new Constants.$ factory method.
 - Supporting the 'substring' scalar function.
-- Orders.asc and Orders.desc now accept plain text aliases, not only projections.
+- ORDER BY now accepts plain text aliases, not only projections.
 - Aggregate functions now support any expression, not only fields.
 
 ## [1.0.0] - 2025-02-04

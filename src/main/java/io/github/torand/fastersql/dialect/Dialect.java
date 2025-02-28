@@ -20,6 +20,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Defines an SQL dialect as implemented by a specific database vendor.
+ */
 public interface Dialect {
     /**
      * Gets the name of the RDBMS product.
@@ -32,6 +35,7 @@ public interface Dialect {
      * @return whether offset clause must be specified before limit clause; if supported.
      */
     boolean offsetBeforeLimit();
+
     /**
      * Returns the _row offset clause_ formatted for a specific SQL dialect.
      * @return the _row offset clause_ formatted for a specific SQL dialect.

@@ -13,22 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.constant;
+package io.github.torand.fastersql.function;
 
-import io.github.torand.fastersql.order.Order;
-import io.github.torand.fastersql.order.Orders;
+import io.github.torand.fastersql.order.OrderExpression;
+import io.github.torand.fastersql.predicate.LeftOperand;
 
-public class StringConstant extends GenericConstant<String> {
+/**
+ * Represents a function that operates on a specific column (or no specific column).
+ */
+public interface ColumnFunction extends Function, LeftOperand, OrderExpression {
 
-    StringConstant(String value, String alias) {
-        super(value, alias);
-    }
-
-    public Order asc() {
-        return Orders.asc(this);
-    }
-
-    public Order desc() {
-        return Orders.desc(this);
-    }
 }

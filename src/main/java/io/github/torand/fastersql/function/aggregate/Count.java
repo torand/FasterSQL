@@ -15,16 +15,17 @@
  */
 package io.github.torand.fastersql.function.aggregate;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
-import static java.util.Objects.nonNull;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,11 +33,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class Count implements AggregateFunction {
     private final Expression expression;
-    private final String alias;
+    private final ColumnAlias alias;
 
     Count(Expression expression, String alias) {
         this.expression = requireNonNull(expression, "No expression specified");
-        this.alias = nonNull(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
     // Sql
@@ -51,6 +52,16 @@ public class Count implements AggregateFunction {
         return expression.params(context);
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return expression.columnRefs();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return expression.aliasRefs();
+    }
+
     // Projection
 
     @Override
@@ -60,18 +71,11 @@ public class Count implements AggregateFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return expression.fieldRefs();
-    }
-
-    private String defaultAlias() {
-        return "COUNT_" + new Random().nextInt(999) + 1;
+    private ColumnAlias defaultAlias() {
+        return ColumnAlias.generate("COUNT_");
     }
 }

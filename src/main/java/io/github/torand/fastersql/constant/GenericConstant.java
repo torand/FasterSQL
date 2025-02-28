@@ -15,35 +15,48 @@
  */
 package io.github.torand.fastersql.constant;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.Alias;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.projection.Projection;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
-import static java.util.Objects.isNull;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 public class GenericConstant<T> implements Constant {
-    protected final T value;
-    private final String alias;
+    private final T value;
+    private final ColumnAlias alias;
 
     GenericConstant(T value, String alias) {
-        this.value = value;
-        this.alias = alias;
+        this.value = requireNonNull(value, "Value is null. Use the NullValue constant instead.");
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : null;
     }
 
     // Sql
 
     @Override
     public String sql(Context context) {
-        return isNull(value) ? "null" : "?";
+        return "?";
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return isNull(value) ? Stream.empty() : Stream.of(value);
+        return Stream.of(value);
+    }
+
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
     }
 
     // Projection
@@ -55,15 +68,8 @@ public class GenericConstant<T> implements Constant {
     }
 
     @Override
-    public String alias() {
-        return alias;
-    }
-
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.empty();
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
     // Constant
@@ -74,8 +80,8 @@ public class GenericConstant<T> implements Constant {
     }
 
     @Override
-    public Projection forField(Field field) {
-        requireNonNull(field, "No field specified");
-        return new GenericConstant(value, field.alias());
+    public Projection forColumn(Column column) {
+        requireNonNull(column, "No column specified");
+        return new GenericConstant(value, column.alias().map(Alias::name).orElse(null));
     }
 }

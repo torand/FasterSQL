@@ -19,9 +19,11 @@ import io.github.torand.fastersql.util.collection.ArrayHelper;
 import io.github.torand.fastersql.util.collection.CollectionHelper;
 
 import java.util.Collection;
+import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 
 public final class Requires {
 
@@ -55,6 +57,11 @@ public final class Requires {
         requireNonNull(string, String.format(msg, args));
         require(() -> nonBlank(string), msg, args);
         return string;
+    }
+
+    public static <T> Optional<T> requireNonEmpty(Optional<T> optional, String msg, Object... args) {
+        require(() -> nonNull(optional) && optional.isPresent(), msg, args);
+        return optional;
     }
 
     public static void require(Requirement requirement, String msg, Object... args) {

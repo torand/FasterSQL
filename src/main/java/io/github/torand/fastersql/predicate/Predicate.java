@@ -16,19 +16,14 @@
 package io.github.torand.fastersql.predicate;
 
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.predicate.compound.CompoundPredicates;
 
-import java.util.stream.Stream;
-
 /**
- * Represents a restriction on the rows fetched by a query or affected by an update or delete.
+ * Represents a restriction on the rows fetched by a SELECT or affected by an UPDATE or DELETE.
  */
 public interface Predicate extends Sql {
     String negatedSql(Context context);
-
-    Stream<Field> fieldRefs();
 
     default Predicate or(Predicate other) {
         return CompoundPredicates.or(this, other);

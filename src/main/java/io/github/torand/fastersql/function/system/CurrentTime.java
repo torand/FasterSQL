@@ -16,16 +16,20 @@
 package io.github.torand.fastersql.function.system;
 
 import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.projection.Projection;
+
+import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
 public class CurrentTime implements SystemFunction {
-    private final String alias;
+    private final ColumnAlias alias;
 
     CurrentTime(String alias) {
-        this.alias = alias;
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : null;
     }
 
     // Sql
@@ -48,7 +52,7 @@ public class CurrentTime implements SystemFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 }

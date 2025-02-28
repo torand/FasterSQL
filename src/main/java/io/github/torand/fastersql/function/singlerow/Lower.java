@@ -15,12 +15,13 @@
  */
 package io.github.torand.fastersql.function.singlerow;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
@@ -29,11 +30,11 @@ import static java.util.Objects.requireNonNull;
 
 public class Lower implements SingleRowFunction {
     private final Expression expression;
-    private final String alias;
+    private final ColumnAlias alias;
 
     Lower(Expression expression, String alias) {
         this.expression = requireNonNull(expression, "No expression specified");
-        this.alias = nonBlank(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
     // Sql
@@ -48,6 +49,16 @@ public class Lower implements SingleRowFunction {
         return expression.params(context);
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return expression.columnRefs();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return expression.aliasRefs();
+    }
+
     // Projection
 
     @Override
@@ -57,18 +68,11 @@ public class Lower implements SingleRowFunction {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return expression.fieldRefs();
-    }
-
-    private String defaultAlias() {
-        return "LOWER_" + new Random().nextInt(999) + 1;
+    private ColumnAlias defaultAlias() {
+        return ColumnAlias.generate("LOWER_");
     }
 }

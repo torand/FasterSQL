@@ -21,14 +21,6 @@ public final class Constants {
 
     private Constants() {}
 
-    public static IntegerConstant $(int value) {
-        return new IntegerConstant(value, null);
-    }
-
-    public static StringConstant $(String value) {
-        return new StringConstant(value, null);
-    }
-
     public static <T> Constant $(T value) {
         if (isNull(value)) {
             return nullValue();

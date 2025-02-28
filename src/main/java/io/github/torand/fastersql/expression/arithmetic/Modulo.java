@@ -1,27 +1,29 @@
 package io.github.torand.fastersql.expression.arithmetic;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.projection.Projection;
 
-import java.util.Random;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
-import static java.util.Objects.nonNull;
+import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
-public class Modulo implements Expression {
+public class Modulo implements Expression, OrderExpression {
     private final Expression left;
     private final Expression right;
-    private final String alias;
+    private final ColumnAlias alias;
 
     Modulo(Expression left, Expression right, String alias) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
-        this.alias = nonNull(alias) ? alias : defaultAlias();
+        this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
     // Sql
@@ -50,6 +52,16 @@ public class Modulo implements Expression {
         return Stream.concat(left.params(context), right.params(context));
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.concat(left.columnRefs(), right.columnRefs());
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+    }
+
     // Projection
 
     @Override
@@ -59,18 +71,11 @@ public class Modulo implements Expression {
     }
 
     @Override
-    public String alias() {
-        return alias;
+    public Optional<ColumnAlias> alias() {
+        return Optional.ofNullable(alias);
     }
 
-    // Expression
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return Stream.concat(left.fieldRefs(), right.fieldRefs());
-    }
-
-    private String defaultAlias() {
-        return "MODULO_" + (new Random().nextInt(999) + 1);
+    private ColumnAlias defaultAlias() {
+        return ColumnAlias.generate("MODULO_");
     }
 }

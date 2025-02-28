@@ -15,8 +15,9 @@
  */
 package io.github.torand.fastersql.predicate;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Field;
+import io.github.torand.fastersql.alias.ColumnAlias;
 
 import java.util.stream.Stream;
 
@@ -47,16 +48,21 @@ public class Like implements Predicate {
         return Stream.of(right);
     }
 
+    @Override
+    public Stream<Column> columnRefs() {
+        return left.columnRefs();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return left.aliasRefs();
+    }
+
     // Predicate
 
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
         return left.sql(localContext) + " not like ?";
-    }
-
-    @Override
-    public Stream<Field> fieldRefs() {
-        return left.fieldRefs();
     }
 }

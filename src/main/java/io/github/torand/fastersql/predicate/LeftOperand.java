@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.Field;
 import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.comparison.ComparisonPredicates;
@@ -24,14 +23,12 @@ import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 public interface LeftOperand extends Sql {
-    Stream<Field> fieldRefs();
 
     default Predicate eq(Object value) {
         return ComparisonPredicates.eq(this, value);
@@ -138,5 +135,9 @@ public interface LeftOperand extends Sql {
     default OptionalPredicate like(Optional<String> pattern) {
         requireNonNull(pattern, "No pattern specified");
         return OptionalPredicate.ofNullable(pattern.map(p -> Predicates.like(this, p)).orElse(null));
+    }
+
+    default Predicate isNull() {
+        return Predicates.isNull(this);
     }
 }
