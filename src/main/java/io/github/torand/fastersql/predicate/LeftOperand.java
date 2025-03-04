@@ -19,7 +19,7 @@ import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.comparison.ComparisonPredicates;
 import io.github.torand.fastersql.statement.SelectStatement;
-import io.github.torand.fastersql.subquery.Subquery;
+import io.github.torand.fastersql.subquery.ExpressionSubquery;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -44,7 +44,7 @@ public interface LeftOperand extends Sql {
     }
 
     default Predicate eq(SelectStatement inner) {
-        return ComparisonPredicates.eq(this, new Subquery(inner));
+        return ComparisonPredicates.eq(this, new ExpressionSubquery(inner));
     }
 
     default Predicate lt(Object value) {
@@ -60,6 +60,10 @@ public interface LeftOperand extends Sql {
         return ComparisonPredicates.lt(this, other);
     }
 
+    default Predicate lt(SelectStatement inner) {
+        return ComparisonPredicates.lt(this, new ExpressionSubquery(inner));
+    }
+
     default Predicate le(Object value) {
         return ComparisonPredicates.le(this, value);
     }
@@ -71,6 +75,10 @@ public interface LeftOperand extends Sql {
 
     default Predicate le(Expression other) {
         return ComparisonPredicates.le(this, other);
+    }
+
+    default Predicate le(SelectStatement inner) {
+        return ComparisonPredicates.le(this, new ExpressionSubquery(inner));
     }
 
     default Predicate gt(Object value) {
@@ -86,6 +94,10 @@ public interface LeftOperand extends Sql {
         return ComparisonPredicates.gt(this, other);
     }
 
+    default Predicate gt(SelectStatement inner) {
+        return ComparisonPredicates.gt(this, new ExpressionSubquery(inner));
+    }
+
     default Predicate ge(Object value) {
         return ComparisonPredicates.ge(this, value);
     }
@@ -97,6 +109,10 @@ public interface LeftOperand extends Sql {
 
     default Predicate ge(Expression other) {
         return ComparisonPredicates.ge(this, other);
+    }
+
+    default Predicate ge(SelectStatement inner) {
+        return ComparisonPredicates.ge(this, new ExpressionSubquery(inner));
     }
 
     default Predicate in(Object... values) {
@@ -126,6 +142,10 @@ public interface LeftOperand extends Sql {
                 return Predicates.in(this, v);
             }
         }).orElse(null));
+    }
+
+    default Predicate in(SelectStatement inner) {
+        return Predicates.in(this, new ExpressionSubquery(inner));
     }
 
     default Predicate like(String pattern) {

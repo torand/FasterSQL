@@ -17,7 +17,6 @@ package io.github.torand.fastersql.predicate.comparison;
 
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.LeftOperand;
-import io.github.torand.fastersql.subquery.Subquery;
 
 import static io.github.torand.fastersql.constant.Constants.$;
 
@@ -32,20 +31,12 @@ public final class ComparisonPredicates {
         return new Eq(left, right);
     }
 
-    public static EqSubquery eq(LeftOperand left, Subquery right) {
-        return new EqSubquery(left, right);
-    }
-
     public static Lt lt(LeftOperand left, Object right) {
         return new Lt(left, $(right));
     }
 
     public static Lt lt(LeftOperand left, Expression right) {
         return new Lt(left, right);
-    }
-
-    public static LtSubquery lt(LeftOperand left, Subquery right) {
-        return new LtSubquery(left, right);
     }
 
     public static Le le(LeftOperand left, Object right) {
@@ -56,10 +47,6 @@ public final class ComparisonPredicates {
         return new Le(left, right);
     }
 
-    public static LeSubquery le(LeftOperand left, Subquery right) {
-        return new LeSubquery(left, right);
-    }
-
     public static Gt gt(LeftOperand left, Object right) {
         return new Gt(left, $(right));
     }
@@ -68,19 +55,11 @@ public final class ComparisonPredicates {
         return new Gt(left, right);
     }
 
-    public static GtSubquery gt(LeftOperand left, Subquery right) {
-        return new GtSubquery(left, right);
-    }
-
     public static Ge ge(LeftOperand left, Object right) {
         return new Ge(left, $(right));
     }
 
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
-    }
-
-    public static GeSubquery ge(LeftOperand left, Subquery right) {
-        return new GeSubquery(left, right);
     }
 }

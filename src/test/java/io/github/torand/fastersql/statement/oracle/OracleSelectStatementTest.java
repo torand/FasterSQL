@@ -46,6 +46,7 @@ import static io.github.torand.fastersql.function.system.SystemFunctions.current
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.projection.Projections.colPos;
+import static io.github.torand.fastersql.projection.Projections.subquery;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
@@ -250,6 +251,35 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(1)
             .assertRow(1,
                 "C_LAST_NAME", is("Nordmann")
+            )
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleSubqueriesInProjection() {
+        PreparableStatement stmt =
+            select(CUSTOMER.LAST_NAME, subquery(select(countAll()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
+                .from(CUSTOMER)
+                .orderBy(CUSTOMER.LAST_NAME.asc());
+
+        statementTester()
+            .assertSql("""
+                select C.LAST_NAME C_LAST_NAME, (select count(*) COUNT_ALL from PURCHASE PU where PU.CUSTOMER_ID = C.ID) PURCHASE_COUNT \
+                from CUSTOMER C \
+                order by C.LAST_NAME asc"""
+            )
+            .assertRowCount(3)
+            .assertRow(1,
+                "C_LAST_NAME", is("Hansen"),
+                "PURCHASE_COUNT", isBigDecimal(1)
+            )
+            .assertRow(2,
+                "C_LAST_NAME", is("Nordmann"),
+                "PURCHASE_COUNT", isBigDecimal(1)
+            )
+            .assertRow(3,
+                "C_LAST_NAME", is("Svensson"),
+                "PURCHASE_COUNT", isBigDecimal(0)
             )
             .verify(stmt);
     }

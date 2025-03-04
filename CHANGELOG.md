@@ -9,9 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Supporting subqueries as projections.
 - Supporting the HAVING clause.
 - IS NULL operator now supports any expression as operand.
-- ORDER BY now supports expressions as order expression.
+- ORDER BY now supports expressions.
  
 ### Changed
 - ...

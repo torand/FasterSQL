@@ -27,8 +27,9 @@ import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
 import io.github.torand.fastersql.projection.Projection;
-import io.github.torand.fastersql.subquery.Subquery;
+import io.github.torand.fastersql.subquery.TableSubquery;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class SelectStatement extends PreparableStatement {
     private final List<Projection> projections;
     private final List<Table<?>> tables;
     private final List<Join> joins;
-    private final Subquery subqueryFrom;
+    private final TableSubquery subqueryFrom;
     private final List<Predicate> wherePredicates;
     private final List<Column> groups;
     private final List<Predicate> havingPredicates;
@@ -71,7 +72,7 @@ public class SelectStatement extends PreparableStatement {
     private final Long offset;
     private final boolean forUpdate;
 
-    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, Subquery subqueryFrom, List<Predicate> wherePredicates, List<Column> groups, List<Predicate> havingPredicates, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
+    SelectStatement(List<Projection> projections, List<Table<?>> tables, List<Join> joins, TableSubquery subqueryFrom, List<Predicate> wherePredicates, List<Column> groups, List<Predicate> havingPredicates, List<Order> orders, boolean distinct, Long limit, Long offset, boolean forUpdate) {
         this.projections = asList(projections);
         this.tables = asList(tables);
         this.joins = asList(joins);
@@ -228,8 +229,11 @@ public class SelectStatement extends PreparableStatement {
 
     @Override
     public String sql(Context context) {
-        final Context localContext = context.withCommand(SELECT);
-        validate();
+        final Context localContext = context
+            .withCommand(SELECT)
+            .withOuterStatement(this);
+
+        validate(context);
 
         StringBuilder sb = new StringBuilder();
         sb.append("select ");
@@ -244,7 +248,7 @@ public class SelectStatement extends PreparableStatement {
         sb.append(" from ");
 
         if (nonNull(subqueryFrom)) {
-            sb.append(subqueryFrom.sql(context));
+            sb.append(subqueryFrom.sql(localContext));
             if (nonBlank(subqueryFrom.alias())) {
                 sb.append(" ");
                 sb.append(subqueryFrom.alias());
@@ -296,16 +300,16 @@ public class SelectStatement extends PreparableStatement {
 
         if (nonNull(offset) || nonNull(limit)) {
             if (context.getDialect().supports(LIMIT_OFFSET)) {
-                String offsetClause = nonNull(offset) ? " " + context.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row offset clause")) : "";
-                String limitClause = nonNull(limit) ? " " + context.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row limit clause")) : "";
+                String offsetClause = nonNull(offset) ? " " + localContext.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + localContext.getDialect().getProductName() + " has no row offset clause")) : "";
+                String limitClause = nonNull(limit) ? " " + localContext.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + localContext.getDialect().getProductName() + " has no row limit clause")) : "";
 
-                if (context.getDialect().offsetBeforeLimit()) {
+                if (localContext.getDialect().offsetBeforeLimit()) {
                     sb.append(offsetClause).append(limitClause);
                 } else {
                     sb.append(limitClause).append(offsetClause);
                 }
             } else {
-                sb = addLimitOffsetFallback(context, sb, rowFrom(), rowTo());
+                sb = addLimitOffsetFallback(localContext, sb, rowFrom(), rowTo());
             }
         }
 
@@ -385,7 +389,7 @@ public class SelectStatement extends PreparableStatement {
         return params;
     }
 
-    private void validate() {
+    private void validate(Context context) {
         if (isEmpty(tables) && isNull(subqueryFrom)) {
             throw new IllegalStateException("No FROM clause specified");
         }
@@ -394,10 +398,10 @@ public class SelectStatement extends PreparableStatement {
             .filter(instanceOf(Expression.class))
             .map(castTo(Expression.class))
             .flatMap(Expression::columnRefs);
-        validateColumnTableRelations(projectedColumns);
+        validateColumnTableRelations(context, projectedColumns);
 
         if (nonNull(joins)) {
-            validateColumnTableRelations(streamSafely(joins).flatMap(Join::columnRefs));
+            validateColumnTableRelations(context, streamSafely(joins).flatMap(Join::columnRefs));
         }
 
         if (nonNull(orders)) {
@@ -417,10 +421,10 @@ public class SelectStatement extends PreparableStatement {
                 });
         }
 
-        validateColumnTableRelations(streamSafely(wherePredicates).flatMap(Predicate::columnRefs));
-        validateColumnTableRelations(streamSafely(groups));
-        validateColumnTableRelations(streamSafely(havingPredicates).flatMap(Predicate::columnRefs));
-        validateColumnTableRelations(streamSafely(orders).flatMap(Order::columnRefs));
+        validateColumnTableRelations(context, streamSafely(wherePredicates).flatMap(Predicate::columnRefs));
+        validateColumnTableRelations(context, streamSafely(groups));
+        validateColumnTableRelations(context, streamSafely(havingPredicates).flatMap(Predicate::columnRefs));
+        validateColumnTableRelations(context, streamSafely(orders).flatMap(Order::columnRefs));
 
         if (forUpdate) {
             if (distinct || nonEmpty(groups) || streamSafely(projections).anyMatch(instanceOf(AggregateFunction.class))) {
@@ -429,13 +433,19 @@ public class SelectStatement extends PreparableStatement {
         }
     }
 
-    private void validateColumnTableRelations(Stream<Column> columns) {
+    private void validateColumnTableRelations(Context context, Stream<Column> columns) {
+        Set<String> outerTableNames = new HashSet<>();
+        if (nonEmpty(context.getOuterStatements())) {
+            context.getOuterStatements().forEach(os -> streamSafely(os.tables).map(Table::name).forEach(outerTableNames::add));
+            context.getOuterStatements().forEach(os -> streamSafely(os.joins).map(Join::joined).map(Table::name).forEach(outerTableNames::add));
+        }
+
         Set<String> tableNames = Stream.concat(streamSafely(tables), streamSafely(joins).map(Join::joined))
             .map(Table::name)
             .collect(toSet());
 
         columns
-            .filter(c -> !tableNames.contains(c.table().name()))
+            .filter(c -> !outerTableNames.contains(c.table().name()) && !tableNames.contains(c.table().name()))
             .findFirst()
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but is not specified in a FROM or JOIN clause");

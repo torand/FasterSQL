@@ -17,7 +17,7 @@ package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.projection.Projection;
-import io.github.torand.fastersql.subquery.Subquery;
+import io.github.torand.fastersql.subquery.TableSubquery;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,12 +53,12 @@ public class SelectFromBuilder {
 
     public SelectStatement from(SelectStatement inner) {
         requireNonNull(inner, "No select statement specified");
-        return new SelectStatement(projections, null, null, new Subquery(inner), null, null, null, null, distinct, null, null, false);
+        return new SelectStatement(projections, null, null, new TableSubquery(inner), null, null, null, null, distinct, null, null, false);
     }
 
     public SelectStatement from(SelectStatement inner, String alias) {
         requireNonNull(inner, "No select statement specified");
         requireNonBlank(alias, "No alias specified");
-        return new SelectStatement(projections, null, null, new Subquery(inner).as(alias), null, null, null, null, distinct, null, null, false);
+        return new SelectStatement(projections, null, null, new TableSubquery(inner).as(alias), null, null, null, null, distinct, null, null, false);
     }
 }

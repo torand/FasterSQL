@@ -16,31 +16,44 @@
 package io.github.torand.fastersql;
 
 import io.github.torand.fastersql.dialect.Dialect;
+import io.github.torand.fastersql.statement.SelectStatement;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.torand.fastersql.Clause.PROJECTION;
 import static io.github.torand.fastersql.Command.SELECT;
+import static java.util.Collections.emptyList;
 
 public class Context {
     private final Dialect dialect;
     private final Command command;
     private final Clause clause;
+    private final List<SelectStatement> outerStatements;
 
     public static Context of(Dialect dialect) {
-        return new Context(dialect, null,  null);
+        return new Context(dialect, null,  null, emptyList());
     }
 
-    private Context(Dialect dialect, Command command, Clause clause) {
+    private Context(Dialect dialect, Command command, Clause clause, List<SelectStatement> outerStatements) {
         this.dialect = dialect;
         this.command = command;
         this.clause = clause;
+        this.outerStatements = new ArrayList<>(outerStatements);
     }
 
     public Context withCommand(Command command) {
-        return new Context(this.dialect, command, command == SELECT ? PROJECTION : null);
+        return new Context(this.dialect, command, command == SELECT ? PROJECTION : null, outerStatements);
     }
 
     public Context withClause(Clause clause) {
-        return new Context(this.dialect, this.command, clause);
+        return new Context(this.dialect, this.command, clause, outerStatements);
+    }
+
+    public Context withOuterStatement(SelectStatement outerStatement) {
+        List<SelectStatement> newOuterStatements = new ArrayList<>(outerStatements);
+        newOuterStatements.add(outerStatement);
+        return new Context(this.dialect, this.command, this.clause, newOuterStatements);
     }
 
     public Dialect getDialect() {
@@ -55,7 +68,11 @@ public class Context {
         return this.command == command;
     }
 
-    public boolean isClause(Clause claue) {
+    public boolean isClause(Clause clause) {
         return this.clause == clause;
+    }
+
+    public List<SelectStatement> getOuterStatements() {
+        return outerStatements;
     }
 }

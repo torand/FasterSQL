@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.subquery.Subquery;
+import io.github.torand.fastersql.subquery.ExpressionSubquery;
 
 import java.util.Collection;
 
@@ -26,11 +26,11 @@ public final class Predicates {
         return new In(left, right);
     }
 
-    public static InSubquery in(LeftOperand left, Subquery right) {
+    public static InSubquery in(LeftOperand left, ExpressionSubquery right) {
         return new InSubquery(left, right);
     }
 
-    public static ExistsSubquery exists(Subquery operand) {
+    public static ExistsSubquery exists(ExpressionSubquery operand) {
         return new ExistsSubquery(operand);
     }
 
