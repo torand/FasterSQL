@@ -62,7 +62,7 @@ public class Column implements LeftOperand, Expression, OrderExpression {
     @Override
     public String sql(Context context) {
         if (context.isCommand(SELECT)) {
-            return table.alias() + "." + name;
+            return table.alias().name() + "." + name;
         } else {
             return name;
         }
@@ -96,6 +96,6 @@ public class Column implements LeftOperand, Expression, OrderExpression {
     }
 
     private ColumnAlias defaultAlias(Table<?> table, String name) {
-        return new ColumnAlias((table.alias() + "_" + name).toUpperCase());
+        return new ColumnAlias((table.alias().name() + "_" + name).toUpperCase());
     }
 }

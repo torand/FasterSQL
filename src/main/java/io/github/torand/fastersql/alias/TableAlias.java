@@ -26,7 +26,7 @@ public class TableAlias implements Alias {
 
     @Override
     public String sql(Context context) {
-        return name;
+        return name.contains(" ") ? "\"" + name + "\"" : name;
     }
 
     @Override

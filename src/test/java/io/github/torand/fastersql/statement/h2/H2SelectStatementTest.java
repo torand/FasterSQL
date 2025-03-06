@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.alias.Aliases.alias;
+import static io.github.torand.fastersql.alias.Aliases.colRef;
 import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
@@ -46,6 +47,7 @@ import static io.github.torand.fastersql.function.system.SystemFunctions.current
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.projection.Projections.colPos;
 import static io.github.torand.fastersql.projection.Projections.subquery;
+import static io.github.torand.fastersql.relation.Relations.table;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
@@ -283,14 +285,16 @@ public class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSubqueriesInFromClause() {
+    public void shouldHandleSimpleSubqueryInFromClause() {
         // Note! H2 does not support params in subquery projection
 
         PreparableStatement stmt =
             select(countAll().as("CUSTOMER_COUNT"))
-                .from(select(CUSTOMER.ID)
-                    .from(CUSTOMER)
-                    .where(CUSTOMER.LAST_NAME.like("ordm")), "MATCHES");
+                .from(table(
+                    select(CUSTOMER.ID)
+                        .from(CUSTOMER)
+                        .where(CUSTOMER.LAST_NAME.like("ordm")))
+                    .as("MATCHES"));
 
         statementTester()
             .assertSql("""
@@ -304,6 +308,48 @@ public class H2SelectStatementTest extends H2Test {
             .assertRowCount(1)
             .assertRow(1,
                 "CUSTOMER_COUNT", isLong(1)
+            )
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleMultipleSubqueriesInFromClause() {
+        PreparableStatement stmt =
+            select(PRODUCT.ID, colRef("PURCHASED_QUANTITY", "QUANTITY"), colRef("PURCHASED_AMOUNT", "AMOUNT"))
+                .from(PRODUCT, table(
+                        select(PURCHASE_ITEM.PRODUCT_ID.as("PR_ID"), sum(PURCHASE_ITEM.QUANTITY).as("QUANTITY"))
+                            .from(PURCHASE_ITEM)
+                            .groupBy(PURCHASE_ITEM.PRODUCT_ID))
+                        .as("PURCHASED_QUANTITY"),
+                    table(
+                        select(PURCHASE_ITEM.PRODUCT_ID.as("PR_ID"), sum(PURCHASE_ITEM.QUANTITY.times(PRODUCT.PRICE)).as("AMOUNT"))
+                            .from(PURCHASE_ITEM)
+                            .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
+                            .groupBy(PURCHASE_ITEM.PRODUCT_ID))
+                        .as("PURCHASED_AMOUNT"))
+                .where(PRODUCT.ID.eq(colRef("PURCHASED_QUANTITY", "PR_ID"))
+                    .and(PRODUCT.ID.eq(colRef("PURCHASED_AMOUNT", "PR_ID"))))
+                .orderBy(PRODUCT.ID.asc());
+
+        statementTester()
+            .assertSql("""
+                select PR.ID PR_ID, PURCHASED_QUANTITY.QUANTITY, PURCHASED_AMOUNT.AMOUNT \
+                from PRODUCT PR, \
+                (select PI.PRODUCT_ID PR_ID, sum(PI.QUANTITY) QUANTITY from PURCHASE_ITEM PI group by PI.PRODUCT_ID) PURCHASED_QUANTITY, \
+                (select PI.PRODUCT_ID PR_ID, sum(PI.QUANTITY * PR.PRICE) AMOUNT from PURCHASE_ITEM PI inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID group by PI.PRODUCT_ID) PURCHASED_AMOUNT \
+                where PR.ID = PURCHASED_QUANTITY.PR_ID and PR.ID = PURCHASED_AMOUNT.PR_ID \
+                order by PR.ID asc"""
+            )
+            .assertRowCount(2)
+            .assertRow(1,
+                "PR_ID", is("92bfca8e-2898-408c-8dd3-2b3f9d362044"),
+                "QUANTITY", isLong(3),
+                "AMOUNT", isBigDecimalCloseTo(11335.35, 0.01)
+            )
+            .assertRow(2,
+                "PR_ID", is("fdd89ce1-db38-4deb-9767-0324e91d4933"),
+                "QUANTITY", isLong(1),
+                "AMOUNT", isBigDecimalCloseTo(5433.5, 0.01)
             )
             .verify(stmt);
     }

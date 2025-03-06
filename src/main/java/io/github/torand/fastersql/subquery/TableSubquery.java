@@ -15,38 +15,72 @@
  */
 package io.github.torand.fastersql.subquery;
 
+import io.github.torand.fastersql.Column;
+import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.alias.TableAlias;
+import io.github.torand.fastersql.relation.Relation;
 import io.github.torand.fastersql.statement.SelectStatement;
 
+import java.util.stream.Stream;
+
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
-public class TableSubquery implements Subquery {
-    private final SelectStatement selectStatement;
+public class TableSubquery implements Subquery, Relation {
+    private final SelectStatement query;
     private final TableAlias alias;
 
-    public TableSubquery(SelectStatement selectStatement) {
-        this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
+    public TableSubquery(SelectStatement query) {
+        this.query = requireNonNull(query, "No query specified");
         this.alias = null;
     }
 
-    private TableSubquery(SelectStatement selectStatement, String alias) {
-        this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
+    private TableSubquery(SelectStatement query, String alias) {
+        this.query = requireNonNull(query, "No query specified");
         this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));
     }
 
-    public TableSubquery as(String alias) {
-        return new TableSubquery(selectStatement, alias);
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "(" + query.sql(context) + ")" + (nonNull(alias) ? " " + alias.sql(context) : "");
     }
 
-    public String alias() {
-        return alias.name();
+    @Override
+    public Stream<Object> params(Context context) {
+        return streamSafely(query.params(context));
+    }
+
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
     }
 
     // Subquery
 
     @Override
-    public SelectStatement selectStatement() {
-        return selectStatement;
+    public SelectStatement query() {
+        return query;
+    }
+
+    // Relation
+
+    @Override
+    public TableSubquery as(String alias) {
+        return new TableSubquery(query, alias);
+    }
+
+    @Override
+    public TableAlias alias() {
+        return alias;
     }
 }

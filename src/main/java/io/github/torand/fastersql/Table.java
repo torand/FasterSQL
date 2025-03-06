@@ -15,12 +15,16 @@
  */
 package io.github.torand.fastersql;
 
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.alias.TableAlias;
+import io.github.torand.fastersql.relation.Relation;
+
+import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 
-public abstract class Table<ENTITY extends Table<?>> {
+public abstract class Table<ENTITY extends Table<?>> implements Relation {
     private final String name;
     private final TableAlias alias;
     private final TableFactory<ENTITY> tableFactory;
@@ -37,10 +41,6 @@ public abstract class Table<ENTITY extends Table<?>> {
         this.tableFactory = tableFactory;
     }
 
-    public ENTITY as(String alias) {
-        return tableFactory.newInstance(alias);
-    }
-
     public Column column(String name) {
         return new Column(this, name);
     }
@@ -49,16 +49,42 @@ public abstract class Table<ENTITY extends Table<?>> {
         return name;
     }
 
-    public String alias() {
-        return alias.name();
-    }
+    // Sql
 
+    @Override
     public String sql(Context context) {
         if (context.isCommand(SELECT)) {
             return name + " " + alias.sql(context);
         } else {
             return name;
         }
+    }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
+
+    // Relation
+
+    @Override
+    public ENTITY as(String alias) {
+        return tableFactory.newInstance(alias);
+    }
+
+    @Override
+    public TableAlias alias() {
+        return alias;
     }
 
     private TableAlias defaultAlias(String name) {

@@ -15,39 +15,10 @@
  */
 package io.github.torand.fastersql.subquery;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Sql;
-import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.statement.SelectStatement;
-
-import java.util.stream.Stream;
-
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 
 public interface Subquery extends Sql {
 
-    SelectStatement selectStatement();
-
-    // Sql
-
-    @Override
-    default String sql(Context context) {
-        return "(" + selectStatement().sql(context) + ")";
-    }
-
-    @Override
-    default Stream<Object> params(Context context) {
-        return streamSafely(selectStatement().params(context));
-    }
-
-    @Override
-    default Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    default Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
-    }
+    SelectStatement query();
 }

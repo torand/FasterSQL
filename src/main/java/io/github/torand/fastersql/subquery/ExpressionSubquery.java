@@ -15,42 +15,68 @@
  */
 package io.github.torand.fastersql.subquery;
 
+import io.github.torand.fastersql.Column;
+import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.statement.SelectStatement;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
 public class ExpressionSubquery implements Subquery, Expression {
-    private final SelectStatement selectStatement;
+    private final SelectStatement query;
     private final ColumnAlias alias;
 
-    public ExpressionSubquery(SelectStatement selectStatement) {
-        this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
+    public ExpressionSubquery(SelectStatement query) {
+        this.query = requireNonNull(query, "No query specified");
         this.alias = null;
     }
 
-    private ExpressionSubquery(SelectStatement selectStatement, String alias) {
-        this.selectStatement = requireNonNull(selectStatement, "No select statement specified");
+    private ExpressionSubquery(SelectStatement query, String alias) {
+        this.query = requireNonNull(query, "No query specified");
         this.alias = new ColumnAlias(requireNonBlank(alias, "No alias specified"));
+    }
+
+    // Sql
+
+    @Override
+    public String sql(Context context) {
+        return "(" + query.sql(context) + ")";
+    }
+
+    @Override
+    public Stream<Object> params(Context context) {
+        return streamSafely(query.params(context));
+    }
+
+    @Override
+    public Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    public Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
     }
 
     // Subquery
 
     @Override
-    public SelectStatement selectStatement() {
-        return selectStatement;
+    public SelectStatement query() {
+        return query;
     }
 
     // Projection
 
     @Override
     public Projection as(String alias) {
-        return new ExpressionSubquery(selectStatement, alias);
+        return new ExpressionSubquery(query, alias);
     }
 
     @Override
