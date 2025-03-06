@@ -119,7 +119,7 @@ The example assumes a connection to a MySQL database.
 * Expressions: Any nested expression using functions, operators and constant values
 * Ordering: asc, desc, nulls first/last
 * Grouping: group by, having
-* Subqueries: Supported both in the FROM clause and as right operand of predicates
+* Subqueries: Supported as projection, in the FROM clause and as right operand of predicates
 
 ### Supported Statement Parameters
 
