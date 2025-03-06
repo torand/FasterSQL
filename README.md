@@ -13,7 +13,7 @@ Java library for a faster and more efficient integration with relational databas
 
 - [Overview](#overview)
 - [Usage](#usage)
-- [Getting Started](#getting_started)
+- [Getting Started](#getting-started)
 - [Logging](#logging)
 - [Contributing](#contributing)
 - [License](#license)
