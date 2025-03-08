@@ -119,12 +119,13 @@ The example assumes a connection to a MySQL database.
 * Expressions: Any nested expression using functions, operators and constant values
 * Ordering: asc, desc, nulls first/last
 * Grouping: group by, having
-* Subqueries: Supported as projection, in the FROM clause and as right operand of predicates
+* Subqueries: Supported as projections (SELECT clause), relations (FROM clause) and as right operand of predicates (WHERE clause)
 
 ### Supported Statement Parameters
 
-Statement parameter values are registered with a PreparedStatement using the setObject method, by default. Some Java standard types are transformed
-into their Java SQL counterparts before registration, as specified by the table below:
+Statement parameter values are registered with a PreparedStatement using the setObject method, by default. This covers all the basic
+Java primitive types like Integer, Long, BigInteger, Float, Double, BigDecimal, String and Boolean. More complex standard Java types
+are transformed into their Java SQL counterparts before registration, as specified by the table below:
 
 | Java Standard Type | Java SQL Type | Parameter method |
 |--------------------|---------------|------------------|
@@ -149,7 +150,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
   </dependency>
 </dependencies>
 ```
