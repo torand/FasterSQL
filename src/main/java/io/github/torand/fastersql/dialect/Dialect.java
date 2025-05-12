@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,12 +102,31 @@ public interface Dialect {
     String formatCeilFunction(String operand);
 
     /**
+     * Returns the 'round' function formatted for a specific SQL dialect.
+     * @param operand the numeric expression to perform rounding on
+     * @return the 'round' function for a specific SQL dialect.
+     */
+    String formatRoundFunction(String operand);
+
+    /**
      * Returns the 'mod' function formatted for a specific SQL dialect.
      * @param divisor the numeric expression for divisor operand
      * @param dividend the numeric expression for dividend operand
      * @return the 'mod' function for a specific SQL dialect.
      */
     String formatModuloFunction(String divisor, String dividend);
+
+    /**
+     * Returns the 'current_date' system function formatted for a specific SQL dialect.
+     * @return the 'current_date' function for a specific SQL dialect.
+     */
+    String formatCurrentDateFunction();
+
+    /**
+     * Returns the string concatenation operator for a specific SQL Dialect.
+     * @return the string concatenation operator for a specific SQL Dialect.
+     */
+    Optional<String> getConcatOperator();
 
     /**
      * Indicates whether a capability is supported by a specific SQL dialect.
@@ -130,6 +149,8 @@ public interface Dialect {
                 return new PostgreSqlDialect();
             } else if (productName.contains("oracle")) {
                 return new OracleDialect();
+            } else if (productName.contains("sql server")) {
+                return new SqlServerDialect();
             } else {
                 throw new UnsupportedOperationException("Database with product name " + productName + " not supported");
             }

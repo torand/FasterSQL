@@ -23,10 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ...
 
+## [1.5.0] - 2025-05-12
+
+### Added
+- Supporting SQL dialect of Microsoft SQL Server.
+
+### Changed
+- Throws when using FOR UPDATE in SELECT with projections from more than one table.
+
 ## [1.4.0] - 2025-03-06
 
 ### Added
- 
 - Supporting multiple subqueries in FROM clause.
 - Supporting subqueries as projections.
 - Supporting the HAVING clause.

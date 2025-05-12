@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
@@ -415,8 +416,24 @@ public class SelectStatement extends PreparableStatement {
         validateColumnTableRelations(context, streamSafely(orders).flatMap(Order::columnRefs));
 
         if (forUpdate) {
+            if (!context.getDialect().supports(SELECT_FOR_UPDATE)) {
+                throw new UnsupportedOperationException("%s does not support the SELECT ... FOR UPDATE clause".formatted(context.getDialect().getProductName()));
+            }
+
             if (distinct || nonEmpty(groups) || streamSafely(projections).anyMatch(instanceOf(AggregateFunction.class))) {
                 throw new IllegalStateException("SELECT ... FOR UPDATE can't be used with DISTINCT, GROUP BY or aggregates");
+            }
+
+            List<String> projectedTables = streamSafely(projections)
+                .filter(instanceOf(Expression.class))
+                .map(castTo(Expression.class))
+                .flatMap(Expression::columnRefs)
+                .map(cr -> cr.table().name())
+                .distinct()
+                .toList();
+
+            if (projectedTables.size() != 1) {
+                throw new IllegalStateException("SELECT ... FOR UPDATE can be used for a single projected table only. Projected tables in this statement are: %s".formatted(projectedTables));
             }
         }
     }

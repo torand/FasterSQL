@@ -99,6 +99,7 @@ The example assumes a connection to a MySQL database.
 ### Supported RDBMS Products
 
 * Oracle
+* SQL Server
 * MySQL
 * MariaDb
 * PostgreSQL
@@ -150,7 +151,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0</version>
   </dependency>
 </dependencies>
 ```

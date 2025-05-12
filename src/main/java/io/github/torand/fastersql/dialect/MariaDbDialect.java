@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.Optional;
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 
 /**
  * Defines the MAriaDB SQL dialect.
@@ -29,7 +30,7 @@ import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
  * <a href="https://mariadb.com/kb/en/sql-statements/" />
  */
 public class MariaDbDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR, SELECT_FOR_UPDATE);
 
     @Override
     public String getProductName() {
@@ -87,8 +88,23 @@ public class MariaDbDialect implements Dialect {
     }
 
     @Override
+    public String formatRoundFunction(String operand) {
+        return "round(" + operand + ")";
+    }
+
+    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("MariaDB does not support the mod() function (use the modulo infix operator instead)");
+    }
+
+    @Override
+    public String formatCurrentDateFunction() {
+        return "current_date";
+    }
+
+    @Override
+    public Optional<String> getConcatOperator() {
+        return Optional.empty();
     }
 
     @Override
