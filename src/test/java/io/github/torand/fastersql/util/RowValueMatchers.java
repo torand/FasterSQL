@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,14 @@ import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
 
 public final class RowValueMatchers {
     private RowValueMatchers() {}
@@ -54,6 +58,10 @@ public final class RowValueMatchers {
 
     public static Matcher<?> isTimestamp(LocalDateTime dateTime) {
         return is(Timestamp.valueOf(dateTime));
+    }
+
+    public static Matcher<?> isTimestamp(LocalDate date) {
+        return is(allOf(greaterThanOrEqualTo(Timestamp.valueOf(date.atStartOfDay())), lessThan(Timestamp.valueOf(date.plusDays(1).atStartOfDay()))));
     }
 
     public static Matcher<?> isNull() {

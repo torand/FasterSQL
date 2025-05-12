@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package io.github.torand.fastersql.statement.oracle;
 
 import io.github.torand.fastersql.statement.PreparableStatement;
-import io.github.torand.fastersql.util.RowValueMatchers;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -28,6 +27,7 @@ import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.concat;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.update;
+import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
@@ -61,7 +61,7 @@ public class OracleUpdateStatementTest extends OracleTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_DESCRIPTION", is("Fresh from the factory"),
-                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(42)
+                "PR_STOCK_COUNT", isBigDecimal(42)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.DESCRIPTION, PRODUCT.STOCK_COUNT)
@@ -157,7 +157,7 @@ public class OracleUpdateStatementTest extends OracleTest {
             .assertRow(1,
                 "PR_ID", is(id.toString()),
                 "PR_NAME", allOf(startsWith("Louis Poulsen"), endsWith("table lamp")),
-                "PR_STOCK_COUNT", RowValueMatchers.isBigDecimal(123)
+                "PR_STOCK_COUNT", isBigDecimal(123)
             )
             .verify(
                 select(PRODUCT.ID, PRODUCT.NAME, PRODUCT.STOCK_COUNT)

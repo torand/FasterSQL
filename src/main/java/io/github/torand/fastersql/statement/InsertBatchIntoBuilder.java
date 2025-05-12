@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,9 @@ import io.github.torand.fastersql.Table;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Objects.requireNonNull;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static java.util.Objects.requireNonNull;
 
 public class InsertBatchIntoBuilder<T> {
     private final List<? extends T> entities;

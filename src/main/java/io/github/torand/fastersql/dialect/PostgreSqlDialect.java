@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
+import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
@@ -32,7 +33,7 @@ import static io.github.torand.fastersql.util.lang.StringHelper.generate;
  * <a href="https://www.postgresql.org/docs/current/" />
  */
 public class PostgreSqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE);
 
     @Override
     public String getProductName() {
@@ -98,8 +99,23 @@ public class PostgreSqlDialect implements Dialect {
     }
 
     @Override
+    public String formatRoundFunction(String operand) {
+        return "round(" + operand + ")";
+    }
+
+    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("PostgreSQL does not support the mod() function (use the modulo infix operator instead)");
+    }
+
+    @Override
+    public String formatCurrentDateFunction() {
+        return "current_date";
+    }
+
+    @Override
+    public Optional<String> getConcatOperator() {
+        return Optional.of("||");
     }
 
     @Override

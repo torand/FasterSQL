@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class Round implements SingleRowFunction {
 
     @Override
     public String sql(Context context) {
-        return "round(%s)".formatted(expression.sql(context));
+        return context.getDialect().formatRoundFunction(expression.sql(context));
     }
 
     @Override

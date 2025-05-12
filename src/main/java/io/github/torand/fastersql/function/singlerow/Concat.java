@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Tore Eide Andersen
+ * Copyright (c) 2024-2025 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,8 @@ public class Concat implements SingleRowFunction {
     @Override
     public String sql(Context context) {
         if (context.getDialect().supports(CONCAT_OPERATOR)) {
-            return streamSafely(expressions).map(e -> e.sql(context)).collect(joining(" || "));
+            String operator = context.getDialect().getConcatOperator().orElseThrow();
+            return streamSafely(expressions).map(e -> e.sql(context)).collect(joining(" " + operator + " "));
         }
 
         List<String> expressionsAsSql = streamSafely(expressions).map(e -> e.sql(context)).toList();
