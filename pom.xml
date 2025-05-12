@@ -79,7 +79,7 @@
         <testcontainers.version>1.21.0</testcontainers.version>
         <oracle.version>23.8.0.25.04</oracle.version>
         <h2.version>2.3.232</h2.version>
-        <mysql-connector-j.version>9.2.0</mysql-connector-j.version>
+        <mysql-connector-j.version>9.3.0</mysql-connector-j.version>
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
         <mariadb-java-client.version>3.5.3</mariadb-java-client.version>
         <postgresql.version>42.7.5</postgresql.version>
