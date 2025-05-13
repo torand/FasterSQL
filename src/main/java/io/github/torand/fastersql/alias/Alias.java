@@ -22,5 +22,9 @@ import io.github.torand.fastersql.Sql;
  */
 public interface Alias extends Sql {
 
+    /**
+     * Gets the alias name.
+     * @return the alias name.
+     */
     String name();
 }

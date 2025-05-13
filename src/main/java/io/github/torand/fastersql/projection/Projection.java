@@ -21,11 +21,11 @@ import io.github.torand.fastersql.alias.ColumnAlias;
 import java.util.Optional;
 
 /**
- * A construct that can be returned in a result set, i.e. an item in the SELECT clause.
+ * A construct which can be returned in a result set, i.e. an item in the SELECT clause.
  */
 public interface Projection extends Sql {
     /**
-     * Assigns a column alias (label) for this projections
+     * Assigns a column alias (label) for this projection
      * @param alias the column alias or label
      * @return the projection with specified alias assigned
      */
