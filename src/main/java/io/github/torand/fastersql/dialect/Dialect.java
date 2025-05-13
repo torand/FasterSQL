@@ -151,6 +151,8 @@ public interface Dialect {
                 return new OracleDialect();
             } else if (productName.contains("sql server")) {
                 return new SqlServerDialect();
+            } else if (productName.contains("access")) {
+                return new AccessDialect();
             } else {
                 throw new UnsupportedOperationException("Database with product name " + productName + " not supported");
             }
