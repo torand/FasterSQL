@@ -20,18 +20,20 @@ import io.github.torand.fastersql.domainmodel.PurchaseStatus;
 import io.github.torand.fastersql.statement.PreparableStatement;
 import org.junit.jupiter.api.Test;
 
-import java.time.Year;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
 import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toChar;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.concat;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
 import static io.github.torand.fastersql.statement.Statements.insert;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
+import static io.github.torand.fastersql.util.RowValueMatchers.isTimestamp;
 import static org.hamcrest.Matchers.is;
 
 public class AccessInsertStatementTest extends AccessTest {
@@ -74,22 +76,22 @@ public class AccessInsertStatementTest extends AccessTest {
     void shouldHandleExpressionAsValue() {
         final UUID id = UUID.randomUUID();
         final UUID customerId = UUID.fromString("9df03cd1-245f-4257-95e2-85cb5bd39ad8"); // Ola Nordmann
-        final Year year = Year.now();
+        final LocalDate today = LocalDate.now();
 
         PreparableStatement stmt =
             insert().into(PURCHASE)
                 .value(PURCHASE.ID, id)
                 .value(PURCHASE.STATUS, PurchaseStatus.REGISTERED)
                 .value(PURCHASE.CUSTOMER_ID, customerId)
-                .value(PURCHASE.NOTES, toChar(currentTimestamp(), "yyyy"))
+                .value(PURCHASE.NOTES, concat($("Some "), upper($("notes"))))
                 .value(PURCHASE.CREATED_TIME, currentTimestamp());
 
         statementTester()
             .assertSql("""
                 insert into PURCHASE (ID, STATUS, CUSTOMER_ID, NOTES, CREATED_TIME) \
-                values (?, ?, ?, to_char(current_timestamp, ?), current_timestamp)"""
+                values (?, ?, ?, ? & upper(?), current_timestamp)"""
             )
-            .assertParams(id, PurchaseStatus.REGISTERED, customerId, "yyyy")
+            .assertParams(id, PurchaseStatus.REGISTERED, customerId, "Some ", "notes")
             .assertAffectedRowCount(1)
             .verify(stmt);
 
@@ -97,10 +99,10 @@ public class AccessInsertStatementTest extends AccessTest {
             .assertRowCount(1)
             .assertRow(1,
                 "PU_ID", is(id.toString()),
-                "PU_NOTES", is(year.toString()),
-                "PU_CREATED_YEAR", is(year.toString()))
+                "PU_NOTES", is("Some NOTES"),
+                "PU_CREATED_TIME", isTimestamp(today))
             .verify(
-                select(PURCHASE.ID, PURCHASE.NOTES, toChar(PURCHASE.CREATED_TIME, "yyyy").as("PU_CREATED_YEAR"))
+                select(PURCHASE.ID, PURCHASE.NOTES, PURCHASE.CREATED_TIME)
                     .from(PURCHASE)
                     .where(PURCHASE.ID.eq(id))
             );

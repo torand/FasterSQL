@@ -15,49 +15,50 @@
  */
 package io.github.torand.fastersql.statement.access;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.statement.StatementTester;
-import oracle.jdbc.pool.OracleDataSource;
+import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.BeforeAll;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.sql.DataSource;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.SQLException;
-import java.time.Duration;
+import java.util.UUID;
 
-@Testcontainers
 public abstract class AccessTest {
     private static final Logger logger = LoggerFactory.getLogger(AccessTest.class);
-
-    private static final String IMAGE = "?";
-
-    // https://www.javaxt.com/wiki/Tutorials/JDBC/How_to_Open_a_JDBC_Connection_to_Microsoft_Access
-    // https://www.codeproject.com/Articles/35018/Access-MS-Access-Databases-from-Java
-    // https://www.codeproject.com/Tips/813055/Create-Microsoft-Access-Database-Programmatically
-
-    @Container
-    protected static GenericContainer oracleContainer = new GenericContainer(IMAGE)
-        .withStartupTimeout(Duration.ofMinutes(3))
-        //.withUsername("testuser")
-        //.withPassword("testpwd")
-        //.withInitScript("oracle-init.sql")
-        .withLogConsumer(new Slf4jLogConsumer(logger).withSeparateOutputStreams());
 
     protected static DataSource ds;
 
     @BeforeAll
-    static void setUp() throws SQLException {
-        oracleContainer.start();
+    static void setUp() throws IOException, SQLException {
+        String databaseDir = "target/access-db";
+        Files.createDirectories(Path.of(databaseDir));
+        String databaseName = UUID.randomUUID().toString().replace("-", "");
 
-        ds = new OracleDataSource();
-        ds.setURL(oracleContainer.getJdbcUrl());
-        ds.setUser(oracleContainer.getUsername());
-        ds.setPassword(oracleContainer.getPassword());
+        // https://spannm.github.io/ucanaccess/10-ucanaccess.html
+        HikariConfig hikariConfig = new HikariConfig();
+        hikariConfig.setJdbcUrl("jdbc:ucanaccess://./%s/%s.mdb;memory=true;newDatabaseVersion=V2010".formatted(databaseDir, databaseName));
+        hikariConfig.setDriverClassName("net.ucanaccess.jdbc.UcanaccessDriver");
+
+        ds = new HikariDataSource(hikariConfig);
+
+        createDatabase();
+    }
+
+    private static void createDatabase() throws SQLException {
+        ScriptRunner sr = new ScriptRunner(ds.getConnection());
+        Reader initScriptReader = new BufferedReader(new InputStreamReader(AccessTest.class.getResourceAsStream("/access-init.sql")));
+        sr.runScript(initScriptReader);
     }
 
     protected StatementTester statementTester() {

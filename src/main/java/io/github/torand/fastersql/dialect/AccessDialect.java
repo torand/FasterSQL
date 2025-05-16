@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
-import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 
 /**
  * Defines the Access dialect.
@@ -32,7 +32,7 @@ public class AccessDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
     public AccessDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR));
+        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR));
     }
 
     private AccessDialect(EnumSet<Capability> capabilities) {
@@ -49,25 +49,16 @@ public class AccessDialect implements Dialect {
         return true;
     }
 
-    /**
-     * Row offset clause is supported from SQL Server 2012 onwards
-     */
     @Override
     public Optional<String> formatRowOffsetClause() {
         return Optional.of("offset ? rows");
     }
 
-    /**
-     * Row limit clause is supported from SQL Server 2012 onwards
-     */
     @Override
     public Optional<String> formatRowLimitClause() {
         return Optional.of("fetch next ? rows only");
     }
 
-    /**
-     * SQL Server has the ROW_NUMBER() function but must be combined with OVER() in this context.
-     */
     @Override
     public Optional<String> formatRowNumLiteral() {
         return Optional.empty();
@@ -75,7 +66,7 @@ public class AccessDialect implements Dialect {
 
     @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
-        return "cast(" + operand + " as numeric(" + precision + "," + scale + "))";
+        return "val(" + operand + ")";
     }
 
     @Override
@@ -100,7 +91,7 @@ public class AccessDialect implements Dialect {
 
     @Override
     public String formatCeilFunction(String operand) {
-        return "ceiling(" + operand + ")";
+        return "ceil(" + operand + ")";
     }
 
     @Override
@@ -110,17 +101,17 @@ public class AccessDialect implements Dialect {
 
     @Override
     public String formatModuloFunction(String divisor, String dividend) {
-        throw new UnsupportedOperationException("Access does not support the mod() function (use the modulo infix operator instead)");
+        return "mod(" + divisor + ", " + dividend + ")";
     }
 
     @Override
     public String formatCurrentDateFunction() {
-        return "getdate()";
+        return "current_date";
     }
 
     @Override
     public Optional<String> getConcatOperator() {
-        return Optional.of("+");
+        return Optional.of("&");
     }
 
     @Override

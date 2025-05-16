@@ -28,7 +28,6 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
-import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
  * Defines the H2 SQL dialect.
@@ -65,15 +64,7 @@ public class H2Dialect implements Dialect {
 
     @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
-        StringBuilder mask = new StringBuilder();
-        if (precision-scale > 0) {
-            mask.append(generate("9", precision-scale));
-        }
-        if (scale > 0) {
-            mask.append(".").append(generate("9", scale));
-        }
-
-        return "to_number(" + operand + ", '" + mask + "')";
+        return "to_number(" + operand + ")";
     }
 
     @Override
@@ -126,9 +117,23 @@ public class H2Dialect implements Dialect {
         return SUPPORTED_CAPS.contains(capability);
     }
 
-    public static void setupCustomizations(Connection connection) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("CREATE ALIAS IF NOT EXISTS TO_NUMBER FOR \"io.github.torand.fastersql.dialect.H2CustomFunctions.toNumber\"")) {
+    /**
+     * Adds some user defined functions emulating common SQL constructs not supported by default.
+     * @param connection a live H2 connection.
+     * @return the modified dialect.
+     */
+    public H2Dialect withCustomizations(Connection connection) {
+        String source = """
+            import java.lang.*;
+            @CODE
+            Double toNumber(String value) throws Exception {
+                return value == null ? null : Double.valueOf(value);
+            }
+            """;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement("CREATE ALIAS IF NOT EXISTS TO_NUMBER AS '%s'".formatted(source))) {
             preparedStatement.execute();
+            return this;
         } catch (SQLException e) {
             throw new RuntimeException("Failed to setup H2 customizations", e);
         }

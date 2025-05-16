@@ -15,22 +15,40 @@
  */
 package io.github.torand.fastersql.statement;
 
+import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.dialect.AnsiIsoDialect;
+import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.dialect.Dialect;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
 import static java.util.stream.Collectors.joining;
 
-public abstract class PreparableStatement {
-    abstract String sql(Context context);
-    abstract List<Object> params(Context context);
+/**
+ * Defines a statement that can be formatted as SQL.
+ */
+public interface PreparableStatement extends Sql {
 
-    public String toString(Dialect dialect) {
+    @Override
+    default Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
+
+    @Override
+    default Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
+
+    /**
+     * Gets the SQL of specified dialect for this statement.
+     * @param dialect the SQL dialect.
+     * @return the SQL statement.
+     */
+    default String toString(Dialect dialect) {
         Context context = Context.of(dialect);
 
         String stringifiedParams = streamSafely(params(context))
@@ -38,10 +56,5 @@ public abstract class PreparableStatement {
             .collect(joining(", "));
 
         return sql(context) + (isBlank(stringifiedParams) ? " with no params" : " with params " + stringifiedParams);
-    }
-
-    @Override
-    public String toString() {
-        return toString(new AnsiIsoDialect());
     }
 }

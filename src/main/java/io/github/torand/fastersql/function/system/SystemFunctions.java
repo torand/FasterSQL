@@ -15,17 +15,32 @@
  */
 package io.github.torand.fastersql.function.system;
 
+/**
+ * Provides factory methods for system functions.
+ */
 public final class SystemFunctions {
     private SystemFunctions() {}
 
+    /**
+     * Creates the current timestamp system function.
+     * @return the system function.
+     */
     public static CurrentTimestamp currentTimestamp() {
         return new CurrentTimestamp(null);
     }
 
+    /**
+     * Creates the current date system function.
+     * @return the system function.
+     */
     public static CurrentDate currentDate() {
         return new CurrentDate(null);
     }
 
+    /**
+     * Creates the current time system function.
+     * @return the system function.
+     */
     public static CurrentTime currentTime() {
         return new CurrentTime(null);
     }

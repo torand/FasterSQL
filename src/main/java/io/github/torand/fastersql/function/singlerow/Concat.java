@@ -34,6 +34,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Implements the concatenation string function.
+ */
 public class Concat implements SingleRowFunction {
     private final List<Expression> expressions;
     private final ColumnAlias alias;

@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
 
@@ -37,7 +38,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class DeleteStatement extends PreparableStatement {
+/**
+ * Implements a DELETE statement.
+ */
+public class DeleteStatement implements PreparableStatement {
     private final Table<?> fromTable;
     private final List<Predicate> predicates;
 
@@ -46,6 +50,11 @@ public class DeleteStatement extends PreparableStatement {
         this.predicates = asList(predicates);
     }
 
+    /**
+     * Adds one or more predicates to the WHERE clause.
+     * @param predicates the predicates.
+     * @return the modified statement.
+     */
     public DeleteStatement where(Predicate... predicates) {
         requireNonEmpty(predicates, "No predicates specified");
         List<Predicate> concatenated = concat(this.predicates, predicates);
@@ -53,9 +62,9 @@ public class DeleteStatement extends PreparableStatement {
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause predicates that are present.
-     * @param maybePredicates the predicates that may be present or not
-     * @return updated statement, for method chaining
+     * Adds optional predicates to the WHERE clause if the wrapped predicates are present.
+     * @param maybePredicates the optional predicates.
+     * @return the modified statement.
      */
     public final DeleteStatement where(OptionalPredicate... maybePredicates) {
         requireNonEmpty(maybePredicates, "No optional predicates specified");
@@ -64,10 +73,10 @@ public class DeleteStatement extends PreparableStatement {
     }
 
     /**
-     * Adds one or more predicates to the where clause, if a predicate is true.
-     * @param condition the condition that must be true for predicates to be added
-     * @param predicateSuppliers the suppliers providing predicates to add
-     * @return updated statement, for method chaining
+     * Adds supplied predicates to the WHERE clause, if the condition is true.
+     * @param condition the condition.
+     * @param predicateSuppliers the suppliers providing predicates
+     * @return the modified statement.
      */
     @SafeVarargs
     public final DeleteStatement whereIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
@@ -80,7 +89,7 @@ public class DeleteStatement extends PreparableStatement {
     }
 
     @Override
-    String sql(Context context) {
+    public String sql(Context context) {
         final Context localContext = context.withCommand(DELETE);
         validate();
 
@@ -99,10 +108,9 @@ public class DeleteStatement extends PreparableStatement {
     }
 
     @Override
-    List<Object> params(Context context) {
+    public Stream<Object> params(Context context) {
         return streamSafely(predicates)
-            .flatMap(p -> p.params(context))
-            .toList();
+            .flatMap(p -> p.params(context));
     }
 
     private void validate() {
@@ -122,5 +130,10 @@ public class DeleteStatement extends PreparableStatement {
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but table is not specified in the FROM clause");
             });
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

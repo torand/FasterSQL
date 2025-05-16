@@ -103,6 +103,7 @@ The example assumes a connection to a MySQL database.
 * MySQL
 * MariaDb
 * PostgreSQL
+* MS Access
 * H2
 
 ### Supported SQL Features
@@ -151,7 +152,7 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
   </dependency>
 </dependencies>
 ```

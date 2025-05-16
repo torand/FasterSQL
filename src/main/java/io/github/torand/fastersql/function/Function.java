@@ -18,7 +18,7 @@ package io.github.torand.fastersql.function;
 import io.github.torand.fastersql.expression.Expression;
 
 /**
- * Represents a construct that evaluates to a single value, based upon zero, one or multiple rows.
+ * Defines a construct that evaluates to a single value, based upon zero, one or multiple rows.
  */
 public interface Function extends Expression {
 

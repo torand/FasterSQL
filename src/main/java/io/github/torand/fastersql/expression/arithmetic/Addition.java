@@ -29,14 +29,17 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the addition (sum) expression.
+ */
 public class Addition implements Expression, OrderExpression {
-    private final Expression left;
-    private final Expression right;
+    private final Expression firstTerm;
+    private final Expression secondTerm;
     private final ColumnAlias alias;
 
-    Addition(Expression left, Expression right, String alias) {
-        this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+    Addition(Expression firstTerm, Expression secondTerm, String alias) {
+        this.firstTerm = requireNonNull(firstTerm, "No left operand (first term) specified");
+        this.secondTerm = requireNonNull(secondTerm, "No right operand (second term) specified");
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
@@ -44,22 +47,22 @@ public class Addition implements Expression, OrderExpression {
 
     @Override
     public String sql(Context context) {
-        return left.sql(context) + " + " + right.sql(context);
+        return firstTerm.sql(context) + " + " + secondTerm.sql(context);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.concat(left.params(context), right.params(context));
+        return Stream.concat(firstTerm.params(context), secondTerm.params(context));
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return Stream.concat(left.columnRefs(), right.columnRefs());
+        return Stream.concat(firstTerm.columnRefs(), secondTerm.columnRefs());
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+        return Stream.concat(firstTerm.aliasRefs(), secondTerm.aliasRefs());
     }
 
     // Projection
@@ -67,7 +70,7 @@ public class Addition implements Expression, OrderExpression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Addition(left, right, alias);
+        return new Addition(firstTerm, secondTerm, alias);
     }
 
     @Override

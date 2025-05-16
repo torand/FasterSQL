@@ -19,11 +19,20 @@ import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.alias.TableAlias;
 
 /**
- * Represents a table of columns and rows, whether a permanent database table or a temporary table (the result of a subquery).
+ * Defines a table of columns and rows, whether a permanent database table or a temporary table (the result of a subquery).
  */
 public interface Relation extends Sql {
 
+    /**
+     * Specifies the table alias name of this relation.
+     * @param alias the table alias name.
+     * @return the modified relation.
+     */
     Relation as(String alias);
 
+    /**
+     * Gets the table alias specified for this relation.
+     * @return the table alias.
+     */
     TableAlias alias();
 }

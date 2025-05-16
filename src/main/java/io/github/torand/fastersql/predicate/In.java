@@ -29,6 +29,9 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.asList
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the 'member of set' predicate, using a set of scalar values.
+ */
 public class In implements Predicate {
     private final LeftOperand left;
     private final List<?> right;

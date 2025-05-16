@@ -27,6 +27,9 @@ import static java.lang.Boolean.TRUE;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements an ascending order clause.
+ */
 public class Ascending implements Order {
     private final OrderExpression expression;
     private final Boolean nullsFirst;

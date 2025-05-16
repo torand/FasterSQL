@@ -24,15 +24,18 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the pattern matching predicate.
+ */
 public class Like implements Predicate {
     private final LeftOperand left;
-    private final String right;
+    private final String pattern;
 
-    Like(LeftOperand left, String right) {
+    Like(LeftOperand left, String pattern) {
         this.left = requireNonNull(left, "No left operand specified");
 
-        requireNonNull(right, "No right operand specified");
-        this.right = right.contains("%") ? right : "%" + right + "%";
+        requireNonNull(pattern, "No right operand (pattern) specified");
+        this.pattern = pattern.contains("%") ? pattern : "%" + pattern + "%";
     }
 
     // Sql
@@ -45,7 +48,7 @@ public class Like implements Predicate {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.of(right);
+        return Stream.of(pattern);
     }
 
     @Override

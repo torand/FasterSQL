@@ -24,6 +24,9 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.asList
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Builder of INSERT (batch) statements with an INTO clause.
+ */
 public class InsertBatchIntoBuilder<T> {
     private final List<? extends T> entities;
 
@@ -31,6 +34,11 @@ public class InsertBatchIntoBuilder<T> {
         this.entities = asList(requireNonEmpty(entities, "No entities specified"));
     }
 
+    /**
+     * Creates an INSERT (batch) statement with specified INTO clause.
+     * @param table the table to insert into.
+     * @return the statement.
+     */
     public InsertBatchStatement<? extends T> into(Table<?> table) {
         return new InsertBatchStatement<>(entities, requireNonNull(table, "No table specified"), null);
     }

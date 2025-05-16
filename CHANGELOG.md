@@ -23,6 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ...
 
+## [1.6.0] - 2025-05-16
+
+### Added
+- Supporting SQL dialect of MS Access.
+
+### Fixed
+- H2 dialect now correctly supports TO_NUMBER through an inline user defined db function.
+
 ## [1.5.0] - 2025-05-12
 
 ### Added

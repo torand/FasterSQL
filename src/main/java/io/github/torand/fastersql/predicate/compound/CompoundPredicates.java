@@ -17,17 +17,35 @@ package io.github.torand.fastersql.predicate.compound;
 
 import io.github.torand.fastersql.predicate.Predicate;
 
+/**
+ * Provides factory methods for compound predicates.
+ */
 public final class CompoundPredicates {
     private CompoundPredicates() {}
 
+    /**
+     * Creates a compound predicate using the boolean operator AND on specified predicate operands.
+     * @param operands the predicate operands.
+     * @return the compound predicate.
+     */
     public static And and(Predicate... operands) {
         return new And(operands);
     }
 
+    /**
+     * Creates a compound predicate using the boolean operator OR on specified predicate operands.
+     * @param operands the predicate operands.
+     * @return the compound predicate.
+     */
     public static Or or(Predicate... operands) {
         return new Or(operands);
     }
 
+    /**
+     * Creates a compound predicate using the boolean negation operator on specified predicate operand.
+     * @param operand the predicate operand.
+     * @return the compound predicate.
+     */
     public static Not not(Predicate operand) {
         return new Not(operand);
     }

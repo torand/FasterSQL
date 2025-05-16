@@ -24,6 +24,9 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Provides statement utility functions.
+ */
 public final class Helpers {
     private Helpers() {}
 

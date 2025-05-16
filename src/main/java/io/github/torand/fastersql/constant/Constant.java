@@ -23,7 +23,16 @@ import io.github.torand.fastersql.projection.Projection;
  * Defines a constant value.
  */
 public interface Constant extends Expression {
+    /**
+     * Creates a projection of the constant.
+     * @param column the column to associate projection with.
+     * @return the projection.
+     */
     Projection forColumn(Column column);
 
+    /**
+     * Gets the constant value.
+     * @return the constant value.
+     */
     Object value();
 }

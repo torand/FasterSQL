@@ -29,14 +29,17 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the multiplication (product) expression.
+ */
 public class Multiplication implements Expression, OrderExpression {
-    private final Expression left;
-    private final Expression right;
+    private final Expression firstFactor;
+    private final Expression secondFactor;
     private final ColumnAlias alias;
 
-    Multiplication(Expression left, Expression right, String alias) {
-        this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+    Multiplication(Expression firstFactor, Expression secondFactor, String alias) {
+        this.firstFactor = requireNonNull(firstFactor, "No left operand (first factor) specified");
+        this.secondFactor = requireNonNull(secondFactor, "No right operand (second factor) specified");
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
@@ -44,32 +47,32 @@ public class Multiplication implements Expression, OrderExpression {
 
     @Override
     public String sql(Context context) {
-        String leftSql = left.sql(context);
-        if (left instanceof Addition || left instanceof Subtraction) {
-            leftSql = "(" + leftSql + ")";
+        String firstFactorSql = firstFactor.sql(context);
+        if (firstFactor instanceof Addition || firstFactor instanceof Subtraction) {
+            firstFactorSql = "(" + firstFactorSql + ")";
         }
 
-        String rightSql = right.sql(context);
-        if (right instanceof Addition || right instanceof Subtraction) {
-            rightSql = "(" + rightSql + ")";
+        String secondFactorSql = secondFactor.sql(context);
+        if (secondFactor instanceof Addition || secondFactor instanceof Subtraction) {
+            secondFactorSql = "(" + secondFactorSql + ")";
         }
 
-        return leftSql + " * " + rightSql;
+        return firstFactorSql + " * " + secondFactorSql;
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.concat(left.params(context), right.params(context));
+        return Stream.concat(firstFactor.params(context), secondFactor.params(context));
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return Stream.concat(left.columnRefs(), right.columnRefs());
+        return Stream.concat(firstFactor.columnRefs(), secondFactor.columnRefs());
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+        return Stream.concat(firstFactor.aliasRefs(), secondFactor.aliasRefs());
     }
 
     // Projection
@@ -77,7 +80,7 @@ public class Multiplication implements Expression, OrderExpression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Multiplication(left, right, alias);
+        return new Multiplication(firstFactor, secondFactor, alias);
     }
 
     @Override

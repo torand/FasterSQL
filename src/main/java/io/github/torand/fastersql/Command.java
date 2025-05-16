@@ -15,6 +15,9 @@
  */
 package io.github.torand.fastersql;
 
+/**
+ * Defines available statement commands.
+ */
 public enum Command {
     SELECT, UPDATE, DELETE, INSERT, TRUNCATE
 }

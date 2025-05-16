@@ -27,6 +27,9 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the equivalence predicate.
+ */
 public class Eq implements Predicate {
     private final LeftOperand left;
     private final Expression right;

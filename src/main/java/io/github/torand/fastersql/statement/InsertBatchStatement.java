@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.dialect.OracleDialect;
 
 import java.util.Collection;
@@ -36,7 +37,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class InsertBatchStatement<T> extends PreparableStatement {
+public class InsertBatchStatement<T> implements PreparableStatement {
     private final Table<?> table;
     private final List<ColumnValueExtractor<? super T>> columnValueExtractors;
     private final List<? extends T> entities;
@@ -56,7 +57,7 @@ public class InsertBatchStatement<T> extends PreparableStatement {
     }
 
     @Override
-    String sql(Context context) {
+    public String sql(Context context) {
         final Context localContext = context.withCommand(INSERT);
         validate();
 
@@ -114,12 +115,11 @@ public class InsertBatchStatement<T> extends PreparableStatement {
     }
 
     @Override
-    List<Object> params(Context context) {
+    public Stream<Object> params(Context context) {
         return entities()
             .flatMap(e -> columnValueExtractors()
-                .map(cve -> cve.param(e))
-                .flatMap(Optional::stream))
-            .toList();
+                .map(cve -> cve.valueParam(e))
+                .flatMap(Optional::stream));
     }
 
     private void validate() {
@@ -139,5 +139,10 @@ public class InsertBatchStatement<T> extends PreparableStatement {
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", not the table specified by the INTO clause");
             });
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

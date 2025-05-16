@@ -28,6 +28,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the average aggregate function.
+ */
 public class Avg implements AggregateFunction {
     private final Expression expression;
     private final ColumnAlias alias;

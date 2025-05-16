@@ -54,11 +54,8 @@ public class AccessInsertBatchStatementTest extends AccessTest {
 
         statementTester()
             .assertSql("""
-                insert all \
-                into PRODUCT (ID, NAME, DESCRIPTION, CATEGORY, PRICE, STOCK_COUNT) values (?, ?, ?, ?, ?, ?) \
-                into PRODUCT (ID, NAME, DESCRIPTION, CATEGORY, PRICE, STOCK_COUNT) values (?, ?, null, ?, ?, ?) \
-                into PRODUCT (ID, NAME, DESCRIPTION, CATEGORY, PRICE, STOCK_COUNT) values (?, ?, ?, ?, ?, ?) \
-                select 1 from DUAL"""
+                insert into PRODUCT (ID, NAME, DESCRIPTION, CATEGORY, PRICE, STOCK_COUNT) \
+                values (?, ?, ?, ?, ?, ?), (?, ?, null, ?, ?, ?), (?, ?, ?, ?, ?, ?)"""
             )
             .assertAffectedRowCount(3)
             .verify(stmt);

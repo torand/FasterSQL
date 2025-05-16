@@ -24,11 +24,13 @@ import io.github.torand.fastersql.statement.SelectStatement;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements a subquery to be used in a FROM clause.
+ */
 public class TableSubquery implements Subquery, Relation {
     private final SelectStatement query;
     private final TableAlias alias;
@@ -52,7 +54,7 @@ public class TableSubquery implements Subquery, Relation {
 
     @Override
     public Stream<Object> params(Context context) {
-        return streamSafely(query.params(context));
+        return query.params(context);
     }
 
     @Override

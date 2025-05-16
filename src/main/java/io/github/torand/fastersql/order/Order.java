@@ -18,9 +18,19 @@ package io.github.torand.fastersql.order;
 import io.github.torand.fastersql.Sql;
 
 /**
- * Represents an ordering specification for the ORDER BY clause.
+ * Defines an ordering specification for the ORDER BY clause.
  */
 public interface Order extends Sql {
+
+    /**
+     * Specifies that null values are to be ordered _before_ non-null values.
+     * @return the modified order clause.
+     */
     Order nullsFirst();
+
+    /**
+     * Specifies that null values are to be ordered _after_ non-null values.
+     * @return the modified order clause.
+     */
     Order nullsLast();
 }

@@ -66,7 +66,7 @@ public class AccessDeleteStatementTest extends AccessTest {
             .assertSql("""
                 delete from PRODUCT \
                 where ID = ? \
-                and length(NAME) > ?"""
+                and len(NAME) > ?"""
             )
             .assertParams(id, 10)
             .assertAffectedRowCount(1)

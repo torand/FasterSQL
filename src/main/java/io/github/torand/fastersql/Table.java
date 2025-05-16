@@ -24,6 +24,10 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 
+/**
+ * A database table.
+ * @param <ENTITY> the concrete table class with columns.
+ */
 public abstract class Table<ENTITY extends Table<?>> implements Relation {
     private final String name;
     private final TableAlias alias;
@@ -41,10 +45,19 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
         this.tableFactory = tableFactory;
     }
 
+    /**
+     * Creates a column of this table.
+     * @param name the column name.
+     * @return the column.
+     */
     public Column column(String name) {
         return new Column(this, name);
     }
 
+    /**
+     * Gets the table name.
+     * @return the table name.
+     */
     public String name() {
         return name;
     }

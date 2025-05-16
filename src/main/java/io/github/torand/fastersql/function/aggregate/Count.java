@@ -29,7 +29,8 @@ import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Returns number rows where expression is not evaluated tp null
+ * Implements the count aggregate function.
+ * Gives the number of rows where expression is not evaluated to null.
  */
 public class Count implements AggregateFunction {
     private final Expression expression;

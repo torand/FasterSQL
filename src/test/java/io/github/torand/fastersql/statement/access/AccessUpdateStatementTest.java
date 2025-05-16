@@ -82,7 +82,7 @@ public class AccessUpdateStatementTest extends AccessTest {
         statementTester()
             .assertSql("""
                 update PURCHASE \
-                set NOTES = NOTES || ? || ? \
+                set NOTES = NOTES & ? & ? \
                 where CUSTOMER_ID = ?"""
             )
             .assertParams(" - put on hold", " (for a while)", customerId)

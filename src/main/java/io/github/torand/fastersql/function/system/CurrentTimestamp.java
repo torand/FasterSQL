@@ -24,6 +24,9 @@ import java.util.Optional;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
+/**
+ * Implements the current timestamp system function.
+ */
 public class CurrentTimestamp implements SystemFunction {
     private final ColumnAlias alias;
 

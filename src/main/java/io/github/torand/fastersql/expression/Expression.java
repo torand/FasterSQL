@@ -21,46 +21,96 @@ import io.github.torand.fastersql.projection.Projection;
 import static io.github.torand.fastersql.constant.Constants.$;
 
 /**
- * Represents an expression resulting in a scalar value or a table with rows and columns.
+ * Defines an expression resulting in a scalar value or a table with rows and columns.
  */
 public interface Expression extends Projection {
 
+    /**
+     * Creates the expression of adding a constant value to this expression.
+     * @param value the constant value.
+     * @return the addition expression.
+     */
     default Expression plus(Object value) {
         return ArithmeticExpressions.add(this, $(value));
     }
 
+    /**
+     * Creates the expression of adding another expression to this expression.
+     * @param expression the other expression.
+     * @return the addition expression.
+     */
     default Expression plus(Expression expression) {
         return ArithmeticExpressions.add(this, expression);
     }
 
+    /**
+     * Creates the expression of subtracting a constant value from this expression.
+     * @param value the constant value.
+     * @return the subtraction expression.
+     */
     default Expression minus(Object value) {
         return ArithmeticExpressions.subtract(this, $(value));
     }
 
+    /**
+     * Creates the expression of subtracting another expression from this expression.
+     * @param expression the other expression.
+     * @return the subtraction expression.
+     */
     default Expression minus(Expression expression) {
         return ArithmeticExpressions.subtract(this, expression);
     }
 
+    /**
+     * Creates the expression of multiplying a constant value with this expression.
+     * @param value the constant value.
+     * @return the multiplication expression.
+     */
     default Expression times(Object value) {
         return ArithmeticExpressions.multiply(this, $(value));
     }
 
+    /**
+     * Creates the expression of multiplying another expression with this expression.
+     * @param expression the other expression.
+     * @return the multiplication expression.
+     */
     default Expression times(Expression expression) {
         return ArithmeticExpressions.multiply(this, expression);
     }
 
+    /**
+     * Creates the expression of dividing this expression by a constant value.
+     * @param value the constant value.
+     * @return the division expression.
+     */
     default Expression dividedBy(Object value) {
         return ArithmeticExpressions.divide(this, $(value));
     }
 
+    /**
+     * Creates the expression of dividing this expression by another expression.
+     * @param expression the other expression.
+     * @return the division expression.
+     */
     default Expression dividedBy(Expression expression) {
         return ArithmeticExpressions.divide(this, expression);
     }
 
+    /**
+     * Creates the expression of calculating the remainder after dividing this expression by a constant value.
+     * @param value the constant value.
+     * @return the modulo expression.
+     */
     default Expression mod(Object value) {
         return ArithmeticExpressions.mod(this, $(value));
     }
 
+    /**
+     * Creates the expression of calculating the remainder after dividing this expression by another expression.
+     * @param expression the other expression.
+     * @return the modulo expression.
+     */
     default Expression mod(Expression expression) {
         return ArithmeticExpressions.mod(this, expression);
     }

@@ -30,14 +30,17 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the modulo (division remainder) expression.
+ */
 public class Modulo implements Expression, OrderExpression {
-    private final Expression left;
-    private final Expression right;
+    private final Expression dividend;
+    private final Expression divisor;
     private final ColumnAlias alias;
 
-    Modulo(Expression left, Expression right, String alias) {
-        this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+    Modulo(Expression dividend, Expression divisor, String alias) {
+        this.dividend = requireNonNull(dividend, "No left operand (dividend) specified");
+        this.divisor = requireNonNull(divisor, "No right operand (divisor) specified");
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
@@ -46,35 +49,35 @@ public class Modulo implements Expression, OrderExpression {
     @Override
     public String sql(Context context) {
         if (context.getDialect().supports(MODULO_OPERATOR)) {
-            String leftSql = left.sql(context);
-            if (left instanceof Addition || left instanceof Subtraction) {
-                leftSql = "(" + leftSql + ")";
+            String dividendSql = dividend.sql(context);
+            if (dividend instanceof Addition || dividend instanceof Subtraction) {
+                dividendSql = "(" + dividendSql + ")";
             }
 
-            String rightSql = right.sql(context);
-            if (right instanceof Addition || right instanceof Subtraction) {
-                rightSql = "(" + rightSql + ")";
+            String divisorSql = divisor.sql(context);
+            if (divisor instanceof Addition || divisor instanceof Subtraction) {
+                divisorSql = "(" + divisorSql + ")";
             }
 
-            return leftSql + " % " + rightSql;
+            return dividendSql + " % " + divisorSql;
         }
 
-        return context.getDialect().formatModuloFunction(left.sql(context), right.sql(context));
+        return context.getDialect().formatModuloFunction(dividend.sql(context), divisor.sql(context));
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.concat(left.params(context), right.params(context));
+        return Stream.concat(dividend.params(context), divisor.params(context));
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return Stream.concat(left.columnRefs(), right.columnRefs());
+        return Stream.concat(dividend.columnRefs(), divisor.columnRefs());
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+        return Stream.concat(dividend.aliasRefs(), divisor.aliasRefs());
     }
 
     // Projection
@@ -82,7 +85,7 @@ public class Modulo implements Expression, OrderExpression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Modulo(left, right, alias);
+        return new Modulo(dividend, divisor, alias);
     }
 
     @Override

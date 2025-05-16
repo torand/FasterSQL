@@ -111,7 +111,7 @@ public class StatementTester {
             }
 
             if (nonNull(expectedParams)) {
-                assertThat(stmt.params(context)).describedAs("Parameters").containsExactly(expectedParams);
+                assertThat(stmt.params(context).toList()).describedAs("Parameters").containsExactly(expectedParams);
             }
 
             if (stmt instanceof SelectStatement) {

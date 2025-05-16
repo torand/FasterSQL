@@ -19,7 +19,16 @@ import io.github.torand.fastersql.Table;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Builder of INSERT statements with an INTO clause.
+ */
 public class InsertIntoBuilder {
+
+    /**
+     * Creates an INSERT statement with specified INTO clause.
+     * @param table the table to insert into.
+     * @return the statement.
+     */
     public InsertStatement into(Table<?> table) {
         return new InsertStatement(requireNonNull(table, "No table specified"), null);
     }

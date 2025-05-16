@@ -18,13 +18,26 @@ package io.github.torand.fastersql.projection;
 import io.github.torand.fastersql.statement.SelectStatement;
 import io.github.torand.fastersql.subquery.ExpressionSubquery;
 
+/**
+ * Provides factory methods for projections.
+ */
 public final class Projections {
     private Projections() {}
 
+    /**
+     * Creates a numeric reference to a projected column in a query result.
+     * @param position the position, 1-based
+     * @return the column position.
+     */
     public static ColumnPosition colPos(int position) {
         return new ColumnPosition(position);
     }
 
+    /**
+     * Creates a subquery expression to be used as a projection.
+     * @param query the query.
+     * @return the subquery expression.
+     */
     public static ExpressionSubquery subquery(SelectStatement query) {
         return new ExpressionSubquery(query);
     }

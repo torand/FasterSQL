@@ -16,7 +16,6 @@
 package io.github.torand.fastersql.statement.access;
 
 import io.github.torand.fastersql.datamodel.CustomerTable;
-import io.github.torand.fastersql.dialect.OracleDialect;
 import io.github.torand.fastersql.statement.PreparableStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
 import org.junit.jupiter.api.Test;
@@ -32,15 +31,16 @@ import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toNumber;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
@@ -52,6 +52,8 @@ import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
 import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimalCloseTo;
+import static io.github.torand.fastersql.util.RowValueMatchers.isDouble;
+import static io.github.torand.fastersql.util.RowValueMatchers.isLong;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -107,34 +109,6 @@ public class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    void shouldHandleLegacyRowLimiting() {
-        SelectStatement stmt =
-            select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
-                .from(CUSTOMER)
-                .orderBy(CUSTOMER.LAST_NAME.asc())
-                .limit(3)
-                .offset(1);
-
-        statementTester(new OracleDialect().withLegacyRowLimiting())
-            .assertSql("""
-                select * from ( \
-                select ORIGINAL.*, rownum ROW_NO from ( \
-                select C.LAST_NAME C_LAST_NAME, C.FIRST_NAME C_FIRST_NAME \
-                from CUSTOMER C \
-                order by C.LAST_NAME asc ) ORIGINAL \
-                where rownum <= ? ) \
-                where ROW_NO >= ?"""
-            )
-            .assertParams(4L, 2L)
-            .assertRowCount(2)
-            .assertRow(1,
-                "C_LAST_NAME", is("Nordmann"))
-            .assertRow(2,
-                "C_LAST_NAME", is("Svensson"))
-            .verify(stmt);
-    }
-
-    @Test
     void shouldHandleOptionalPredicate() {
         Optional<String> maybeFirstName = Optional.of("Ola");
         Optional<String> maybeZipCode = Optional.empty();
@@ -181,16 +155,16 @@ public class AccessSelectStatementTest extends AccessTest {
             .assertRow(1,
                 "C_LAST_NAME", is("HANSEN"),
                 "C_FIRST_NAME", is("jens"),
-                "TOTAL", isBigDecimal(11335.35),
+                "TOTAL", isBigDecimalCloseTo(11335.35, 0.001),
                 "C_ZIP_CODE", isNull(),
-                "PI", isBigDecimal(3.14)
+                "PI", is("3.14")
             )
             .assertRow(2,
                 "C_LAST_NAME", is("NORDMANN"),
                 "C_FIRST_NAME", is("ola"),
-                "TOTAL", isBigDecimal(5433.5),
+                "TOTAL", isBigDecimalCloseTo(5433.5, 0.01),
                 "C_ZIP_CODE", isNull(),
-                "PI", isBigDecimal(3.14)
+                "PI", is("3.14")
             )
             .verify(stmt);
     }
@@ -203,7 +177,7 @@ public class AccessSelectStatementTest extends AccessTest {
                 .join(CUSTOMER.ID.on(PURCHASE.CUSTOMER_ID))
                 .join(PURCHASE.ID.on(PURCHASE_ITEM.PURCHASE_ID))
                 .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
-                .where(PRODUCT.PRICE.gt($(5).times($(9).plus(11)))
+                .where(PRODUCT.PRICE.gt($(5).times($(9).plus(toNumber($("11"), 2))))
                     .and(CUSTOMER.COUNTRY_CODE.eq(upper($("nor"))).or(CUSTOMER.COUNTRY_CODE.eq(substring($("DENMARK"), 1,3))))
                 )
                 .orderBy(CUSTOMER.LAST_NAME.asc());
@@ -215,11 +189,11 @@ public class AccessSelectStatementTest extends AccessTest {
                 inner join PURCHASE PU on C.ID = PU.CUSTOMER_ID \
                 inner join PURCHASE_ITEM PI on PU.ID = PI.PURCHASE_ID \
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
-                where PR.PRICE > ? * (? + ?) \
-                and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substr(?, 1, 3)) \
+                where PR.PRICE > ? * (? + val(?)) \
+                and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substring(?, 1, 3)) \
                 order by C.LAST_NAME asc"""
             )
-            .assertParams(5, 9, 11, "nor", "DENMARK")
+            .assertParams(5, 9, "11", "nor", "DENMARK")
             .assertRowCount(2)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
@@ -259,7 +233,7 @@ public class AccessSelectStatementTest extends AccessTest {
     @Test
     public void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
-            select(CUSTOMER.LAST_NAME, subquery(select(countAll()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
+            select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
                 .orderBy(CUSTOMER.LAST_NAME.asc());
 
@@ -272,15 +246,15 @@ public class AccessSelectStatementTest extends AccessTest {
             .assertRowCount(3)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
-                "PURCHASE_COUNT", isBigDecimal(1)
+                "PURCHASE_COUNT", isLong(1)
             )
             .assertRow(2,
                 "C_LAST_NAME", is("Nordmann"),
-                "PURCHASE_COUNT", isBigDecimal(1)
+                "PURCHASE_COUNT", isLong(1)
             )
             .assertRow(3,
                 "C_LAST_NAME", is("Svensson"),
-                "PURCHASE_COUNT", isBigDecimal(0)
+                "PURCHASE_COUNT", isLong(0)
             )
             .verify(stmt);
     }
@@ -312,7 +286,7 @@ public class AccessSelectStatementTest extends AccessTest {
     @Test
     public void shouldHandleSimpleSubqueryInFromClause() {
         PreparableStatement stmt =
-            select(countAll().as("CUSTOMER_COUNT"))
+            select(count().as("CUSTOMER_COUNT"))
                 .from(table(
                     select($(1))
                         .from(CUSTOMER)
@@ -330,7 +304,7 @@ public class AccessSelectStatementTest extends AccessTest {
             .assertParams(1, "%ordm%")
             .assertRowCount(1)
             .assertRow(1,
-                "CUSTOMER_COUNT", isBigDecimal(1)
+                "CUSTOMER_COUNT", isLong(1)
             )
             .verify(stmt);
     }
@@ -418,11 +392,11 @@ public class AccessSelectStatementTest extends AccessTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isBigDecimal(5433.5)
+                "PURCHASED_VALUE", isBigDecimalCloseTo(5433.5, 0.01)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isBigDecimal(11335.35)
+                "PURCHASED_VALUE", isBigDecimalCloseTo(11335.35, 0.001)
             )
             .verify(stmt);
     }
@@ -434,7 +408,7 @@ public class AccessSelectStatementTest extends AccessTest {
                 .from(PRODUCT)
                 .join(PRODUCT.ID.on(PURCHASE_ITEM.PRODUCT_ID))
                 .groupBy(PRODUCT.NAME)
-                .having(alias("PURCHASED_VALUE").gt(1).and(max(PURCHASE_ITEM.QUANTITY).lt(100)))
+                .having(sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).gt(1).and(max(PURCHASE_ITEM.QUANTITY).lt(100)))
                 .orderBy(alias("PURCHASED_VALUE").asc());
 
         statementTester()
@@ -443,19 +417,19 @@ public class AccessSelectStatementTest extends AccessTest {
                 from PRODUCT PR \
                 inner join PURCHASE_ITEM PI on PR.ID = PI.PRODUCT_ID \
                 group by PR.NAME \
-                having PURCHASED_VALUE > ? and max(PI.QUANTITY) < ? \
+                having sum(PR.PRICE * PI.QUANTITY) > ? and max(PI.QUANTITY) < ? \
                 order by PURCHASED_VALUE asc"""
             )
             .assertParams(1, 100)
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isBigDecimal(5433.5),
+                "PURCHASED_VALUE", isBigDecimalCloseTo(5433.5, 0.01),
                 "MAX_QNTY", isBigDecimal(1)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isBigDecimal(11335.35),
+                "PURCHASED_VALUE", isBigDecimalCloseTo(11335.35, 0.001),
                 "MAX_QNTY", isBigDecimal(3)
             )
             .verify(stmt);
@@ -479,25 +453,6 @@ public class AccessSelectStatementTest extends AccessTest {
             .assertRow(2, "PR_CATEGORY", is("ELECTRONICS"))
             .assertRow(3, "PR_CATEGORY", is("FURNITURE"))
             .assertRow(4, "PR_CATEGORY", is("LAMP"))
-            .verify(stmt);
-    }
-
-    @Test
-    public void shouldHandleOrderByNulls() {
-        PreparableStatement stmt =
-            select(PURCHASE.NOTES)
-                .from(PURCHASE)
-                .orderBy(colPos(1).asc().nullsFirst());
-
-        statementTester()
-            .assertSql("""
-                select PU.NOTES PU_NOTES \
-                from PURCHASE PU \
-                order by 1 asc nulls first"""
-            )
-            .assertRowCount(2)
-            .assertRow(1, "PU_NOTES", isNull())
-            .assertRow(2, "PU_NOTES", is("TBD"))
             .verify(stmt);
     }
 
@@ -546,19 +501,19 @@ public class AccessSelectStatementTest extends AccessTest {
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, round(PR.PRICE) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR \
+                select PR.NAME PR_NAME, round(PR.PRICE, 0) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
             .assertParams(-1)
             .assertRowCount(5)
             .assertRow(2,
-                "ROUND", isBigDecimal(5434),
-                "ABS", isBigDecimal(1),
+                "ROUND", isDouble(5434.0),
+                "ABS", isDouble(1.0),
                 "CEIL", isBigDecimal(5434),
                 "FLOOR", isBigDecimal(5433))
             .assertRow(3,
-                "ROUND", isBigDecimal(7122))
+                "ROUND", isDouble(7122.0))
             .verify(stmt);
     }
 
