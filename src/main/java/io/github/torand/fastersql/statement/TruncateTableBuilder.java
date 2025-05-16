@@ -19,7 +19,16 @@ import io.github.torand.fastersql.Table;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Builder for TRUNCATE statements with a TABLE clause.
+ */
 public class TruncateTableBuilder {
+
+    /**
+     * Creates a TRUNCATE statement with specified TABLE clause.
+     * @param table the TABLE clause.
+     * @return the statement.
+     */
     public TruncateStatement table(Table<?> table) {
         return new TruncateStatement(requireNonNull(table, "No table specified"));
     }

@@ -20,45 +20,108 @@ import io.github.torand.fastersql.predicate.LeftOperand;
 
 import static io.github.torand.fastersql.constant.Constants.$;
 
+/**
+ * Provides factory methods for comparison predicates.
+ */
 public final class ComparisonPredicates {
     private ComparisonPredicates() {}
 
+    /**
+     * Creates an equivalence predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Eq eq(LeftOperand left, Object right) {
         return new Eq(left, $(right));
     }
 
+    /**
+     * Creates an equivalence predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Eq eq(LeftOperand left, Expression right) {
         return new Eq(left, right);
     }
 
+    /**
+     * Creates a less than predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Lt lt(LeftOperand left, Object right) {
         return new Lt(left, $(right));
     }
 
+    /**
+     * Creates a less than predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Lt lt(LeftOperand left, Expression right) {
         return new Lt(left, right);
     }
 
+    /**
+     * Creates a less than or equal predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Le le(LeftOperand left, Object right) {
         return new Le(left, $(right));
     }
 
+    /**
+     * Creates a less than or equal predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Le le(LeftOperand left, Expression right) {
         return new Le(left, right);
     }
 
+    /**
+     * Creates a greater than predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Gt gt(LeftOperand left, Object right) {
         return new Gt(left, $(right));
     }
 
+    /**
+     * Creates a greater than predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Gt gt(LeftOperand left, Expression right) {
         return new Gt(left, right);
     }
 
+    /**
+     * Creates a greater than or equal predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Ge ge(LeftOperand left, Object right) {
         return new Ge(left, $(right));
     }
 
+    /**
+     * Creates a greater than or equal predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
     }

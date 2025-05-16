@@ -15,6 +15,9 @@
  */
 package io.github.torand.fastersql.alias;
 
+/**
+ * Provides factory methods for aliases.
+ */
 public final class Aliases {
     private Aliases() {}
 

@@ -17,14 +17,17 @@ package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 
-import java.util.List;
+import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.Command.TRUNCATE;
-import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-public class TruncateStatement extends PreparableStatement {
+/**
+ * Implements a TRUNCATE statement.
+ */
+public class TruncateStatement implements PreparableStatement {
     private final Table<?> table;
 
     TruncateStatement(Table<?> table) {
@@ -32,7 +35,7 @@ public class TruncateStatement extends PreparableStatement {
     }
 
     @Override
-    String sql(Context context) {
+    public String sql(Context context) {
         final Context localContext = context.withCommand(TRUNCATE);
 
         StringBuilder sb = new StringBuilder();
@@ -43,7 +46,12 @@ public class TruncateStatement extends PreparableStatement {
     }
 
     @Override
-    List<Object> params(Context context) {
-        return emptyList();
+    public Stream<Object> params(Context context) {
+        return Stream.empty();
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

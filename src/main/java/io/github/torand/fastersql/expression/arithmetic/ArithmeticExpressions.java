@@ -17,26 +17,59 @@ package io.github.torand.fastersql.expression.arithmetic;
 
 import io.github.torand.fastersql.expression.Expression;
 
+/**
+ * Provides factory methods for arithmetic expressions.
+ */
 public final class ArithmeticExpressions {
     private ArithmeticExpressions() {}
 
-    public static Addition add(Expression first, Expression second) {
-        return new Addition(first, second, null);
+    /**
+     * Creates an addition (sum) expression.
+     * @param firstTerm the first term.
+     * @param secondTerm the second term.
+     * @return the addition expression.
+     */
+    public static Addition add(Expression firstTerm, Expression secondTerm) {
+        return new Addition(firstTerm, secondTerm, null);
     }
 
-    public static Subtraction subtract(Expression first, Expression second) {
-        return new Subtraction(first, second, null);
+    /**
+     * Creates a subtraction (difference) expression.
+     * @param minuend the minuend.
+     * @param subtrahend the subtrahend.
+     * @return the subtraction expression.
+     */
+    public static Subtraction subtract(Expression minuend, Expression subtrahend) {
+        return new Subtraction(minuend, subtrahend, null);
     }
 
-    public static Multiplication multiply(Expression first, Expression second) {
-        return new Multiplication(first, second, null);
+    /**
+     * Creates a multiplication (product) expression.
+     * @param firstFactor the first factor.
+     * @param secondFactor the second factor.
+     * @return the multiplication expression.
+     */
+    public static Multiplication multiply(Expression firstFactor, Expression secondFactor) {
+        return new Multiplication(firstFactor, secondFactor, null);
     }
 
-    public static Division divide(Expression first, Expression second) {
-        return new Division(first, second, null);
+    /**
+     * Creates a division (quotient) expression.
+     * @param dividend the dividend.
+     * @param divisor the divisor.
+     * @return the division expression.
+     */
+    public static Division divide(Expression dividend, Expression divisor) {
+        return new Division(dividend, divisor, null);
     }
 
-    public static Modulo mod(Expression first, Expression second) {
-        return new Modulo(first, second, null);
+    /**
+     * Creates a modulo (division remainder) expression.
+     * @param dividend the dividend.
+     * @param divisor the divisor.
+     * @return the modulo expression.
+     */
+    public static Modulo mod(Expression dividend, Expression divisor) {
+        return new Modulo(dividend, divisor, null);
     }
 }

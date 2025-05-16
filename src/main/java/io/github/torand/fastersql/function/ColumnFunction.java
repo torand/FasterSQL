@@ -19,7 +19,7 @@ import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 
 /**
- * Represents a function that operates on a specific column (or no specific column).
+ * Defines a function that operates on a specific column (or no specific column).
  */
 public interface ColumnFunction extends Function, LeftOperand, OrderExpression {
 

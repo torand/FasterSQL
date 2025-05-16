@@ -28,6 +28,9 @@ import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * A column in a database table.
+ */
 public class Column implements LeftOperand, Expression, OrderExpression {
     private final Table<?> table;
     private final String name;
@@ -45,14 +48,27 @@ public class Column implements LeftOperand, Expression, OrderExpression {
         this.alias = new ColumnAlias(requireNonBlank(alias, "No alias specified"));
     }
 
+    /**
+     * Creates a JOIN clause by associating this column with specified column of another table.
+     * @param other the other column.
+     * @return the JOIN clause.
+     */
     public Join on(Column other) {
         return new Join(this, other);
     }
 
+    /**
+     * Gets the column name.
+     * @return the column name.
+     */
     public String name() {
         return name;
     }
 
+    /**
+     * Gets the table this column belongs to.
+     * @return the table.
+     */
     public Table<?> table() {
         return table;
     }

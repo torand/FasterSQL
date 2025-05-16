@@ -25,6 +25,9 @@ import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
+/**
+ * Implements the current time system function.
+ */
 public class CurrentTime implements SystemFunction {
     private final ColumnAlias alias;
 

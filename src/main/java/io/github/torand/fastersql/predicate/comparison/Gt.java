@@ -27,6 +27,9 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the greater than predicate.
+ */
 public class Gt implements Predicate {
     private final LeftOperand left;
     private final Expression right;

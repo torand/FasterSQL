@@ -20,34 +20,34 @@ import io.github.torand.fastersql.alias.ColumnAlias;
 import java.util.stream.Stream;
 
 /**
- * A construct that can be expressed as an SQL fragment.
+ * Defines a construct that can be expressed as an SQL fragment.
  */
 public interface Sql {
     /**
-     * Formats object as an SQL fragment
-     * @param context the context (incl. dialect)
-     * @return the formatted SQL fragment
+     * Formats object as an SQL fragment.
+     * @param context the context (incl. dialect).
+     * @return the formatted SQL fragment.
      */
     String sql(Context context);
 
     /**
-     * Returns the statement parameters introduced by this fragment
-     * @param context the context (incl. dialect)
-     * @return the statement parameters
+     * Gets the statement parameters introduced by this fragment.
+     * @param context the context (incl. dialect).
+     * @return the statement parameters.
      */
     Stream<Object> params(Context context);
 
     /**
-     * Returns the columns referenced by this fragment.
+     * Gets the columns referenced by this fragment.
      * For validation purposes.
-     * @return the columns referenced by this fragment
+     * @return the columns referenced by this fragment.
      */
     Stream<Column> columnRefs();
 
     /**
-     * Returns the column aliases referenced by this fragment.
+     * Gets the column aliases referenced by this fragment.
      * For validation purposes.
-     * @return the column aliases referenced by this fragment
+     * @return the column aliases referenced by this fragment.
      */
     Stream<ColumnAlias> aliasRefs();
 }

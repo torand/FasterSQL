@@ -28,6 +28,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the lower case string function.
+ */
 public class Lower implements SingleRowFunction {
     private final Expression expression;
     private final ColumnAlias alias;

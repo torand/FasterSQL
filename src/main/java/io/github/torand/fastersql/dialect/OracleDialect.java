@@ -136,8 +136,10 @@ public class OracleDialect implements Dialect {
     }
 
     /**
+     * Enables emulating OFFSET and LIMIT constructs for older Oracle versions.
      * Row offset and limit clauses are supported from Oracle 12c onwards.
      * Invoke this method when using previous versions of Oracle, to simulate these clauses with subqueries.
+     * @return the modified dialect.
      */
     public OracleDialect withLegacyRowLimiting() {
         EnumSet<Capability> reducedCaps = EnumSet.copyOf(supportedCaps);

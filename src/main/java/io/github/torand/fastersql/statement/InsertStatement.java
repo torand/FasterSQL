@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.expression.Expression;
 
 import java.util.Collection;
@@ -35,7 +36,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class InsertStatement extends PreparableStatement {
+/**
+ * Implements an INSERT statement.
+ */
+public class InsertStatement implements PreparableStatement {
     private final Table<?> table;
     private final List<ColumnValue> columnValues;
 
@@ -44,14 +48,26 @@ public class InsertStatement extends PreparableStatement {
         this.columnValues = asList(columnValues);
     }
 
-    public InsertStatement value(Column column, Expression expression) {
+    /**
+     * Adds an expression value to be inserted into a column.
+     * @param column the column.
+     * @param value the value.
+     * @return the modified statement.
+     */
+    public InsertStatement value(Column column, Expression value) {
         requireNonNull(column, "No column specified");
-        requireNonNull(expression, "No expression specified");
+        requireNonNull(value, "No expression specified");
 
-        List<ColumnValue> concatenated = concat(columnValues, new ColumnValue(column, expression));
+        List<ColumnValue> concatenated = concat(columnValues, new ColumnValue(column, value));
         return new InsertStatement(table, concatenated);
     }
 
+    /**
+     * Adds a constant value to be inserted into a column.
+     * @param column the column.
+     * @param value the value.
+     * @return the modified statement.
+     */
     public InsertStatement value(Column column, Object value) {
         requireNonNull(column, "No column specified");
 
@@ -59,6 +75,13 @@ public class InsertStatement extends PreparableStatement {
         return new InsertStatement(table, concatenated);
     }
 
+    /**
+     * Adds an optional value to be inserted into a column.
+     * The value is inserted only if the optional value is present.
+     * @param column the column.
+     * @param maybeValue the optional value.
+     * @return the modified statement.
+     */
     public InsertStatement value(Column column, Optional<?> maybeValue) {
         requireNonNull(column, "No column specified");
         requireNonNull(maybeValue, "No value specified");
@@ -72,7 +95,7 @@ public class InsertStatement extends PreparableStatement {
     }
 
     @Override
-    String sql(Context context) {
+    public String sql(Context context) {
         final Context localContext = context.withCommand(INSERT);
         validate();
 
@@ -87,11 +110,10 @@ public class InsertStatement extends PreparableStatement {
     }
 
     @Override
-    List<Object> params(Context context) {
+    public Stream<Object> params(Context context) {
         final Context localContext = context.withCommand(INSERT);
         return streamSafely(columnValues)
-            .flatMap(cv -> cv.params(localContext))
-            .toList();
+            .flatMap(cv -> cv.valueParams(localContext));
     }
 
     private void validate() {
@@ -111,5 +133,10 @@ public class InsertStatement extends PreparableStatement {
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", not the table specified by the INTO clause");
             });
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

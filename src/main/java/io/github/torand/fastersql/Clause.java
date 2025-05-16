@@ -15,6 +15,9 @@
  */
 package io.github.torand.fastersql;
 
+/**
+ * Defines clauses in a statement.
+ */
 public enum Clause {
     PROJECTION, RESTRICTION
 }

@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
@@ -38,7 +39,10 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
-public class UpdateStatement extends PreparableStatement {
+/**
+ * Implements an UPDATE statement.
+ */
+public class UpdateStatement implements PreparableStatement {
     private final Table<?> table;
     private final List<ColumnValue> columnValues;
     private final List<Predicate> predicates;
@@ -49,14 +53,26 @@ public class UpdateStatement extends PreparableStatement {
         this.predicates = asList(predicates);
     }
 
-    public UpdateStatement set(Column column, Expression expression) {
+    /**
+     * Adds an expression value to be updated for a column.
+     * @param column the column.
+     * @param value the value.
+     * @return the modified statement.
+     */
+    public UpdateStatement set(Column column, Expression value) {
         requireNonNull(column, "No column specified");
-        requireNonNull(expression, "No expression specified");
+        requireNonNull(value, "No expression specified");
 
-        List<ColumnValue> concatenated = concat(this.columnValues, new ColumnValue(column, expression));
+        List<ColumnValue> concatenated = concat(this.columnValues, new ColumnValue(column, value));
         return new UpdateStatement(table, concatenated, predicates);
     }
 
+    /**
+     * Adds a constant value to be updated for a column.
+     * @param column the column.
+     * @param value the value.
+     * @return the modified statement.
+     */
     public UpdateStatement set(Column column, Object value) {
         requireNonNull(column, "No column specified");
 
@@ -64,6 +80,13 @@ public class UpdateStatement extends PreparableStatement {
         return new UpdateStatement(table, concatenated, predicates);
     }
 
+    /**
+     * Adds an optional value to be updated for a column.
+     * The column is updated only if the optional value is present.
+     * @param column the column.
+     * @param maybeValue the optional value.
+     * @return the modified statement.
+     */
     public UpdateStatement set(Column column, Optional<?> maybeValue) {
         requireNonNull(column, "No column specified");
         requireNonNull(maybeValue, "No value specified");
@@ -76,6 +99,11 @@ public class UpdateStatement extends PreparableStatement {
         }
     }
 
+    /**
+     * Adds one or more predicates to the WHERE clause.
+     * @param predicates the predicates.
+     * @return the modified statement.
+     */
     public UpdateStatement where(Predicate... predicates) {
         requireNonEmpty(predicates, "No predicates specified");
 
@@ -84,9 +112,9 @@ public class UpdateStatement extends PreparableStatement {
     }
 
     /**
-     * Same as other method of same name, but only adds to the where clause predicates that are present.
-     * @param maybePredicates the predicates that may be present or not
-     * @return updated statement, for method chaining
+     * Adds optional predicates to the WHERE clause if the wrapped predicates are present.
+     * @param maybePredicates the optional predicates.
+     * @return the modified statement.
      */
     public final UpdateStatement where(OptionalPredicate... maybePredicates) {
         requireNonEmpty(maybePredicates, "No optional predicates specified");
@@ -96,7 +124,7 @@ public class UpdateStatement extends PreparableStatement {
     }
 
     @Override
-    String sql(Context context) {
+    public String sql(Context context) {
         final Context localContext = context.withCommand(UPDATE);
         validate();
 
@@ -114,12 +142,11 @@ public class UpdateStatement extends PreparableStatement {
     }
 
     @Override
-    List<Object> params(Context context) {
+    public Stream<Object> params(Context context) {
         final Context localContext = context.withCommand(UPDATE);
         return Stream.concat(
-                streamSafely(columnValues).flatMap(cv -> cv.params(localContext)),
-                streamSafely(predicates).flatMap(p -> p.params(localContext)))
-            .toList();
+                streamSafely(columnValues).flatMap(cv -> cv.valueParams(localContext)),
+                streamSafely(predicates).flatMap(p -> p.params(localContext)));
     }
 
     private void validate() {
@@ -137,5 +164,10 @@ public class UpdateStatement extends PreparableStatement {
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but is not specified in the UPDATE clause");
             });
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

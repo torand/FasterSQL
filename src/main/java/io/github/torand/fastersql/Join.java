@@ -27,6 +27,9 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.stream
 import static io.github.torand.fastersql.util.contract.Requires.require;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements a JOIN clause.
+ */
 public class Join implements Sql {
     private enum JoinMode {
         INNER("inner join"), LEFT_OUTER("left outer join"), RIGHT_OUTER("right outer join");
@@ -54,14 +57,27 @@ public class Join implements Sql {
         this.mode = mode;
     }
 
+    /**
+     * Specifies that this is a LEFT OUTER JOIN clause.
+     * @return the modified JOIN clause.
+     */
     public Join leftOuter() {
         return new Join(lefts, rights, JoinMode.LEFT_OUTER);
     }
 
+    /**
+     * Specifies that this is a RIGHT OUTER JOIN clause.
+     * @return the modified JOIN clause.
+     */
     public Join rightOuter() {
         return new Join(lefts, rights, JoinMode.RIGHT_OUTER);
     }
 
+    /**
+     * Creates a nested JOIN clause by combining this JOIN clause with the specified JOIN clause.
+     * @param next the JOIN clause to combine with.
+     * @return the nested JOIN clause.
+     */
     public Join and(Join next) {
         require(() -> headOf(this.lefts).table().equals(headOf(next.lefts).table()), "Left side of nested joins must belong to the same table");
         require(() -> headOf(this.rights).table().equals(headOf(next.rights).table()), "Right side of nested joins must belong to the same table");
@@ -72,6 +88,10 @@ public class Join implements Sql {
         return new Join(concatenatedLefts, concatenatedRights, mode);
     }
 
+    /**
+     * Gets the table joined with.
+     * @return the table joined with.
+     */
     public Table<?> joined() {
         return headOf(rights).table();
     }

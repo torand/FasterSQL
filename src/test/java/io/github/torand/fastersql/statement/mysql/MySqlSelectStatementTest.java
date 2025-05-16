@@ -31,15 +31,16 @@ import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.countAll;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.max;
-import static io.github.torand.fastersql.function.aggregate.Aggregates.sum;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toNumber;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTime;
@@ -177,7 +178,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
                 .join(CUSTOMER.ID.on(PURCHASE.CUSTOMER_ID))
                 .join(PURCHASE.ID.on(PURCHASE_ITEM.PURCHASE_ID))
                 .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
-                .where(PRODUCT.PRICE.gt($(5).times($(9).plus(11)))
+                .where(PRODUCT.PRICE.gt($(5).times($(9).plus(toNumber($("11"), 2))))
                     .and(CUSTOMER.COUNTRY_CODE.eq(upper($("nor"))).or(CUSTOMER.COUNTRY_CODE.eq(substring($("DENMARK"), 1,3))))
                 )
                 .orderBy(CUSTOMER.LAST_NAME.asc());
@@ -189,11 +190,11 @@ public class MySqlSelectStatementTest extends MySqlTest {
                 inner join PURCHASE PU on C.ID = PU.CUSTOMER_ID \
                 inner join PURCHASE_ITEM PI on PU.ID = PI.PURCHASE_ID \
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
-                where PR.PRICE > ? * (? + ?) \
+                where PR.PRICE > ? * (? + cast(? as decimal(2,0))) \
                 and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substring(?, 1, 3)) \
                 order by C.LAST_NAME asc"""
             )
-            .assertParams(5, 9, 11, "nor", "DENMARK")
+            .assertParams(5, 9, "11", "nor", "DENMARK")
             .assertRowCount(2)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
@@ -233,7 +234,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
     @Test
     public void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
-            select(CUSTOMER.LAST_NAME, subquery(select(countAll()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
+            select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
                 .orderBy(CUSTOMER.LAST_NAME.asc());
 
@@ -286,7 +287,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
     @Test
     public void shouldHandleSimpleSubqueryInFromClause() {
         PreparableStatement stmt =
-            select(countAll().as("CUSTOMER_COUNT"))
+            select(count().as("CUSTOMER_COUNT"))
                 .from(table(
                     select($(1))
                         .from(CUSTOMER)

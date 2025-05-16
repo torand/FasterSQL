@@ -15,13 +15,26 @@
  */
 package io.github.torand.fastersql.order;
 
+/**
+ * Provides factory methods for order clauses.
+ */
 public final class Orders {
     private Orders() {}
 
+    /**
+     * Creates an ascending ordering of an expression.
+     * @param expression the expression.
+     * @return the order clause.
+     */
     public static Ascending asc(OrderExpression expression) {
         return new Ascending(expression);
     }
 
+    /**
+     * Creates a descending ordering of an expression.
+     * @param expression the expression.
+     * @return the order clause.
+     */
     public static Descending desc(OrderExpression expression) {
         return new Descending(expression);
     }

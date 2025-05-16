@@ -18,7 +18,7 @@ package io.github.torand.fastersql.function.singlerow;
 import io.github.torand.fastersql.function.ColumnFunction;
 
 /**
- * Represents a function that returns a single value based upon one value from a single row.
+ * Defines a function that returns a single value based upon one value from a single row.
  */
 public interface SingleRowFunction extends ColumnFunction {
 

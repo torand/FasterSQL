@@ -23,6 +23,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the 'is null' predicate.
+ */
 public class IsNull implements Predicate {
     private final LeftOperand operand;
 

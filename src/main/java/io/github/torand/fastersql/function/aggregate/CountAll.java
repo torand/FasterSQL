@@ -27,6 +27,9 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 
+/**
+ * Implements the count all aggregate function.
+ */
 public class CountAll implements AggregateFunction {
     private final ColumnAlias alias;
 

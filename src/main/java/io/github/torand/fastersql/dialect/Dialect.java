@@ -135,12 +135,17 @@ public interface Dialect {
      */
     boolean supports(Capability capability);
 
+    /**
+     * Creates the {@link Dialect} instance corresponding to database vendor associated with specified connection.
+     * @param connection the connection.
+     * @return the {@link Dialect} instance.
+     */
     static Dialect fromConnection(Connection connection) {
         try {
             String productName = connection.getMetaData().getDatabaseProductName().toLowerCase();
 
             if (productName.contains("h2")) {
-                return new H2Dialect();
+                return new H2Dialect().withCustomizations(connection);
             } else if (productName.contains("mysql")) {
                 return new MySqlDialect();
             } else if (productName.contains("mariadb")) {
@@ -151,6 +156,8 @@ public interface Dialect {
                 return new OracleDialect();
             } else if (productName.contains("sql server")) {
                 return new SqlServerDialect();
+            } else if (productName.contains("access")) {
+                return new AccessDialect();
             } else {
                 throw new UnsupportedOperationException("Database with product name " + productName + " not supported");
             }

@@ -24,6 +24,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the compound predicate using the boolean negation operator on its operand.
+ */
 public class Not implements Predicate {
     private final Predicate operand;
 

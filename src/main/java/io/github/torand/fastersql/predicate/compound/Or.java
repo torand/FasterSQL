@@ -28,6 +28,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Implements the compound predicate using the boolean operator OR on its operands.
+ */
 public class Or implements Predicate {
     private final List<Predicate> operands;
 

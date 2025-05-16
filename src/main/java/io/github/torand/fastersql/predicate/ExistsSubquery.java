@@ -25,11 +25,14 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the 'existence' (at least one row) predicate.
+ */
 public class ExistsSubquery implements Predicate {
-    private final Subquery operand;
+    private final Subquery query;
 
-    ExistsSubquery(Subquery operand) {
-        this.operand = requireNonNull(operand, "No operand specified");
+    ExistsSubquery(Subquery query) {
+        this.query = requireNonNull(query, "No operand (query) specified");
     }
 
     // Sql
@@ -37,13 +40,13 @@ public class ExistsSubquery implements Predicate {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return "exists " + operand.sql(localContext);
+        return "exists " + query.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return operand.params(localContext);
+        return query.params(localContext);
     }
 
     @Override
@@ -61,6 +64,6 @@ public class ExistsSubquery implements Predicate {
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return "not exists " + operand.sql(localContext);
+        return "not exists " + query.sql(localContext);
     }
 }

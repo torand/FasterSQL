@@ -21,6 +21,7 @@ import io.github.torand.fastersql.Join;
 import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.alias.Alias;
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
 import io.github.torand.fastersql.order.Order;
@@ -59,7 +60,10 @@ import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toSet;
 
-public class SelectStatement extends PreparableStatement {
+/**
+ * Implements a SELECT statement.
+ */
+public class SelectStatement implements PreparableStatement {
     private final List<Projection> projections;
     private final List<Relation> relations;
     private final List<Join> joins;
@@ -86,6 +90,11 @@ public class SelectStatement extends PreparableStatement {
         this.forUpdate = forUpdate;
     }
 
+    /**
+     * Adds one or more JOIN clauses.
+     * @param joins the JOIN clauses.
+     * @return the modified statement.
+     */
     public SelectStatement join(Join... joins) {
         requireNonEmpty(joins, "No joins specified");
         require(() -> streamSafely(relations).noneMatch(instanceOf(Subquery.class)), "Can't combine a subquery FROM clause with joins");
@@ -94,16 +103,32 @@ public class SelectStatement extends PreparableStatement {
         return new SelectStatement(projections, relations, concatenated, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
+    /**
+     * Adds a LEFT OUTER JOIN clause.
+     * @param join the JOIN clause.
+     * @return the modified statement.
+     */
     public SelectStatement leftOuterJoin(Join join) {
         requireNonNull(join, "No join specified");
         return join(join.leftOuter());
     }
 
+    /**
+     * Adds a RIGHT OUTER JOIN clause.
+     * @param join the JOIN clause.
+     * @return the modified statement.
+     */
     public SelectStatement rightOuterJoin(Join join) {
         requireNonNull(join, "No join specified");
         return join(join.rightOuter());
     }
 
+    /**
+     * Adds one or more JOIN clauses, if the condition is true.
+     * @param condition the condition.
+     * @param joinSuppliers the suppliers of JOIN clauses.
+     * @return the modified statement.
+     */
     @SafeVarargs
     public final SelectStatement joinIf(boolean condition, Supplier<Join>... joinSuppliers) {
         requireNonEmpty(joinSuppliers, "No join suppliers specified");
@@ -118,8 +143,8 @@ public class SelectStatement extends PreparableStatement {
 
     /**
      * Adds one or more predicates to the WHERE clause.
-     * @param predicates the WHERE predicates to add
-     * @return updated statement, for method chaining
+     * @param predicates the predicates.
+     * @return the modified statement.
      */
     public SelectStatement where(Predicate... predicates) {
         requireNonEmpty(predicates, "No WHERE predicates specified");
@@ -129,9 +154,9 @@ public class SelectStatement extends PreparableStatement {
     }
 
     /**
-     * Same as other method of same name, but only adds to the WHERE clause predicates that are present.
-     * @param maybePredicates the WHERE predicate that may be present or not
-     * @return updated statement, for method chaining
+     * Adds optional predicates to the WHERE clause if the wrapped predicates are present.
+     * @param maybePredicates the optional predicates.
+     * @return the modified statement.
      */
     @SafeVarargs
     public final SelectStatement where(OptionalPredicate... maybePredicates) {
@@ -142,10 +167,10 @@ public class SelectStatement extends PreparableStatement {
     }
 
     /**
-     * Adds one or more predicates to the WHERE clause, if a predicate is true.
-     * @param condition the condition that must be true for predicates to be added
-     * @param predicateSuppliers the suppliers providing WHERE predicates to add
-     * @return updatet statement, for method chaining
+     * Adds supplied predicates to the WHERE clause, if the condition is true.
+     * @param condition the condition.
+     * @param predicateSuppliers the suppliers providing predicates
+     * @return the modified statement.
      */
     @SafeVarargs
     public final SelectStatement whereIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
@@ -158,6 +183,11 @@ public class SelectStatement extends PreparableStatement {
         }
     }
 
+    /**
+     * Adds one or columns as groups to the GROUP BY clause.
+     * @param groups the groups
+     * @return the modified statement.
+     */
     public SelectStatement groupBy(Column... groups) {
         requireNonEmpty(groups, "No groups specified");
 
@@ -167,8 +197,8 @@ public class SelectStatement extends PreparableStatement {
 
     /**
      * Adds one or more predicates to the HAVING clause.
-     * @param predicates the HAVING predicates to add
-     * @return updated statement, for method chaining
+     * @param predicates the predicates.
+     * @return the modified statement.
      */
     public SelectStatement having(Predicate... predicates) {
         requireNonEmpty(predicates, "No HAVING predicates specified");
@@ -178,9 +208,9 @@ public class SelectStatement extends PreparableStatement {
     }
 
     /**
-     * Same as other method of same name, but only adds to the HAVING clause predicates that are present.
-     * @param maybePredicates the HAVING predicate that may be present or not
-     * @return updated statement, for method chaining
+     * Adds optional predicates to the HAVING clause if the wrapped predicates are present.
+     * @param maybePredicates the optional predicates.
+     * @return the modified statement.
      */
     @SafeVarargs
     public final SelectStatement having(OptionalPredicate... maybePredicates) {
@@ -191,10 +221,10 @@ public class SelectStatement extends PreparableStatement {
     }
 
     /**
-     * Adds one or more predicates to the HAVING clause, if a predicate is true.
-     * @param condition the condition that must be true for predicates to be added
-     * @param predicateSuppliers the suppliers providing HAVING predicates to add
-     * @return updatet statement, for method chaining
+     * Adds one or more predicates to the HAVING clause, if the condition is true.
+     * @param condition the condition.
+     * @param predicateSuppliers the suppliers providing predicates.
+     * @return the modified statement.
      */
     @SafeVarargs
     public final SelectStatement havingIf(boolean condition, Supplier<Predicate>... predicateSuppliers) {
@@ -207,6 +237,11 @@ public class SelectStatement extends PreparableStatement {
         }
     }
 
+    /**
+     * Adds one or more ORDER clauses.
+     * @param orders the ORDER clauses.
+     * @return the modified statement.
+     */
     public SelectStatement orderBy(Order... orders) {
         requireNonEmpty(orders, "No orders specified");
 
@@ -214,14 +249,28 @@ public class SelectStatement extends PreparableStatement {
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, concatenated, distinct, limit, offset, forUpdate);
     }
 
+    /**
+     * Adds a LIMIT clause.
+     * @param limit the limit.
+     * @return the modified statement.
+     */
     public SelectStatement limit(long limit) {
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
+    /**
+     * Adds a OFFSET clause.
+     * @param offset the offset.
+     * @return the modified statement.
+     */
     public SelectStatement offset(long offset) {
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, forUpdate);
     }
 
+    /**
+     * Adds a FOR UPDATE clause.
+     * @return the modified statement.
+     */
     public SelectStatement forUpdate() {
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, true);
     }
@@ -339,7 +388,7 @@ public class SelectStatement extends PreparableStatement {
     }
 
     @Override
-    public List<Object> params(Context context) {
+    public Stream<Object> params(Context context) {
         List<Object> params = new LinkedList<>();
 
         streamSafely(projections).flatMap(p -> p.params(context)).forEach(params::add);
@@ -375,7 +424,7 @@ public class SelectStatement extends PreparableStatement {
             }
         }
 
-        return params;
+        return params.stream();
     }
 
     private void validate(Context context) {
@@ -457,5 +506,10 @@ public class SelectStatement extends PreparableStatement {
             .ifPresent(c -> {
                 throw new IllegalStateException("Column " + c.name() + " belongs to table " + c.table().name() + ", but is not specified in a FROM or JOIN clause");
             });
+    }
+
+    @Override
+    public String toString() {
+        return toString(new AnsiIsoDialect());
     }
 }

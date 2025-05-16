@@ -25,13 +25,16 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the 'member of set' predicate, using a set defined by a subquery.
+ */
 public class InSubquery implements Predicate {
     private final LeftOperand left;
-    private final Subquery right;
+    private final Subquery query;
 
-    InSubquery(LeftOperand left, Subquery right) {
+    InSubquery(LeftOperand left, Subquery query) {
         this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+        this.query = requireNonNull(query, "No right operand (query) specified");
     }
 
     // Sql
@@ -39,13 +42,13 @@ public class InSubquery implements Predicate {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " in " + right.sql(localContext);
+        return left.sql(localContext) + " in " + query.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return right.params(localContext);
+        return query.params(localContext);
     }
 
     @Override
@@ -63,6 +66,6 @@ public class InSubquery implements Predicate {
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " not in " + right.sql(localContext);
+        return left.sql(localContext) + " not in " + query.sql(localContext);
     }
 }

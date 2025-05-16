@@ -19,9 +19,17 @@ import io.github.torand.fastersql.Table;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Builder of DELETE statements with a FROM clause.
+ */
 public class DeleteFromBuilder {
     DeleteFromBuilder() {}
 
+    /**
+     * Creates a DELETE statement with specified FROM clause.
+     * @param table the table to delete from.
+     * @return the statement.
+     */
     public DeleteStatement from(Table<?> table) {
         return new DeleteStatement(requireNonNull(table, "No table specified"), null);
     }

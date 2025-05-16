@@ -29,6 +29,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements the string to number conversion function.
+ */
 public class ToNumber implements SingleRowFunction {
     private final Expression expression;
     private final int precision;

@@ -27,6 +27,9 @@ import static io.github.torand.fastersql.util.contract.Requires.require;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Builder of SELECT statements with a FROM clause.
+ */
 public class SelectFromBuilder {
     private final boolean distinct;
     private final List<Projection> projections;
@@ -39,10 +42,20 @@ public class SelectFromBuilder {
         this.projections = asList(projections);
     }
 
+    /**
+     * Specifies that statement should return unique rows.
+     * @return the modified statement.
+     */
     public SelectFromBuilder distinct() {
         return new SelectFromBuilder(true, projections);
     }
 
+    /**
+     * Creates a SELECT statement with specified FROM clauses (relations).
+     * @param firstRelation the first relation.
+     * @param moreRelations the other relations, if any.
+     * @return the statement.
+     */
     public SelectStatement from(Relation firstRelation, Relation... moreRelations) {
         requireNonNull(firstRelation, "First relation is null");
         List<Relation> relations = asNonEmptyList(firstRelation, moreRelations);

@@ -17,29 +17,61 @@ package io.github.torand.fastersql.function.aggregate;
 
 import io.github.torand.fastersql.expression.Expression;
 
-public final class Aggregates {
-    private Aggregates() {}
+/**
+ * Provides factory methods for aggregate functions.
+ */
+public final class AggregateFunctions {
+    private AggregateFunctions() {}
 
+    /**
+     * Creates the maximum aggregate of an expression.
+     * @param expression the expression.
+     * @return the aggregate function.
+     */
     public static Max max(Expression expression) {
         return new Max(expression, null);
     }
 
+    /**
+     * Creates the minimum aggregate of an expression.
+     * @param expression the expression.
+     * @return the aggregate function.
+     */
     public static Min min(Expression expression) {
         return new Min(expression, null);
     }
 
+    /**
+     * Creates the count aggregate of an expression.
+     * @param expression the expression.
+     * @return the aggregate function.
+     */
     public static Count count(Expression expression) {
         return new Count(expression, null);
     }
 
-    public static CountAll countAll() {
+    /**
+     * Creates the count aggregate of all rows.
+     * @return the aggregate function.
+     */
+    public static CountAll count() {
         return new CountAll(null);
     }
 
+    /**
+     * Creates the sum aggregate of an expression.
+     * @param expression the expression.
+     * @return the aggregate function.
+     */
     public static Sum sum(Expression expression) {
         return new Sum(expression, null);
     }
 
+    /**
+     * Creates the average aggregate of an expression.
+     * @param expression the expression.
+     * @return the aggregate function.
+     */
     public static Avg avg(Expression expression) {
         return new Avg(expression, null);
     }

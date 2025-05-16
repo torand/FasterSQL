@@ -17,10 +17,19 @@ package io.github.torand.fastersql.constant;
 
 import static java.util.Objects.isNull;
 
+/**
+ * Provides factory methods for constants.
+ */
 public final class Constants {
 
     private Constants() {}
 
+    /**
+     * Creates a scalar value constant.
+     * @param value the constant value.
+     * @return the constant.
+     * @param <T> the constant type.
+     */
     public static <T> Constant $(T value) {
         if (isNull(value)) {
             return nullValue();
@@ -29,6 +38,12 @@ public final class Constants {
         return new GenericConstant<>(value, null);
     }
 
+    /**
+     * Creates a scalar value constant.
+     * @param value the constant value.
+     * @return the constant.
+     * @param <T> the constant type.
+     */
     public static <T> Constant constant(T value) {
         if (isNull(value)) {
             return nullValue();
@@ -37,6 +52,10 @@ public final class Constants {
         return new GenericConstant<>(value, null);
     }
 
+    /**
+     * Creates a null constant.
+     * @return the constant.
+     */
     public static Constant nullValue() {
         return new NullConstant(null);
     }

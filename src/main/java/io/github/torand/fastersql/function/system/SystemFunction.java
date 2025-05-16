@@ -23,7 +23,7 @@ import io.github.torand.fastersql.function.Function;
 import java.util.stream.Stream;
 
 /**
- * A function that returns a single value without operating on table rows.
+ * Defines a function that returns a single value without operating on table rows.
  */
 public interface SystemFunction extends Function {
 

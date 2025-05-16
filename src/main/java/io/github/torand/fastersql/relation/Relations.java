@@ -18,9 +18,17 @@ package io.github.torand.fastersql.relation;
 import io.github.torand.fastersql.statement.SelectStatement;
 import io.github.torand.fastersql.subquery.TableSubquery;
 
+/**
+ * Provides factory methods for relations, i.e. subqueries.
+ */
 public final class Relations {
     private Relations() {}
 
+    /**
+     * Creates a table subquery to be used in FROM clauses.
+     * @param query the query.
+     * @return the table subquery.
+     */
     public static TableSubquery table(SelectStatement query) {
         return new TableSubquery(query);
     }

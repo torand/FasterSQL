@@ -18,7 +18,14 @@ package io.github.torand.fastersql.subquery;
 import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.statement.SelectStatement;
 
+/**
+ * Defines a subquery.
+ */
 public interface Subquery extends Sql {
 
+    /**
+     * Gets the SELECT statement of this subquery.
+     * @return the SELECT statement of this subquery.
+     */
     SelectStatement query();
 }

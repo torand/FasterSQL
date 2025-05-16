@@ -28,22 +28,36 @@ import static java.util.Objects.requireNonNull;
  */
 class ColumnValue {
     private final Column column;
-    private final Expression expression;
+    private final Expression value;
 
-    ColumnValue(Column column, Expression expression) {
+    ColumnValue(Column column, Expression value) {
         this.column = requireNonNull(column, "No column specified");
-        this.expression = requireNonNull(expression, "No expression specified");
+        this.value = requireNonNull(value, "No value specified");
     }
 
+    /**
+     * Gets the column being populated.
+     * @return the column being populated.
+     */
     Column column() {
         return column;
     }
 
-    Stream<Object> params(Context context) {
-        return expression.params(context);
+    /**
+     * Gets the statement parameters introduced by the column value expression.
+     * @param context the context (incl. dialect).
+     * @return the statement parameters.
+     */
+    Stream<Object> valueParams(Context context) {
+        return value.params(context);
     }
 
+    /**
+     * Formats column value expression as an SQL fragment.
+     * @param context the context (incl. dialect).
+     * @return the formatted SQL fragment.
+     */
     String valueSql(Context context) {
-        return expression.sql(context);
+        return value.sql(context);
     }
 }

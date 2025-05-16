@@ -25,10 +25,12 @@ import io.github.torand.fastersql.statement.SelectStatement;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Implements a subquery to be used as projection or as operand for a predicate.
+ */
 public class ExpressionSubquery implements Subquery, Expression {
     private final SelectStatement query;
     private final ColumnAlias alias;
@@ -52,7 +54,7 @@ public class ExpressionSubquery implements Subquery, Expression {
 
     @Override
     public Stream<Object> params(Context context) {
-        return streamSafely(query.params(context));
+        return query.params(context);
     }
 
     @Override

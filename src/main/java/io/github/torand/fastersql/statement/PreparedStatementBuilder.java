@@ -44,10 +44,23 @@ public class PreparedStatementBuilder {
     private final Connection connection;
     private final Dialect dialect;
 
+    /**
+     * Creates builder for statements to be executed on specified connection.
+     * The SQL dialect is selected based on metadata from connection.
+     * @param connection the connection.
+     * @return the statement builder
+     */
     public static PreparedStatementBuilder using(Connection connection) {
         return new PreparedStatementBuilder(connection, Dialect.fromConnection(connection));
     }
 
+    /**
+     * Creates builder for statements to be executed on specified connection,
+     * using specified SQL dialect.
+     * @param connection the connection.
+     * @param dialect the SQL dialect.
+     * @return the statement builder.
+     */
     public static PreparedStatementBuilder using(Connection connection, Dialect dialect) {
         return new PreparedStatementBuilder(connection, dialect);
     }
@@ -57,6 +70,13 @@ public class PreparedStatementBuilder {
         this.dialect = dialect;
     }
 
+    /**
+     * Creates JDBC prepared statement from the specified preparable statement,
+     * ready for execution.
+     * @param statement the preparable statement.
+     * @return the prepared statement.
+     * @throws SQLException if database access error occurs or statement parameter assignment fails.
+     */
     public PreparedStatement prepare(PreparableStatement statement) throws SQLException {
         LOGGER.debug("Preparing SQL statement (ANSI/ISO SQL): {}", statement);
 
@@ -64,7 +84,7 @@ public class PreparedStatementBuilder {
 
         String sql = statement.sql(context);
         LOGGER.debug("Generated {} SQL statement: {}", context.getDialect().getProductName(), sql);
-        List<Object> params = statement.params(context);
+        List<Object> params = statement.params(context).toList();
 
         PreparedStatement stmt = connection.prepareStatement(sql);
         int i = 1;

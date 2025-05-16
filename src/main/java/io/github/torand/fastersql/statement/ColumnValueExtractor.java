@@ -36,14 +36,29 @@ class ColumnValueExtractor<T> {
         this.valueExtractor = requireNonNull(valueExtractor, "No valueExtractor specified");
     }
 
+    /**
+     * Gets the column being populated.
+     * @return the column being populated.
+     */
     Column column() {
         return column;
     }
 
-    Optional<Object> param(T entity) {
+    /**
+     * Gets the statement parameter introduced by the extracted column value.
+     * @param entity the entity to extract value from.
+     * @return the statement parameter.
+     */
+    Optional<Object> valueParam(T entity) {
         return Optional.ofNullable(extractValue(entity));
     }
 
+    /**
+     * Formats extracted column value as an SQL fragment.
+     * @param context the context (incl. dialect).
+     * @param entity the entity to extract value from.
+     * @return the formatted SQL fragment.
+     */
     String valueSql(Context context, T entity) {
         Object value = extractValue(entity);
         if (isNull(value)) {

@@ -18,18 +18,32 @@ package io.github.torand.fastersql.order;
 import io.github.torand.fastersql.Sql;
 
 /**
- * Represents an expression to define the ordering of rows from a query.
+ * Defines an expression specifying the ordering of rows from a query.
  */
 public interface OrderExpression extends Sql {
 
+    /**
+     * Creates an ascending ordering of this expression.
+     * @return the order clause.
+     */
     default Order asc() {
         return Orders.asc(this);
     }
 
+    /**
+     * Creates a descending ordering of this expression.
+     * @return the order clause.
+     */
     default Order desc() {
         return Orders.desc(this);
     }
 
+    /**
+     * Creates an ordering of this expression, based on a condition.
+     * If condition is true, an ascending ordering is created.
+     * If condition is false, a descending ordering is created.
+     * @return the order clause.
+     */
     default Order ascIf(boolean condition) {
         return condition ? asc() : desc();
     }
