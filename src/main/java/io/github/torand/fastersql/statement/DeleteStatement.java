@@ -15,19 +15,19 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.dialect.AnsiIsoDialect;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.model.Table;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Command.DELETE;
+import static io.github.torand.fastersql.sql.Command.DELETE;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;

@@ -15,16 +15,16 @@
  */
 package io.github.torand.fastersql.predicate.comparison;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.predicate.Predicate;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Clause.RESTRICTION;
+import static io.github.torand.fastersql.sql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.alias;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
 

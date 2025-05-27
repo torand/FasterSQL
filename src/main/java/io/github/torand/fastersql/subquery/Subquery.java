@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.subquery;
 
-import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.sql.Sql;
 import io.github.torand.fastersql.statement.SelectStatement;
 
 /**

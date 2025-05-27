@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.datamodel;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.model.Table;
 
 public class PurchaseItemTable extends Table<PurchaseItemTable> {
     public final Column ID = column("ID");

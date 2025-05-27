@@ -15,20 +15,20 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Join;
-import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.alias.Alias;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.dialect.AnsiIsoDialect;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
+import io.github.torand.fastersql.join.Join;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.model.Table;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.relation.Relation;
+import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.HashSet;
@@ -40,9 +40,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Command.SELECT;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.sql.Command.SELECT;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
 import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;

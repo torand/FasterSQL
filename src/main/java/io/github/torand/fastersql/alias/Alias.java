@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.alias;
 
-import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.sql.Sql;
 
 /**
  * Defines an alias (label) for a column or table

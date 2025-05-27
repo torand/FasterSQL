@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.order;
 
-import io.github.torand.fastersql.Sql;
+import io.github.torand.fastersql.sql.Sql;
 
 /**
  * Defines an ordering specification for the ORDER BY clause.

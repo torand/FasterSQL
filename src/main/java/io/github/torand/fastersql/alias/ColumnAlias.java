@@ -15,10 +15,10 @@
  */
 package io.github.torand.fastersql.alias;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.Random;
 import java.util.stream.Stream;

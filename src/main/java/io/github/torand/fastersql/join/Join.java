@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.join;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.model.Table;
+import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -31,15 +35,6 @@ import static java.util.Objects.requireNonNull;
  * Implements a JOIN clause.
  */
 public class Join implements Sql {
-    private enum JoinMode {
-        INNER("inner join"), LEFT_OUTER("left outer join"), RIGHT_OUTER("right outer join");
-
-        final String sql;
-
-        JoinMode(String sql) {
-            this.sql = sql;
-        }
-    }
 
     private final List<Column> lefts;
     private final List<Column> rights;

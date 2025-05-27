@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.sql;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.model.Column;
 
 import java.util.stream.Stream;
 

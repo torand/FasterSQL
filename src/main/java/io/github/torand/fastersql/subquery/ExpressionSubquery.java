@@ -15,11 +15,11 @@
  */
 package io.github.torand.fastersql.subquery;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
+import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.statement.SelectStatement;
 
 import java.util.Optional;

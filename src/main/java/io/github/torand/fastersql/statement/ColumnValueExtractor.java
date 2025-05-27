@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.Optional;
 import java.util.function.Function;

@@ -15,9 +15,9 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.predicate.compound.CompoundPredicates;
+import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 
 /**
  * Defines a restriction on the rows fetched by a SELECT or affected by an UPDATE or DELETE.

@@ -15,11 +15,11 @@
  */
 package io.github.torand.fastersql.predicate.compound;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.predicate.Predicate;
+import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 
 import java.util.List;
 import java.util.stream.Stream;

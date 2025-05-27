@@ -15,9 +15,9 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.comparison.ComparisonPredicates;
+import io.github.torand.fastersql.sql.Sql;
 import io.github.torand.fastersql.statement.SelectStatement;
 import io.github.torand.fastersql.subquery.ExpressionSubquery;
 

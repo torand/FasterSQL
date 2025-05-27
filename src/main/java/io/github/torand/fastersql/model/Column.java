@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.model;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.join.Join;
 import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.projection.Projection;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Command.SELECT;
+import static io.github.torand.fastersql.sql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.sql;
 
 import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.statement.SelectStatement;
@@ -21,8 +21,8 @@ import io.github.torand.fastersql.statement.SelectStatement;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.github.torand.fastersql.Clause.PROJECTION;
-import static io.github.torand.fastersql.Command.SELECT;
+import static io.github.torand.fastersql.sql.Clause.PROJECTION;
+import static io.github.torand.fastersql.sql.Command.SELECT;
 import static java.util.Collections.emptyList;
 
 /**

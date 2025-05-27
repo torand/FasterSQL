@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.sql;
 
 /**
- * Defines available statement commands.
+ * Defines clauses in a statement.
  */
-public enum Command {
-    SELECT, UPDATE, DELETE, INSERT, TRUNCATE
+public enum Clause {
+    PROJECTION, RESTRICTION
 }

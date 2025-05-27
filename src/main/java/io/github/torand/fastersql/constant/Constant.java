@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.constant;
 
-import io.github.torand.fastersql.Column;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
 
 /**

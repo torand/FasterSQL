@@ -15,13 +15,13 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Context;
-import io.github.torand.fastersql.Table;
 import io.github.torand.fastersql.dialect.AnsiIsoDialect;
+import io.github.torand.fastersql.model.Table;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Command.TRUNCATE;
+import static io.github.torand.fastersql.sql.Command.TRUNCATE;
 import static java.util.Objects.requireNonNull;
 
 /**

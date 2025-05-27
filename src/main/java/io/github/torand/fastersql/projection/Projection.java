@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.projection;
 
-import io.github.torand.fastersql.Sql;
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.sql.Sql;
 
 import java.util.Optional;
 

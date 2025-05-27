@@ -15,14 +15,14 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.Clause.RESTRICTION;
+import static io.github.torand.fastersql.sql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 /**

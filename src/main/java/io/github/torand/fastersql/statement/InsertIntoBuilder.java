@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Table;
+import io.github.torand.fastersql.model.Table;
 
 import static java.util.Objects.requireNonNull;
 

@@ -15,10 +15,10 @@
  */
 package io.github.torand.fastersql.function.system;
 
-import io.github.torand.fastersql.Column;
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.function.Function;
+import io.github.torand.fastersql.model.Column;
+import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
 

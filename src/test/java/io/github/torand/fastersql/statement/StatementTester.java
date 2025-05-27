@@ -15,8 +15,8 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.Context;
 import io.github.torand.fastersql.dialect.Dialect;
+import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.util.ResultSetTester;
 import org.hamcrest.Matcher;
 

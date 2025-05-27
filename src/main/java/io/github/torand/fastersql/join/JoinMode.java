@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql;
+package io.github.torand.fastersql.join;
 
 /**
- * Defines clauses in a statement.
+ * Defines modes of joining two tables.
  */
-public enum Clause {
-    PROJECTION, RESTRICTION
+enum JoinMode {
+    INNER("inner join"), LEFT_OUTER("left outer join"), RIGHT_OUTER("right outer join");
+
+    final String sql;
+
+    JoinMode(String sql) {
+        this.sql = sql;
+    }
 }
