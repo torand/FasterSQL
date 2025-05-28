@@ -1,4 +1,4 @@
-name: CI
+name: JavaDoc
 
 on:
   workflow_dispatch: # Enable manual trigger to run workflow.
