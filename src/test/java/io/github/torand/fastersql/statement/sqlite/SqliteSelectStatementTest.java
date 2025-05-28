@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.statement.oracle;
+package io.github.torand.fastersql.statement.sqlite;
 
 import io.github.torand.fastersql.datamodel.CustomerTable;
-import io.github.torand.fastersql.dialect.OracleDialect;
 import io.github.torand.fastersql.statement.PreparableStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
 import org.junit.jupiter.api.Test;
@@ -51,13 +50,14 @@ import static io.github.torand.fastersql.projection.Projections.subquery;
 import static io.github.torand.fastersql.relation.Relations.table;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
-import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
-import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimalCloseTo;
+import static io.github.torand.fastersql.util.RowValueMatchers.isDouble;
+import static io.github.torand.fastersql.util.RowValueMatchers.isDoubleCloseTo;
+import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class OracleSelectStatementTest extends OracleTest {
+public class SqliteSelectStatementTest extends SqliteTest {
 
     @Test
     void shouldHandleComplexQuery() {
@@ -91,47 +91,19 @@ public class OracleSelectStatementTest extends OracleTest {
                 and (PR.CATEGORY = ? or PR.CATEGORY = ?) \
                 and PU.CREATED_TIME > ? \
                 order by C.LAST_NAME asc, PR.NAME desc \
-                offset ? rows \
-                fetch next ? rows only"""
+                limit ? \
+                offset ?"""
             )
-            .assertParams(true, "NOR", "DEN", "FURNITURE", "LAMP", since, 0L, 5L)
+            .assertParams(true, "NOR", "DEN", "FURNITURE", "LAMP", since, 5L, 0L)
             .assertRowCount(2)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
                 "PR_NAME", is("Louis Poulsen Panthella 160 table lamp"),
-                "PI_QUANTITY", isBigDecimal(3))
+                "PI_QUANTITY", isInteger(3))
             .assertRow(2,
                 "C_LAST_NAME", is("Nordmann"),
                 "PR_NAME", is("Ekornes Stressless resting chair"),
-                "PI_QUANTITY", isBigDecimal(1))
-            .verify(stmt);
-    }
-
-    @Test
-    void shouldHandleLegacyRowLimiting() {
-        SelectStatement stmt =
-            select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
-                .from(CUSTOMER)
-                .orderBy(CUSTOMER.LAST_NAME.asc())
-                .limit(3)
-                .offset(1);
-
-        statementTester(new OracleDialect().withLegacyRowLimiting())
-            .assertSql("""
-                select * from ( \
-                select ORIGINAL.*, rownum ROW_NO from ( \
-                select C.LAST_NAME C_LAST_NAME, C.FIRST_NAME C_FIRST_NAME \
-                from CUSTOMER C \
-                order by C.LAST_NAME asc ) ORIGINAL \
-                where rownum <= ? ) \
-                where ROW_NO >= ?"""
-            )
-            .assertParams(4L, 2L)
-            .assertRowCount(2)
-            .assertRow(1,
-                "C_LAST_NAME", is("Nordmann"))
-            .assertRow(2,
-                "C_LAST_NAME", is("Svensson"))
+                "PI_QUANTITY", isInteger(1))
             .verify(stmt);
     }
 
@@ -182,16 +154,16 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRow(1,
                 "C_LAST_NAME", is("HANSEN"),
                 "C_FIRST_NAME", is("jens"),
-                "TOTAL", isBigDecimal(11335.35),
+                "TOTAL", isDoubleCloseTo(11335.35, 0.001),
                 "C_ZIP_CODE", isNull(),
-                "PI", isBigDecimal(3.14)
+                "PI", isDoubleCloseTo(3.14, 0.001)
             )
             .assertRow(2,
                 "C_LAST_NAME", is("NORDMANN"),
                 "C_FIRST_NAME", is("ola"),
-                "TOTAL", isBigDecimal(5433.5),
+                "TOTAL", isDoubleCloseTo(5433.5, 0.01),
                 "C_ZIP_CODE", isNull(),
-                "PI", isBigDecimal(3.14)
+                "PI", isDoubleCloseTo(3.14, 0.001)
             )
             .verify(stmt);
     }
@@ -216,7 +188,7 @@ public class OracleSelectStatementTest extends OracleTest {
                 inner join PURCHASE PU on C.ID = PU.CUSTOMER_ID \
                 inner join PURCHASE_ITEM PI on PU.ID = PI.PURCHASE_ID \
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
-                where PR.PRICE > ? * (? + to_number(?, '99')) \
+                where PR.PRICE > ? * (? + cast(? as decimal)) \
                 and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substr(?, 1, 3)) \
                 order by C.LAST_NAME asc"""
             )
@@ -273,15 +245,15 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(3)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
-                "PURCHASE_COUNT", isBigDecimal(1)
+                "PURCHASE_COUNT", isInteger(1)
             )
             .assertRow(2,
                 "C_LAST_NAME", is("Nordmann"),
-                "PURCHASE_COUNT", isBigDecimal(1)
+                "PURCHASE_COUNT", isInteger(1)
             )
             .assertRow(3,
                 "C_LAST_NAME", is("Svensson"),
-                "PURCHASE_COUNT", isBigDecimal(0)
+                "PURCHASE_COUNT", isInteger(0)
             )
             .verify(stmt);
     }
@@ -331,7 +303,7 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertParams(1, "%ordm%")
             .assertRowCount(1)
             .assertRow(1,
-                "CUSTOMER_COUNT", isBigDecimal(1)
+                "CUSTOMER_COUNT", isInteger(1)
             )
             .verify(stmt);
     }
@@ -367,13 +339,13 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_ID", is("92bfca8e-2898-408c-8dd3-2b3f9d362044"),
-                "QUANTITY", isBigDecimal(3),
-                "AMOUNT", isBigDecimalCloseTo(11335.35, 0.01)
+                "QUANTITY", isInteger(3),
+                "AMOUNT", isDoubleCloseTo(11335.35, 0.01)
             )
             .assertRow(2,
                 "PR_ID", is("fdd89ce1-db38-4deb-9767-0324e91d4933"),
-                "QUANTITY", isBigDecimal(1),
-                "AMOUNT", isBigDecimalCloseTo(5433.5, 0.01)
+                "QUANTITY", isInteger(1),
+                "AMOUNT", isDoubleCloseTo(5433.5, 0.01)
             )
             .verify(stmt);
     }
@@ -394,7 +366,7 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertParams(10000)
             .assertRowCount(1)
             .assertRow(1,
-                "MAX_PRICE", isBigDecimal(7122.09)
+                "MAX_PRICE", isDouble(7122.09)
             )
             .verify(stmt);
     }
@@ -419,11 +391,11 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isBigDecimal(5433.5)
+                "PURCHASED_VALUE", isDouble(5433.5)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isBigDecimal(11335.35)
+                "PURCHASED_VALUE", isDoubleCloseTo(11335.35, 0.001)
             )
             .verify(stmt);
     }
@@ -451,13 +423,13 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isBigDecimal(5433.5),
-                "MAX_QNTY", isBigDecimal(1)
+                "PURCHASED_VALUE", isDoubleCloseTo(5433.5, 0.01),
+                "MAX_QNTY", isInteger(1)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
-                "PURCHASED_VALUE", isBigDecimal(11335.35),
-                "MAX_QNTY", isBigDecimal(3)
+                "PURCHASED_VALUE", isDoubleCloseTo(11335.35, 0.001),
+                "MAX_QNTY", isInteger(3)
             )
             .verify(stmt);
     }
@@ -503,26 +475,6 @@ public class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleForUpdate() {
-        PreparableStatement stmt =
-            select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
-                .from(CUSTOMER)
-                .where(CUSTOMER.COUNTRY_CODE.le("XXX"))
-                .forUpdate();
-
-        statementTester()
-            .assertSql("""
-                select C.LAST_NAME C_LAST_NAME, C.FIRST_NAME C_FIRST_NAME \
-                from CUSTOMER C \
-                where C.COUNTRY_CODE <= ? \
-                for update"""
-            )
-            .assertParams("XXX")
-            .assertRowCount(3)
-            .verify(stmt);
-    }
-
-    @Test
     public void shouldHandleSystemFunctions() {
         // Oracle does not support CURRENT_TIME
         PreparableStatement stmt =
@@ -554,12 +506,12 @@ public class OracleSelectStatementTest extends OracleTest {
             .assertParams(-1)
             .assertRowCount(5)
             .assertRow(2,
-                "ROUND", isBigDecimal(5434),
-                "ABS", isBigDecimal(1),
-                "CEIL", isBigDecimal(5434),
-                "FLOOR", isBigDecimal(5433))
+                "ROUND", isDouble(5434),
+                "ABS", isInteger(1),
+                "CEIL", isDouble(5434),
+                "FLOOR", isDouble(5433))
             .assertRow(3,
-                "ROUND", isBigDecimal(7122))
+                "ROUND", isDouble(7122))
             .verify(stmt);
     }
 
@@ -572,18 +524,18 @@ public class OracleSelectStatementTest extends OracleTest {
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, mod(PR.PRICE, ?) MOD_ \
+                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, PR.PRICE % ? MOD_ \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
             .assertParams(1, 2, 3, 4, 5)
             .assertRowCount(5)
             .assertRow(2,
-                "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
-                "MINUS_", isBigDecimalCloseTo(5431.5, 0.01),
-                "TIMES_", isBigDecimalCloseTo(16300.5, 0.01),
-                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.0001),
-                "MOD_", isBigDecimalCloseTo(3.50, 0.001))
+                "PLUS_", isDoubleCloseTo(5434.5, 0.01),
+                "MINUS_", isDoubleCloseTo(5431.5, 0.01),
+                "TIMES_", isDoubleCloseTo(16300.5, 0.01),
+                "DIVIDE_", isDoubleCloseTo(1358.375, 0.0001),
+                "MOD_", isDouble(3.0))
             .verify(stmt);
     }
 }

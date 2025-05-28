@@ -52,5 +52,10 @@ public enum Capability {
     /**
      * Supports "SELECT ... FOR UPDATE" clauses
      */
-    SELECT_FOR_UPDATE
+    SELECT_FOR_UPDATE,
+
+    /**
+     * Supports "TRUNCATE TABLE..." clauses
+     */
+    TRUNCATE_TABLE
 }

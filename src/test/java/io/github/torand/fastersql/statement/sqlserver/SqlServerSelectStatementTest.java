@@ -516,8 +516,8 @@ public class SqlServerSelectStatementTest extends SqlServerTest {
                 "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
                 "MINUS_", isBigDecimalCloseTo(5431.5, 0.01),
                 "TIMES_", isBigDecimalCloseTo(16300.5, 0.01),
-                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.01),
-                "MOD_", isBigDecimalCloseTo(3.50, 0.01))
+                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.0001),
+                "MOD_", isBigDecimalCloseTo(3.50, 0.001))
             .verify(stmt);
     }
 }

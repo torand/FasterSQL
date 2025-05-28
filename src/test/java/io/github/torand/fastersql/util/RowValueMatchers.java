@@ -44,6 +44,10 @@ public final class RowValueMatchers {
         return is(number);
     }
 
+    public static Matcher<?> isDoubleCloseTo(double number, double error) {
+        return is(closeTo(number, error));
+    }
+
     public static Matcher<?> isBigDecimal(long number) {
         return is(BigDecimal.valueOf(number));
     }

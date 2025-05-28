@@ -104,6 +104,7 @@ The example assumes a connection to a MySQL database.
 * MariaDb
 * PostgreSQL
 * MS Access
+* SQLite
 * H2
 
 ### Supported SQL Features
@@ -152,14 +153,14 @@ Include in a Maven POM file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.6.0</version>
+    <version>1.7.0</version>
   </dependency>
 </dependencies>
 ```
 
 ## Getting Started
 
-1. Define a database model using the [Table](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/Table.java) and [Column](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/Column.java) classes
+1. Define a database model using the [Table](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Table.java) and [Column](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Column.java) classes
 2. Write an SQL statement using the DSL factories. E.g. start with the [Statements.select](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/Statements.java#L32) factory method.
 3. Transform to a JDBC PreparedStatement with parameters set automatically using the [PreparedStatementBuilder](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/PreparedStatementBuilder.java) class
 4. Execute the PreparedStatement as normal.

@@ -158,6 +158,8 @@ public interface Dialect {
                 return new SqlServerDialect();
             } else if (productName.contains("access")) {
                 return new AccessDialect();
+            } else if (productName.contains("sqlite")) {
+                return new SqliteDialect();
             } else {
                 throw new UnsupportedOperationException("Database with product name " + productName + " not supported");
             }
