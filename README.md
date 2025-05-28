@@ -48,17 +48,17 @@ Consider the following function executing a query using JDBC constructs only:
 ```java
 ResultSet findPersons(Connection connection) {
     String sql = """
-            select upper(P.NAME) P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP
-            from PERSON P 
-            left outer join ADDRESS A on P.ID = A.PERSON_ID 
-            where P.SSN = ? 
-            and P.NAME is not null 
-            and (A.ZIP = ? or A.ZIP = ?) 
-            and A.COUNTRY in (?, ?, ?) 
-            order by P_SSN asc, P_NAME desc 
-            limit ? 
-            offset ?        
-        """;
+        select upper(P.NAME) P_NAME, P.SSN P_SSN, A.STREET A_STREET, A.ZIP A_ZIP
+        from PERSON P 
+        left outer join ADDRESS A on P.ID = A.PERSON_ID 
+        where P.SSN = ? 
+        and P.NAME is not null 
+        and (A.ZIP = ? or A.ZIP = ?) 
+        and A.COUNTRY in (?, ?, ?) 
+        order by P_SSN asc, P_NAME desc 
+        limit ? 
+        offset ?        
+    """;
     
     PreparedStatement stmt = connection.prepareStatement(sql);
     stmt.setString(1, "31129912345");
@@ -78,19 +78,19 @@ Using FasterSQL this function can be simplified (and made more readable) like th
 
 ```java
 ResultSet findPersons(Connection connection) {
-  PreparableStatement stmt =
-      select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP)
-          .from(PERSON)
-          .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
-          .where(PERSON.SSN.eq("31129912345")
-              .and(not(PERSON.NAME.isNull()))
-              .and(ADDRESS.ZIP.eq("7089").or(ADDRESS.ZIP.eq("7088")))
-              .and(ADDRESS.COUNTRY.in("NOR", "SWE", "DEN")))
-          .orderBy(PERSON.SSN.asc(), PERSON.NAME.desc())
-          .limit(10)
-          .offset(90);
+    PreparableStatement stmt =
+        select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP)
+            .from(PERSON)
+            .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
+            .where(PERSON.SSN.eq("31129912345")
+                .and(not(PERSON.NAME.isNull()))
+                .and(ADDRESS.ZIP.eq("7089").or(ADDRESS.ZIP.eq("7088")))
+                .and(ADDRESS.COUNTRY.in("NOR", "SWE", "DEN")))
+            .orderBy(PERSON.SSN.asc(), PERSON.NAME.desc())
+            .limit(10)
+            .offset(90);
 
-  return using(connection).prepare(stmt).executeQuery();
+    return using(connection).prepare(stmt).executeQuery();
 }
 ```
 
