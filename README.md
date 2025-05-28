@@ -39,7 +39,7 @@ from the SQL language. A Java DSL (Domain Specific Language) for database operat
 * Light-weight, concise library not pretending to be yet another Object Relational Mapping (ORM) tool. Just easing the
   most cumbersome parts of database querying using JDBC.
 * Easily extend the API with clauses and elements not currently supported by implementing relevant interfaces - or,
-  preferably, register a feature request.
+  preferably, [register a feature request](https://github.com/torand/FasterSQL/issues/new).
 
 ### Example
 
@@ -98,6 +98,8 @@ The example assumes a connection to a MySQL database.
 
 ### Supported RDBMS Products
 
+FasterSQL supports a majority of the [most popular](https://db-engines.com/en/ranking/relational+dbms) relational database management systems:
+
 * Oracle
 * SQL Server
 * MySQL
@@ -109,6 +111,8 @@ The example assumes a connection to a MySQL database.
 * H2
 
 ### Supported SQL Features
+
+FasterSQL supports the most widely used SQL data manipulation language features:
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer, right outer
