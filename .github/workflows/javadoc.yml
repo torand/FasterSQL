@@ -65,7 +65,7 @@ jobs:
 
       - name: Maven build JavaDoc
         run: |
-          mvn ${mavenOpts} -f ./pom.xml -Xdoclint:none javadoc:javadoc
+          mvn ${mavenOpts} -f ./pom.xml javadoc:javadoc
           ls -R
         env:
           GITHUB_USERNAME: ${{github.actor}}
