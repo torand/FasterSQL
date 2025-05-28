@@ -22,6 +22,7 @@ jobs:
       contents: write
       checks: write
       id-token: write
+      pages: write
     env:
       branchName: ${{github.head_ref || github.ref_name}}
       mavenOpts: >
