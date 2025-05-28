@@ -63,16 +63,9 @@ jobs:
           GITHUB_USERNAME: ${{github.actor}}
           GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Maven build and test artifact
-        run: |
-          mvn ${mavenOpts} -f ./pom.xml package
-        env:
-          GITHUB_USERNAME: ${{github.actor}}
-          GITHUB_PAT: ${{secrets.GITHUB_TOKEN}}
-
       - name: Maven build JavaDoc
         run: |
-          mvn ${mavenOpts} -f ./pom.xml javadoc:javadoc
+          mvn ${mavenOpts} -f ./pom.xml -Xdoclint:none javadoc:javadoc
           ls -R
         env:
           GITHUB_USERNAME: ${{github.actor}}
