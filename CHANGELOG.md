@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.7.0] - 2025-05-??
 
 ### Added
-- Supporting SQL dialect of SQLite.
+- Supporting SQL dialects of SQLite and HSQLDB.
 
 ## [1.6.0] - 2025-05-16
 

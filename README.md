@@ -105,6 +105,7 @@ The example assumes a connection to a MySQL database.
 * PostgreSQL
 * MS Access
 * SQLite
+* HSQLDB
 * H2
 
 ### Supported SQL Features
