@@ -21,6 +21,7 @@ import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
 
+import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 import static io.github.torand.fastersql.sql.Command.TRUNCATE;
 import static java.util.Objects.requireNonNull;
 
@@ -39,7 +40,11 @@ public class TruncateStatement implements PreparableStatement {
         final Context localContext = context.withCommand(TRUNCATE);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("truncate table ");
+        if (localContext.getDialect().supports(TRUNCATE_TABLE)) {
+            sb.append("truncate table ");
+        } else {
+            sb.append("delete from ");
+        }
         sb.append(table.sql(localContext));
 
         return sb.toString();

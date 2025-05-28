@@ -25,6 +25,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
@@ -33,7 +34,7 @@ import static io.github.torand.fastersql.util.lang.StringHelper.generate;
  * <a href="https://www.postgresql.org/docs/current/" />
  */
 public class PostgreSqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
 
     @Override
     public String getProductName() {

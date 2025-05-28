@@ -19,61 +19,63 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
-import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
-import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
+import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 
 /**
- * Defines the ANSI/ISO (ISO/IEC 9075) SQL dialect.
+ * Defines the SQLite SQL dialect.
  *
- * <a href="https://standards.iso.org/iso-iec/9075/-2/ed-6/en/ISO_IEC_9075-2(E)_Foundation.bnf.txt" />
+ * <a href="https://www.sqlite.org/lang.html" />
  */
-public class AnsiIsoDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+public class SqliteDialect implements Dialect {
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
 
     @Override
     public String getProductName() {
-        return "ANSI/ISO";
+        return "SQLite";
     }
 
     @Override
     public boolean offsetBeforeLimit() {
-        return true;
+        return false;
     }
 
     @Override
     public Optional<String> formatRowOffsetClause() {
-        return Optional.of("offset ? rows");
+        return Optional.of("offset ?");
     }
 
     @Override
     public Optional<String> formatRowLimitClause() {
-        return Optional.of("fetch next ? rows only");
+        return Optional.of("limit ?");
     }
 
     @Override
     public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
+        return Optional.of("row_number()");
     }
 
     @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
-        return "to_number(%s)".formatted(operand);
+        return "cast(" + operand + " as decimal)";
     }
 
     @Override
     public String formatToCharFunction(String operand, String format) {
-        return "to_char(%s, %s)".formatted(operand, format);
+        throw new UnsupportedOperationException("SQLite does not support the to_char() function (timestamps are already stored as ISO8601 strings)");
     }
 
     @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
+        return "substr(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
+        // Note! The concat infix operator is used in output SQL
         return "concat(%s)".formatted(String.join(", ", operands));
     }
 
@@ -94,7 +96,8 @@ public class AnsiIsoDialect implements Dialect {
 
     @Override
     public String formatModuloFunction(String divisor, String dividend) {
-        throw new UnsupportedOperationException("ANSI/ISO SQL does not support the mod() function (use the modulo infix operator instead)");
+        // Note! The modulo infix operator is used in output SQL
+        return "mod(" + divisor + ", " + dividend + ")";
     }
 
     @Override

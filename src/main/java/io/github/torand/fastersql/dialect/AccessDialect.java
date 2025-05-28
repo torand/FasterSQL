@@ -22,6 +22,7 @@ import java.util.Optional;
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
  * Defines the Access dialect.
@@ -32,7 +33,7 @@ public class AccessDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
     public AccessDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR));
+        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, TRUNCATE_TABLE));
     }
 
     private AccessDialect(EnumSet<Capability> capabilities) {
