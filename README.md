@@ -43,7 +43,7 @@ from the SQL language. A Java DSL (Domain Specific Language) for database operat
 
 ### Example
 
-Consider the follow function executing a query using JDBC constructs only:
+Consider the following function executing a query using JDBC constructs only:
 
 ```java
 ResultSet findPersons(Connection connection) {
