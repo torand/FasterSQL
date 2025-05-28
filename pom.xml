@@ -295,7 +295,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <addStylesheet>dark-theme.css</addStylesheet>
+                    <addStylesheets>
+                        <addStylesheet>dark-theme.css</addStylesheet>
+                    </addStylesheets>
                     <doclint>none</doclint>
                 </configuration>
             </plugin>
