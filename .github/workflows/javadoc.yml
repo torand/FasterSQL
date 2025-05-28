@@ -76,7 +76,7 @@ jobs:
       - name: Upload JavaDoc GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: target/reports/apidocs
+          path: target/reports
 
       - name: Publish JavaDoc to GitHub Pages
         uses: actions/deploy-pages@v4
