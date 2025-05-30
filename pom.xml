@@ -25,7 +25,12 @@
 
     <name>FasterSQL</name>
     <description>Java library for a faster and more efficient integration with relational databases</description>
+    <inceptionYear>2024</inceptionYear>
     <url>https://github.com/torand/FasterSQL</url>
+
+    <organization>
+        <name>Tore Eide Andersen</name>
+    </organization>
 
     <licenses>
         <license>
@@ -62,6 +67,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.outputTimestamp></project.build.outputTimestamp>
 
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
@@ -295,9 +301,12 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <overview>overview.html</overview>
+                    <windowtitle>${project.name} ${project.version} API</windowtitle>
+                    <doctitle>${project.name} ${project.version} API</doctitle>
+                    <top>This is a top text</top>
+                    <header>This is a header</header>
                     <addStylesheets>
-                        <addStylesheet>bmcculley.css</addStylesheet>
+                        <addStylesheet>tapestry.css</addStylesheet>
                     </addStylesheets>
                     <doclint>none</doclint>
                 </configuration>
