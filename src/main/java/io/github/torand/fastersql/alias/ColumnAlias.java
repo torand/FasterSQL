@@ -31,6 +31,11 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
     private final String name;
 
+    /**
+     * Factory method to create a random column alias using specified prefix.
+     * @param prefix the prefix.
+     * @return the column alias.
+     */
     public static ColumnAlias generate(String prefix) {
         return new ColumnAlias(requireNonBlank(prefix, "No prefix specified") + (new Random().nextInt(999) + 1));
     }
