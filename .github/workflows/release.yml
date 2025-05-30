@@ -55,6 +55,14 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_SIGNING_KEY_PASSWORD }}
 
+      - name: Upload JavaDoc GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: target/reports
+
+      - name: Publish JavaDoc to GitHub Pages
+        uses: actions/deploy-pages@v4
+
       - name: Prepare next snapshot
         run: |              
           mvn ${mavenOpts} versions:set -DgenerateBackupPoms=false -DnextSnapshot
