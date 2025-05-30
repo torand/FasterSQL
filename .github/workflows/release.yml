@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      checks: write
+      id-token: write
+      pages: write
     env:
       mavenOpts: >
         --no-transfer-progress
