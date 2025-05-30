@@ -184,7 +184,7 @@ public class SelectStatement implements PreparableStatement {
     }
 
     /**
-     * Adds one or columns as groups to the GROUP BY clause.
+     * Adds one or more columns as groups to the GROUP BY clause.
      * @param groups the groups
      * @return the modified statement.
      */
