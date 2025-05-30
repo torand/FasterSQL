@@ -303,7 +303,7 @@
                 <configuration>
                     <windowtitle>${project.name} ${project.version}</windowtitle>
                     <doctitle>${project.name} ${project.version}</doctitle>
-                    <packagesheader>${project.name} Packages</packagesheader>
+                    <footer><![CDATA[Report a bug or suggest an enhancement <a href="">here</a>]]></footer>
                     <addStylesheets>
                         <addStylesheet>dark-theme.css</addStylesheet>
                     </addStylesheets>
