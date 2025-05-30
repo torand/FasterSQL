@@ -25,12 +25,15 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the ANSI/ISO (ISO/IEC 9075) SQL dialect.
- *
- * <a href="https://standards.iso.org/iso-iec/9075/-2/ed-6/en/ISO_IEC_9075-2(E)_Foundation.bnf.txt" />
+ * Defines the <a href="https://standards.iso.org/iso-iec/9075/-2/ed-6/en/ISO_IEC_9075-2(E)_Foundation.bnf.txt">ANSI/ISO</a> (ISO/IEC 9075) SQL dialect.
  */
 public class AnsiIsoDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+
+    /**
+     * Creates an ANSI/ISO {@link Dialect} implementation.
+     */
+    public AnsiIsoDialect() {}
 
     @Override
     public String getProductName() {

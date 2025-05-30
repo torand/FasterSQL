@@ -25,13 +25,14 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the Microsoft Access SQL dialect.
- *
- * <a href="https://support.microsoft.com/en-us/office/Queries-93fb69b7-cfc1-4f3e-ab56-b0a01523bb50#ID0EAABAAA=SQL_syntax&id0ebbd=sql_syntax" />
+ * Defines the <a href="https://support.microsoft.com/en-us/office/Queries-93fb69b7-cfc1-4f3e-ab56-b0a01523bb50#ID0EAABAAA=SQL_syntax&id0ebbd=sql_syntax">Microsoft Access</a> SQL dialect.
  */
 public class AccessDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
+    /**
+     * Creates a Microsoft Access {@link Dialect} implementation.
+     */
     public AccessDialect() {
         this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, TRUNCATE_TABLE));
     }

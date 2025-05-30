@@ -25,13 +25,14 @@ import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the Microsoft SQL Server SQL dialect.
- *
- * <a href="https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16" />
+ * Defines the <a href="https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16">Microsoft SQL Server</a> SQL dialect.
  */
 public class SqlServerDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
+    /**
+     * Creates a Microsoft SQL Server {@link Dialect} implementation.
+     */
     public SqlServerDialect() {
         this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, TRUNCATE_TABLE));
     }

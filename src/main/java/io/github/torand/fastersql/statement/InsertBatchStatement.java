@@ -52,6 +52,12 @@ public class InsertBatchStatement<T> implements PreparableStatement {
         this.columnValueExtractors = asList(columnValueExtractors);
     }
 
+    /**
+     * Registers a column-value mapper.
+     * @param column the column.
+     * @param valueExtractor the value extractor.
+     * @return the modified statement.
+     */
     public InsertBatchStatement<T> value(Column column, Function<? super T, Object> valueExtractor) {
         requireNonNull(column, "No column specified");
         requireNonNull(valueExtractor, "No value extractor specified");

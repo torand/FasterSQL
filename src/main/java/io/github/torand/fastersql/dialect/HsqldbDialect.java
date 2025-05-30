@@ -27,12 +27,15 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the HyperSQL (HSQLDB) SQL dialect.
- *
- * <a href="https://hsqldb.org/doc/2.0/guide/sqlgeneral-chapt.html" />
+ * Defines the <a href="https://hsqldb.org/doc/2.0/guide/sqlgeneral-chapt.html">HyperSQL</a> (HSQLDB) SQL dialect.
  */
 public class HsqldbDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+
+    /**
+     * Creates a HyperSQL (HSQLDB) {@link Dialect} implementation.
+     */
+    public HsqldbDialect() {}
 
     @Override
     public String getProductName() {

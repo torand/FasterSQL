@@ -30,10 +30,20 @@ import static java.util.stream.Collectors.joining;
 public final class Helpers {
     private Helpers() {}
 
+    /**
+     * Generates a string with comma separated statement parameter markers.
+     * @param count the number of parameter markers.
+     * @return the generated parameter marker string.
+     */
     public static String paramMarkers(long count) {
         return Stream.generate(() -> "?").limit(count).collect(joining(", "));
     }
 
+    /**
+     * Returns the wrapped object if specified object is an optional, else returns the object itself.
+     * @param obj the object.
+     * @return the unwrapped object.
+     */
     public static Object unwrapOptional(Object obj) {
         if (obj instanceof Optional<?> opt) {
             return opt.orElse(null);
@@ -42,6 +52,12 @@ public final class Helpers {
         }
     }
 
+    /**
+     * Returns a collection of non-null values produces by the specified suppliers.
+     * @param suppliers the suppliers.
+     * @return the collection of supplied values.
+     * @param <T> the supplier value type.
+     */
     @SafeVarargs
     public static <T> Collection<T> unwrapSuppliers(Supplier<T>... suppliers) {
         return streamSafely(suppliers).map(Supplier::get).filter(Objects::nonNull).toList();

@@ -28,6 +28,10 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 public class TableAlias implements Alias {
     private final String name;
 
+    /**
+     * Creates a table alias.
+     * @param name the alias name.
+     */
     public TableAlias(String name) {
         this.name = requireNonBlank(name, "No name specified");
     }

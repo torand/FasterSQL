@@ -25,6 +25,11 @@ import static java.util.Objects.requireNonNull;
 public class InsertIntoBuilder {
 
     /**
+     * Creates an INSERT INTO builder.
+     */
+    public InsertIntoBuilder() {}
+
+    /**
      * Creates an INSERT statement with specified INTO clause.
      * @param table the table to insert into.
      * @return the statement.

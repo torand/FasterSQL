@@ -35,6 +35,10 @@ public class TableSubquery implements Subquery, Relation {
     private final SelectStatement query;
     private final TableAlias alias;
 
+    /**
+     * Creates a table subquery.
+     * @param query the subquery.
+     */
     public TableSubquery(SelectStatement query) {
         this.query = requireNonNull(query, "No query specified");
         this.alias = null;

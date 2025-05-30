@@ -35,6 +35,10 @@ public class ExpressionSubquery implements Subquery, Expression {
     private final SelectStatement query;
     private final ColumnAlias alias;
 
+    /**
+     * Creates an expression subquery.
+     * @param query the query.
+     */
     public ExpressionSubquery(SelectStatement query) {
         this.query = requireNonNull(query, "No query specified");
         this.alias = null;

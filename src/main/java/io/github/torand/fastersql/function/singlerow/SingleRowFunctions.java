@@ -71,6 +71,8 @@ public final class SingleRowFunctions {
     /**
      * Creates the substring function for a string expression.
      * @param expression the string expression.
+     * @param startPos the substring start position, 1-based.
+     * @param length the substring length.
      * @return the string function.
      */
     public static Substring substring(Expression expression, int startPos, int length) {

@@ -26,12 +26,15 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the MariaDB SQL dialect.
- *
- * <a href="https://mariadb.com/kb/en/sql-statements/" />
+ * Defines the <a href="https://mariadb.com/kb/en/sql-statements/">MariaDB</a> SQL dialect.
  */
 public class MariaDbDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+
+    /**
+     * Creates a MariaDb {@link Dialect} implementation.
+     */
+    public MariaDbDialect() {}
 
     @Override
     public String getProductName() {

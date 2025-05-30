@@ -27,13 +27,14 @@ import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 import static io.github.torand.fastersql.util.lang.StringHelper.generate;
 
 /**
- * Defines the Oracle SQL dialect.
- *
- * <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/" />
+ * Defines the <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/">Oracle</a> SQL dialect.
  */
 public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
 
+    /**
+     * Creates an Oracle {@link Dialect} implementation.
+     */
     public OracleDialect() {
         this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE));
     }

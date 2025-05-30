@@ -40,6 +40,10 @@ public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
         return new ColumnAlias(requireNonBlank(prefix, "No prefix specified") + (new Random().nextInt(999) + 1));
     }
 
+    /**
+     * Creates a column alias with specified name.
+     * @param name the alias name.
+     */
     public ColumnAlias(String name) {
         this.name = requireNonBlank(name, "No name specified");
     }

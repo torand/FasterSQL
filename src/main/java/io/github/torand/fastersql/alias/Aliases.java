@@ -21,10 +21,21 @@ package io.github.torand.fastersql.alias;
 public final class Aliases {
     private Aliases() {}
 
+    /**
+     * Creates a column alias with specified name.
+     * @param alias the alias name.
+     * @return the column alias.
+     */
     public static ColumnAlias alias(String alias) {
         return new ColumnAlias(alias);
     }
 
+    /**
+     * Creates a reference to a specified column in a specified table using aliases.
+     * @param tableAlias the table alias.
+     * @param columnAlias the column alias.
+     * @return the column reference.
+     */
     public static ColumnRef colRef(String tableAlias, String columnAlias) {
         return new ColumnRef(tableAlias, columnAlias, null);
     }

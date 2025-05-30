@@ -19,7 +19,20 @@ package io.github.torand.fastersql.join;
  * Defines modes of joining two tables.
  */
 enum JoinMode {
-    INNER("inner join"), LEFT_OUTER("left outer join"), RIGHT_OUTER("right outer join");
+    /**
+     * The inner join
+     */
+    INNER("inner join"),
+
+    /**
+     * The left outer join
+     */
+    LEFT_OUTER("left outer join"),
+
+    /**
+     * The right outer join.
+     */
+    RIGHT_OUTER("right outer join");
 
     final String sql;
 

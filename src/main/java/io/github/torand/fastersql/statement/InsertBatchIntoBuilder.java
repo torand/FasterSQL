@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Builder of INSERT (batch) statements with an INTO clause.
+ * @param <T> the batch entity type.
  */
 public class InsertBatchIntoBuilder<T> {
     private final List<? extends T> entities;

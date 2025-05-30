@@ -26,12 +26,15 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the MySQL SQL dialect.
- *
- * <a href="https://dev.mysql.com/doc/refman/8.4/en/" />
+ * Defines the <a href="https://dev.mysql.com/doc/refman/8.4/en/">MySQL</a> SQL dialect.
  */
 public class MySqlDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+
+    /**
+     * Creates a MySQL {@link Dialect} implementation.
+     */
+    public MySqlDialect() {}
 
     @Override
     public String getProductName() {

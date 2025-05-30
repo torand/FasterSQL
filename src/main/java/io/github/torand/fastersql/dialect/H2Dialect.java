@@ -31,12 +31,15 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the H2 SQL dialect.
- *
- * <a href="https://www.h2database.com/html/grammar.html" />
+ * Defines the <a href="https://www.h2database.com/html/grammar.html">H2</a> SQL dialect.
  */
 public class H2Dialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+
+    /**
+     * Creates a H2 {@link Dialect} implementation.
+     */
+    public H2Dialect() {}
 
     @Override
     public String getProductName() {

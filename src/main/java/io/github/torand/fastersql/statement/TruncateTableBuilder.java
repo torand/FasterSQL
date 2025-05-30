@@ -25,7 +25,12 @@ import static java.util.Objects.requireNonNull;
 public class TruncateTableBuilder {
 
     /**
-     * Creates a TRUNCATE statement with specified TABLE clause.
+     * Creates a TRUNCATE statement builder.
+     */
+    public TruncateTableBuilder() {}
+
+    /**
+     * Creates a TRUNCATE statement with the specified TABLE clause.
      * @param table the TABLE clause.
      * @return the statement.
      */

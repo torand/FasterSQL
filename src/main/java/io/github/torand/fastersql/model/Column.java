@@ -38,6 +38,11 @@ public class Column implements LeftOperand, Expression, OrderExpression {
     private final String name;
     private final ColumnAlias alias;
 
+    /**
+     * Creates a representation of a column inside a database table.
+     * @param table the table representation.
+     * @param name the column name.
+     */
     public Column(Table<?> table, String name) {
         this.table = requireNonNull(table, "No table specified");
         this.name = requireNonBlank(name, "No name specified");

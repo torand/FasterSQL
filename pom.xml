@@ -300,13 +300,18 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>javadoc</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
-                    <windowtitle>${project.name} ${project.version}</windowtitle>
-                    <doctitle>${project.name} ${project.version}</doctitle>
-                    <addStylesheets>
-                        <addStylesheet>dark-theme.css</addStylesheet>
-                    </addStylesheets>
-                    <doclint>none</doclint>
+                    <failOnWarnings>true</failOnWarnings>
+                    <excludePackageNames>io.github.torand.fastersql.util.*</excludePackageNames>
                 </configuration>
             </plugin>
         </plugins>
@@ -357,7 +362,11 @@
                             </execution>
                         </executions>
                         <configuration>
-                            <stylesheet>java</stylesheet>
+                            <windowtitle>${project.name} ${project.version}</windowtitle>
+                            <doctitle>${project.name} ${project.version}</doctitle>
+                            <addStylesheets>
+                                <addStylesheet>dark-theme.css</addStylesheet>
+                            </addStylesheets>
                             <doclint>none</doclint>
                         </configuration>
                     </plugin>

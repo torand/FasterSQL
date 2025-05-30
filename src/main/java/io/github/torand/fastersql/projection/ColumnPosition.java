@@ -26,11 +26,15 @@ import java.util.stream.Stream;
 import static io.github.torand.fastersql.util.contract.Requires.require;
 
 /**
- * Represents an enumeration of a projection.
+ * Represents an enumeration of a projection, that is, a 1-based number referencing a single projection element in a SELECT clause.
  */
 public class ColumnPosition implements Sql, OrderExpression {
     private final int position;
 
+    /**
+     * Creates a column position.
+     * @param position the 1-based position.
+     */
     public ColumnPosition(int position) {
         require(() -> position >= 1, "Position must be 1 or greater");
         this.position = position;

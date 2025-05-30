@@ -42,6 +42,7 @@ public interface OrderExpression extends Sql {
      * Creates an ordering of this expression, based on a condition.
      * If condition is true, an ascending ordering is created.
      * If condition is false, a descending ordering is created.
+     * @param condition the condition.
      * @return the order clause.
      */
     default Order ascIf(boolean condition) {

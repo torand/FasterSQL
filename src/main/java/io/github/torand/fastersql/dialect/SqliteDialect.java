@@ -26,12 +26,15 @@ import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 
 /**
- * Defines the SQLite SQL dialect.
- *
- * <a href="https://www.sqlite.org/lang.html" />
+ * Defines the <a href="https://www.sqlite.org/lang.html">SQLite</a> SQL dialect.
  */
 public class SqliteDialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
+
+    /**
+     * Creates a SQLite {@link Dialect} implementation.
+     */
+    public SqliteDialect() {}
 
     @Override
     public String getProductName() {

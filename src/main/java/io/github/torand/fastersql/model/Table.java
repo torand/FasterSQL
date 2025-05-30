@@ -34,12 +34,23 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     private final TableAlias alias;
     private final TableFactory<ENTITY> tableFactory;
 
+    /**
+     * Creates a representation of a database table.
+     * @param name the table name.
+     * @param tableFactory the instance factory.
+     */
     protected Table(String name, TableFactory<ENTITY> tableFactory) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = defaultAlias(name);
         this.tableFactory = tableFactory;
     }
 
+    /**
+     * Creates a representation of a database table.
+     * @param name the table name.
+     * @param alias the table alias.
+     * @param tableFactory the instance factory.
+     */
     protected Table(String name, String alias, TableFactory<ENTITY> tableFactory) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));

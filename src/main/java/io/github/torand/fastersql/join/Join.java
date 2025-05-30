@@ -40,6 +40,11 @@ public class Join implements Sql {
     private final List<Column> rights;
     private final JoinMode mode;
 
+    /**
+     * Creates a join clause.
+     * @param left the left side of the join.
+     * @param right the right side of the join.
+     */
     public Join(Column left, Column right) {
         this.lefts = asList(requireNonNull(left, "No left column specified"));
         this.rights = asList(requireNonNull(right, "No right column specified"));

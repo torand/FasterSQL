@@ -27,6 +27,7 @@ public final class Predicates {
      * Tests whether an object is instance of specified class.
      * @param clazz the class to test instance on
      * @return the predicate
+     * @param <T> the class type.
      */
     public static <T> Predicate<? super T> instanceOf(Class<? extends T> clazz) {
         return clazz::isInstance;
