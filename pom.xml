@@ -301,7 +301,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <doctitle>${project.name} ${project.version} API</doctitle>
+                    <windowtitle>${project.name} ${project.version}</windowtitle>
+                    <doctitle>${project.name} ${project.version}</doctitle>
+                    <packagesheader>${project.name} Packages</packagesheader>
                     <addStylesheets>
                         <addStylesheet>dark-theme.css</addStylesheet>
                     </addStylesheets>
