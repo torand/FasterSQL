@@ -301,12 +301,9 @@
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
                 <configuration>
-                    <windowtitle>${project.name} ${project.version} API</windowtitle>
                     <doctitle>${project.name} ${project.version} API</doctitle>
-                    <top>This is a top text</top>
-                    <header>This is a header</header>
                     <addStylesheets>
-                        <addStylesheet>tapestry.css</addStylesheet>
+                        <addStylesheet>dark-theme.css</addStylesheet>
                     </addStylesheets>
                     <doclint>none</doclint>
                 </configuration>
