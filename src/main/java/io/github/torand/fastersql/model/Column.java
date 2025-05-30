@@ -31,7 +31,7 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A column in a database table.
+ * Models a column in a database table.
  */
 public class Column implements LeftOperand, Expression, OrderExpression {
     private final Table<?> table;
@@ -39,7 +39,7 @@ public class Column implements LeftOperand, Expression, OrderExpression {
     private final ColumnAlias alias;
 
     /**
-     * Creates a representation of a column inside a database table.
+     * Creates a representation (model) of a column inside a database table.
      * @param table the table representation.
      * @param name the column name.
      */

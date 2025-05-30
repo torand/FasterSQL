@@ -112,7 +112,7 @@ FasterSQL supports a majority of the [most popular](https://db-engines.com/en/ra
 
 ### Supported SQL Features
 
-FasterSQL supports the most widely used SQL data manipulation language features:
+FasterSQL supports the most widely used SQL data query and manipulation language features:
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer, right outer
@@ -166,7 +166,7 @@ Include in a Maven POM file like this:
 ## Getting Started
 
 1. Define a database model using the [Table](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Table.java) and [Column](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Column.java) classes
-2. Write an SQL statement using the DSL factories. E.g. start with the [Statements.select](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/Statements.java#L32) factory method.
+2. Write an SQL statement using the DSL factories. E.g. start with the [Statements.select](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/Statements.java#L39) factory method.
 3. Transform to a JDBC PreparedStatement with parameters set automatically using the [PreparedStatementBuilder](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/PreparedStatementBuilder.java) class
 4. Execute the PreparedStatement as normal.
 

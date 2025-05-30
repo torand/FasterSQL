@@ -26,7 +26,7 @@ import static io.github.torand.fastersql.sql.Command.SELECT;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 
 /**
- * A database table.
+ * Models a database table.
  * @param <ENTITY> the concrete table class with columns.
  */
 public abstract class Table<ENTITY extends Table<?>> implements Relation {
@@ -35,7 +35,7 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     private final TableFactory<ENTITY> tableFactory;
 
     /**
-     * Creates a representation of a database table.
+     * Creates a representation (model) of a database table.
      * @param name the table name.
      * @param tableFactory the instance factory.
      */
@@ -46,7 +46,7 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     }
 
     /**
-     * Creates a representation of a database table.
+     * Creates a representation (model) of a database table.
      * @param name the table name.
      * @param alias the table alias.
      * @param tableFactory the instance factory.
@@ -58,9 +58,9 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     }
 
     /**
-     * Creates a column of this table.
+     * Creates a model of a column belonging to this table.
      * @param name the column name.
-     * @return the column.
+     * @return the column model.
      */
     public Column column(String name) {
         return new Column(this, name);
