@@ -151,7 +151,9 @@ are transformed into their Java SQL counterparts before registration, as specifi
 
 The package is available from the [Maven Central Repository](https://central.sonatype.com/artifact/io.github.torand/fastersql).
 
-Include in a Maven POM file like this:
+### Maven
+
+Include in a ```pom.xml``` file like this:
 
 ```xml
 <dependencies>
@@ -161,6 +163,16 @@ Include in a Maven POM file like this:
     <version>1.7.1</version>
   </dependency>
 </dependencies>
+```
+
+### Gradle
+
+Include in a ```build.gradle``` file like this:
+
+```groovy
+dependencies {
+    implementation 'io.github.torand:fastersql:1.7.1'
+}
 ```
 
 ## Getting Started
