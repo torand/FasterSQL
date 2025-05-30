@@ -28,6 +28,10 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents a scalar value constant of any type.
+ * @param <T> the value type.
+ */
 public class GenericConstant<T> implements Constant {
     private final T value;
     private final ColumnAlias alias;

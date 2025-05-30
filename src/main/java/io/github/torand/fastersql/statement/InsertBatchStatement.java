@@ -37,6 +37,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
+/**
+ * Implements an INSERT statement for batch (multi-row) insertion.
+ * @param <T> the batch entity type.
+ */
 public class InsertBatchStatement<T> implements PreparableStatement {
     private final Table<?> table;
     private final List<ColumnValueExtractor<? super T>> columnValueExtractors;

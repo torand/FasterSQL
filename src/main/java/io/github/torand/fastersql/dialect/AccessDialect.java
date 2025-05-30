@@ -25,7 +25,7 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the Access dialect.
+ * Defines the Microsoft Access SQL dialect.
  *
  * <a href="https://support.microsoft.com/en-us/office/Queries-93fb69b7-cfc1-4f3e-ab56-b0a01523bb50#ID0EAABAAA=SQL_syntax&id0ebbd=sql_syntax" />
  */

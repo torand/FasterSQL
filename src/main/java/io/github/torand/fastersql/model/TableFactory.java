@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.util.functional;
-
-import java.util.Optional;
-import java.util.function.Function;
+package io.github.torand.fastersql.model;
 
 /**
- * General purpose utilities for optionals.
+ * Defines a factory to create instances of a database {@link Table} model.
+ * @param <ENTITY> the table model class.
  */
-public final class Optionals {
-    private Optionals() {}
-
-    public static <T, U> U mapSafely(T value, Function<T, U> mapper) {
-        return Optional.ofNullable(value).map(mapper).orElse(null);
-    }
+@FunctionalInterface
+public interface TableFactory<ENTITY> {
+    /**
+     * Creates a new instance of a database {@link Table} model.
+     * @param alias the table alias.
+     * @return the new table model instance.
+     */
+    ENTITY newInstance(String alias);
 }

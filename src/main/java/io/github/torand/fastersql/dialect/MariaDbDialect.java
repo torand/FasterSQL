@@ -26,7 +26,7 @@ import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
- * Defines the MAriaDB SQL dialect.
+ * Defines the MariaDB SQL dialect.
  *
  * <a href="https://mariadb.com/kb/en/sql-statements/" />
  */

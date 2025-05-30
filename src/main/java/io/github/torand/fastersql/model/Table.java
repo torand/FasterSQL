@@ -104,9 +104,4 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     private TableAlias defaultAlias(String name) {
         return new TableAlias(name);
     }
-
-    @FunctionalInterface
-    public interface TableFactory<ENTITY> {
-        ENTITY newInstance(String alias);
-    }
 }

@@ -37,7 +37,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Implements an INSERT statement.
+ * Implements an INSERT statement for single row insertion.
  */
 public class InsertStatement implements PreparableStatement {
     private final Table<?> table;

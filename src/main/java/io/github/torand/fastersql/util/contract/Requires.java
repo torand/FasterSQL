@@ -25,6 +25,9 @@ import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Provides factory methods to test the state of variables.
+ */
 public final class Requires {
 
     private Requires() {}

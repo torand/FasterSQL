@@ -18,6 +18,9 @@ package io.github.torand.fastersql.util.lang;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+/**
+ * Provides general purpose string utilities.
+ */
 public final class StringHelper {
     private StringHelper() {}
 

@@ -28,6 +28,9 @@ import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
 import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Represents the 'null' constant value.
+ */
 public class NullConstant implements Constant {
     private final ColumnAlias alias;
 

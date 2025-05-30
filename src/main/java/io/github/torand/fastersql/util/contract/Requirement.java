@@ -15,6 +15,9 @@
  */
 package io.github.torand.fastersql.util.contract;
 
+/**
+ * Defines a requirement to be fulfilled in a {@link Requires} statement.
+ */
 @FunctionalInterface
 public interface Requirement {
     boolean test();

@@ -52,7 +52,7 @@ import static io.github.torand.fastersql.util.collection.CollectionHelper.stream
 import static io.github.torand.fastersql.util.contract.Requires.require;
 import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
 import static io.github.torand.fastersql.util.functional.Functions.castTo;
-import static io.github.torand.fastersql.util.functional.Optionals.mapIfNonNull;
+import static io.github.torand.fastersql.util.functional.Optionals.mapSafely;
 import static io.github.torand.fastersql.util.functional.Predicates.instanceOf;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
@@ -361,11 +361,11 @@ public class SelectStatement implements PreparableStatement {
     }
 
     private Long rowFrom() {
-        return mapIfNonNull(offset, o -> o + 1);
+        return mapSafely(offset, o -> o + 1);
     }
 
     private Long rowTo() {
-        return mapIfNonNull(limit, l -> (nonNull(offset) ? offset : 0) + l);
+        return mapSafely(limit, l -> (nonNull(offset) ? offset : 0) + l);
     }
 
     private StringBuilder addLimitOffsetFallback(Context context, StringBuilder innerSql, Long rowFrom, Long rowTo) {
