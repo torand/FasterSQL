@@ -25,32 +25,32 @@ import java.util.Optional;
  */
 public interface Dialect {
     /**
-     * Gets the name of the RDBMS product.
+     * Gets the name of the RDBMS product associated with this SQL dialect.
      * @return the name of the RDBMS product.
      */
     String getProductName();
 
     /**
-     * Indicates whether offset clause must be specified before limit clause; if supported.
-     * @return whether offset clause must be specified before limit clause; if supported.
+     * Indicates whether <i>offset</i> clause must be specified before <i>limit</i> clause; if supported.
+     * @return whether <i>offset</i> clause must be specified before <i>limit</i> clause; if supported.
      */
     boolean offsetBeforeLimit();
 
     /**
-     * Returns the _row offset clause_ formatted for a specific SQL dialect.
-     * @return the _row offset clause_ formatted for a specific SQL dialect.
+     * Returns the <i>row offset</i> clause formatted for a specific SQL dialect.
+     * @return the <i>row offset</i> clause formatted for a specific SQL dialect.
      */
     Optional<String> formatRowOffsetClause();
 
     /**
-     * Returns the _row limit clause_ formatted for a specific SQL dialect.
-     * @return the _row limit clause_ formatted for a specific SQL dialect.
+     * Returns the <i>row limit</i> clause formatted for a specific SQL dialect.
+     * @return the <i>row limit</i> clause formatted for a specific SQL dialect.
      */
     Optional<String> formatRowLimitClause();
 
     /**
-     * Returns the _row number_ literal formatted for a specific SQL dialect.
-     * @return the _row number_ literal formatted for a specific SQL dialect.
+     * Returns the <i>row number</i> literal formatted for a specific SQL dialect.
+     * @return the <i>row number</i> literal formatted for a specific SQL dialect.
      */
     Optional<String> formatRowNumLiteral();
 
