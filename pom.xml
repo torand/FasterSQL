@@ -83,7 +83,7 @@
         <assertj.version>3.27.3</assertj.version>
         <hamcrest.version>3.0</hamcrest.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
-        <testcontainers.version>1.21.0</testcontainers.version>
+        <testcontainers.version>1.21.1</testcontainers.version>
         <oracle.version>23.8.0.25.04</oracle.version>
         <h2.version>2.3.232</h2.version>
         <mysql-connector-j.version>9.3.0</mysql-connector-j.version>
