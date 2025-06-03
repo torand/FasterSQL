@@ -20,8 +20,8 @@ import io.github.torand.fastersql.predicate.compound.CompoundPredicates;
 import java.util.Collection;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
-import static io.github.torand.fastersql.util.contract.Requires.precondition;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.contract.Requires.precondition;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 

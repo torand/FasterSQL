@@ -24,11 +24,11 @@ import io.github.torand.fastersql.sql.Sql;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.headOf;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
-import static io.github.torand.fastersql.util.contract.Requires.require;
+import static io.github.torand.javacommons.collection.CollectionHelper.asList;
+import static io.github.torand.javacommons.collection.CollectionHelper.concat;
+import static io.github.torand.javacommons.collection.CollectionHelper.headOf;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.contract.Requires.require;
 import static java.util.Objects.requireNonNull;
 
 /**

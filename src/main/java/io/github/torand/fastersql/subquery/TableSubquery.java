@@ -24,7 +24,7 @@ import io.github.torand.fastersql.statement.SelectStatement;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 

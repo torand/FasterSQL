@@ -21,7 +21,7 @@ import io.github.torand.fastersql.projection.Projection;
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asNonEmptyList;
+import static io.github.torand.javacommons.collection.CollectionHelper.asNonEmptyList;
 import static java.util.Objects.requireNonNull;
 
 /**

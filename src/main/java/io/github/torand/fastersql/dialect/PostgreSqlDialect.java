@@ -26,7 +26,7 @@ import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
-import static io.github.torand.fastersql.util.lang.StringHelper.generate;
+import static io.github.torand.javacommons.lang.StringHelper.generate;
 
 /**
  * Defines the <a href="https://www.postgresql.org/docs/current/">PostgreSQL</a> SQL dialect

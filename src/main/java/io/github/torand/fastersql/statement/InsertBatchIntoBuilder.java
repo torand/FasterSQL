@@ -20,8 +20,8 @@ import io.github.torand.fastersql.model.Table;
 import java.util.Collection;
 import java.util.List;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static io.github.torand.javacommons.collection.CollectionHelper.asList;
+import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

@@ -24,8 +24,8 @@ import io.github.torand.fastersql.sql.Sql;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
-import static java.util.Arrays.asList;
+import static io.github.torand.javacommons.collection.CollectionHelper.asList;
+import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.stream.Collectors.joining;
 
 /**

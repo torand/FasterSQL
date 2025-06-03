@@ -24,7 +24,7 @@ import io.github.torand.fastersql.subquery.ExpressionSubquery;
 import java.util.Collection;
 import java.util.Optional;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

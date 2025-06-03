@@ -15,7 +15,7 @@
  */
 package io.github.torand.fastersql.util;
 
-import io.github.torand.fastersql.util.collection.CollectionHelper;
+import io.github.torand.javacommons.collection.CollectionHelper;
 import org.hamcrest.Matcher;
 
 import java.sql.ResultSet;

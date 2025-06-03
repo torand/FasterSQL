@@ -24,8 +24,8 @@ import io.github.torand.fastersql.sql.Sql;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
-import static io.github.torand.fastersql.util.lang.StringHelper.isBlank;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.lang.StringHelper.isBlank;
 import static java.util.stream.Collectors.joining;
 
 /**

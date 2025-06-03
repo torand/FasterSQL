@@ -24,7 +24,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
-import static io.github.torand.fastersql.util.lang.StringHelper.generate;
+import static io.github.torand.javacommons.lang.StringHelper.generate;
 
 /**
  * Defines the <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/">Oracle</a> SQL dialect.

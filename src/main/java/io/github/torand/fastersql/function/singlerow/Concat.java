@@ -28,10 +28,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
-import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
+import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
+import static io.github.torand.javacommons.lang.StringHelper.nonBlank;
 import static java.util.stream.Collectors.joining;
 
 /**

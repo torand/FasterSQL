@@ -29,11 +29,11 @@ import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.sql.Command.DELETE;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.asList;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.concat;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.nonEmpty;
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
-import static io.github.torand.fastersql.util.contract.Requires.requireNonEmpty;
+import static io.github.torand.javacommons.collection.CollectionHelper.asList;
+import static io.github.torand.javacommons.collection.CollectionHelper.concat;
+import static io.github.torand.javacommons.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.Objects.isNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;

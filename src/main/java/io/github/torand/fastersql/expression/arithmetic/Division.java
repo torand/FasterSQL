@@ -25,8 +25,8 @@ import io.github.torand.fastersql.sql.Context;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
-import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
+import static io.github.torand.javacommons.lang.StringHelper.nonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**

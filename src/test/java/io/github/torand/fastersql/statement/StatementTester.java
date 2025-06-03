@@ -26,7 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static io.github.torand.fastersql.util.ResultSetTester.resultSetTester;
-import static io.github.torand.fastersql.util.lang.StringHelper.nonBlank;
+import static io.github.torand.javacommons.lang.StringHelper.nonBlank;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;

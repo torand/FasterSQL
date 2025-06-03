@@ -23,7 +23,7 @@ import io.github.torand.fastersql.sql.Sql;
 
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.require;
+import static io.github.torand.javacommons.contract.Requires.require;
 
 /**
  * Represents an enumeration of a projection, that is, a 1-based number referencing a single projection element in a SELECT clause.

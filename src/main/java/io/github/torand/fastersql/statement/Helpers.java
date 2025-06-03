@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.collection.CollectionHelper.streamSafely;
+import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
 import static java.util.stream.Collectors.joining;
 
 /**

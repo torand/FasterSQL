@@ -23,7 +23,7 @@ import io.github.torand.fastersql.sql.Context;
 import java.util.Random;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.util.contract.Requires.requireNonBlank;
+import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 
 /**
  * Represents an alias (label) for a projection
