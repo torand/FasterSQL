@@ -39,7 +39,7 @@ public abstract class HsqldbTest {
 
     @BeforeAll
     static void setUp() throws IOException, SQLException {
-        String databaseDir = "target/hsqldb";
+        String databaseDir = "target/test-db/hsqldb";
         Files.createDirectories(Path.of(databaseDir));
         String databaseName = UUID.randomUUID().toString().replace("-", "");
 

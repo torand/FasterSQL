@@ -41,7 +41,7 @@ public abstract class AccessTest {
 
     @BeforeAll
     static void setUp() throws IOException, SQLException {
-        String databaseDir = "target/access-db";
+        String databaseDir = "target/test-db/access";
         Files.createDirectories(Path.of(databaseDir));
         String databaseName = UUID.randomUUID().toString().replace("-", "");
 

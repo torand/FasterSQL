@@ -40,7 +40,7 @@ public abstract class SqliteTest {
 
     @BeforeAll
     static void setUp() throws IOException, SQLException {
-        String databaseDir = "target/sqlite-db";
+        String databaseDir = "target/test-db/sqlite";
         Files.createDirectories(Path.of(databaseDir));
         String databaseName = UUID.randomUUID().toString().replace("-", "");
 
