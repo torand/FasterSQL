@@ -211,6 +211,7 @@ public class OracleSelectStatementTest extends OracleTest {
                 .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
                 .where(PRODUCT.PRICE.gt($(5).times($(9).plus(toNumber($("11"), 2))))
                     .and(CUSTOMER.COUNTRY_CODE.eq(upper($("nor"))).or(CUSTOMER.COUNTRY_CODE.eq(substring($("DENMARK"), 1,3))))
+                    .and(PRODUCT.PRICE.between(3000, 6000))
                 )
                 .orderBy(CUSTOMER.LAST_NAME.asc());
 
@@ -223,9 +224,10 @@ public class OracleSelectStatementTest extends OracleTest {
                 inner join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
                 where PR.PRICE > ? * (? + to_number(?, '99')) \
                 and (C.COUNTRY_CODE = upper(?) or C.COUNTRY_CODE = substr(?, 1, 3)) \
+                and PR.PRICE between ? and ? \
                 order by C.LAST_NAME asc"""
             )
-            .assertParams(5, 9, "11", "nor", "DENMARK")
+            .assertParams(5, 9, "11", "nor", "DENMARK", 3000, 6000)
             .assertRowCount(2)
             .assertRow(1,
                 "C_LAST_NAME", is("Hansen"),
@@ -246,15 +248,17 @@ public class OracleSelectStatementTest extends OracleTest {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME)
                 .from(CUSTOMER)
-                .where(CUSTOMER.FIRST_NAME.eq(maybeFirstName), CUSTOMER.COUNTRY_CODE.eq(maybeCountryCode));
+                .where(CUSTOMER.FIRST_NAME.eq(maybeFirstName), CUSTOMER.COUNTRY_CODE.eq(maybeCountryCode)
+                    .and(CUSTOMER.LAST_NAME.ne("Doe")));
 
         statementTester()
             .assertSql("""
                 select C.LAST_NAME C_LAST_NAME \
                 from CUSTOMER C \
-                where C.FIRST_NAME = ?"""
+                where C.FIRST_NAME = ? \
+                and C.LAST_NAME <> ?"""
             )
-            .assertParams("Ola")
+            .assertParams("Ola", "Doe")
             .assertRowCount(1)
             .assertRow(1,
                 "C_LAST_NAME", is("Nordmann")

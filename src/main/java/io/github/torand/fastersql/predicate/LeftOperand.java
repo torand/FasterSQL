@@ -66,8 +66,47 @@ public interface LeftOperand extends Sql {
      * @param query the subquery.
      * @return the predicate.
      */
+
     default Predicate eq(SelectStatement query) {
         return ComparisonPredicates.eq(this, new ExpressionSubquery(query));
+    }
+
+
+    /**
+     * Creates a non-equivalence predicate from this left operand and the specified constant value.
+     * @param value the constant value.
+     * @return the predicate.
+     */
+    default Predicate ne(Object value) {
+        return ComparisonPredicates.ne(this, value);
+    }
+
+    /**
+     * Creates an optional non-equivalence predicate from this left operand and the specified optional value.
+     * @param value the optional value.
+     * @return the optional predicate.
+     */
+    default OptionalPredicate ne(Optional<?> value) {
+        requireNonNull(value, "No value specified");
+        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.ne(this, v)).orElse(null));
+    }
+
+    /**
+     * Creates a non-equivalence predicate from this left operand and the specified expression.
+     * @param expression the expression.
+     * @return the predicate.
+     */
+    default Predicate ne(Expression expression) {
+        return ComparisonPredicates.ne(this, expression);
+    }
+
+    /**
+     * Creates a non-equivalence predicate from this left operand and the specified subquery.
+     * @param query the subquery.
+     * @return the predicate.
+     */
+    default Predicate ne(SelectStatement query) {
+        return ComparisonPredicates.ne(this, new ExpressionSubquery(query));
     }
 
     /**
@@ -216,6 +255,26 @@ public interface LeftOperand extends Sql {
      */
     default Predicate ge(SelectStatement query) {
         return ComparisonPredicates.ge(this, new ExpressionSubquery(query));
+    }
+
+    /**
+     * Creates a 'between' predicate from this left operand and the specified lower and upper bound constant values.
+     * @param lowerBound the lower bound constant value.
+     * @param upperBound the upper bound constant value.
+     * @return the predicate.
+     */
+    default Predicate between(Object lowerBound, Object upperBound) {
+        return ComparisonPredicates.between(this, lowerBound, upperBound);
+    }
+
+    /**
+     * Creates a 'between' predicate from this left operand and the specified lower and upper bound expressions.
+     * @param lowerBound the lower bound expression.
+     * @param upperBound the upper bound expression.
+     * @return the predicate.
+     */
+    default Predicate between(Expression lowerBound, Expression upperBound) {
+        return ComparisonPredicates.between(this, lowerBound, upperBound);
     }
 
     /**

@@ -28,13 +28,13 @@ import static io.github.torand.fastersql.sql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Implements the equivalence predicate.
+ * Implements the non-equivalence predicate.
  */
-public class Eq implements Predicate {
+public class Ne implements Predicate {
     private final LeftOperand left;
     private final Expression right;
 
-    Eq(LeftOperand left, Expression right) {
+    Ne(LeftOperand left, Expression right) {
         this.left = requireNonNull(left, "No left operand specified");
         this.right = requireNonNull(right, "No right operand specified");
     }
@@ -44,7 +44,7 @@ public class Eq implements Predicate {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " = " + right.sql(localContext);
+        return left.sql(localContext) + " <> " + right.sql(localContext);
     }
 
     @Override
@@ -68,6 +68,6 @@ public class Eq implements Predicate {
     @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " <> " + right.sql(localContext);
+        return left.sql(localContext) + " = " + right.sql(localContext);
     }
 }

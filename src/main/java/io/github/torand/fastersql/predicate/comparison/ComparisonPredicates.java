@@ -47,6 +47,26 @@ public final class ComparisonPredicates {
     }
 
     /**
+     * Creates a non-equivalence predicate taking a scalar value as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
+    public static Ne ne(LeftOperand left, Object right) {
+        return new Ne(left, $(right));
+    }
+
+    /**
+     * Creates a non-equivalence predicate taking an expression as right operand.
+     * @param left the left operand.
+     * @param right the right operand.
+     * @return the predicate.
+     */
+    public static Ne ne(LeftOperand left, Expression right) {
+        return new Ne(left, right);
+    }
+
+    /**
      * Creates a less than predicate taking a scalar value as right operand.
      * @param left the left operand.
      * @param right the right operand.
@@ -124,5 +144,27 @@ public final class ComparisonPredicates {
      */
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
+    }
+
+    /**
+     * Creates a between predicate taking scalar values as lower and upper bound operands.
+     * @param left the left operand.
+     * @param lowerBound the lower bound operand.
+     * @param upperBound the upper bound operand.
+     * @return the predicate.
+     */
+    public static Between between(LeftOperand left, Object lowerBound, Object upperBound) {
+        return new Between(left, $(lowerBound), $(upperBound));
+    }
+
+    /**
+     * Creates a between predicate taking expressions as lower and upper bound operands.
+     * @param left the left operand.
+     * @param lowerBound the lower bound operand.
+     * @param upperBound the upper bound operand.
+     * @return the predicate.
+     */
+    public static Between between(LeftOperand left, Expression lowerBound, Expression upperBound) {
+        return new Between(left, lowerBound, upperBound);
     }
 }

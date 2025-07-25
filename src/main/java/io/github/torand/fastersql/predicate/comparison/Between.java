@@ -28,15 +28,17 @@ import static io.github.torand.fastersql.sql.Clause.RESTRICTION;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Implements the equivalence predicate.
+ * Implements the between predicate.
  */
-public class Eq implements Predicate {
+public class Between implements Predicate {
     private final LeftOperand left;
-    private final Expression right;
+    private final Expression lowerBound;
+    private final Expression upperBound;
 
-    Eq(LeftOperand left, Expression right) {
+    Between(LeftOperand left, Expression lowerBound, Expression upperBound) {
         this.left = requireNonNull(left, "No left operand specified");
-        this.right = requireNonNull(right, "No right operand specified");
+        this.lowerBound = requireNonNull(lowerBound, "No lower bound expression specified");
+        this.upperBound = requireNonNull(upperBound, "No upper bound expression specified");
     }
 
     // Sql
@@ -44,30 +46,29 @@ public class Eq implements Predicate {
     @Override
     public String sql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " = " + right.sql(localContext);
+        return left.sql(localContext) + " between " + lowerBound.sql(localContext) + " and " + upperBound.sql(localContext);
     }
 
     @Override
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return Stream.concat(left.params(localContext), right.params(localContext));
+        return Stream.concat(Stream.concat(left.params(localContext), lowerBound.params(localContext)), upperBound.params(localContext));
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return Stream.concat(left.columnRefs(), right.columnRefs());
+        return Stream.concat(Stream.concat(left.columnRefs(), lowerBound.columnRefs()), upperBound.columnRefs());
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return Stream.concat(left.aliasRefs(), right.aliasRefs());
+        return Stream.concat(Stream.concat(left.aliasRefs(), lowerBound.aliasRefs()), upperBound.aliasRefs());
     }
 
     // Predicate
 
-    @Override
     public String negatedSql(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return left.sql(localContext) + " <> " + right.sql(localContext);
+        return left.sql(localContext) + " not between " + lowerBound.sql(localContext) + " and " + upperBound.sql(localContext);
     }
 }
