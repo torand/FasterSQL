@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
+import static io.github.torand.fastersql.dialect.Capability.POWER_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
@@ -34,7 +35,7 @@ public class AccessDialect implements Dialect {
      * Creates a Microsoft Access {@link Dialect} implementation.
      */
     public AccessDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, TRUNCATE_TABLE));
+        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, POWER_OPERATOR, TRUNCATE_TABLE));
     }
 
     private AccessDialect(EnumSet<Capability> capabilities) {
@@ -94,6 +95,16 @@ public class AccessDialect implements Dialect {
     @Override
     public String formatCeilFunction(String operand) {
         return "ceil(" + operand + ")";
+    }
+
+    @Override
+    public String formatLnFunction(String operand) {
+        return "ln(" + operand + ")";
+    }
+
+    @Override
+    public String formatPowerFunction(String base, String exponent) {
+        throw new UnsupportedOperationException("Access does not support the power() function (use the power infix operator instead)");
     }
 
     @Override

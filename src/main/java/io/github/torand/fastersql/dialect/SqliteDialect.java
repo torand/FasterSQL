@@ -93,6 +93,11 @@ public class SqliteDialect implements Dialect {
     }
 
     @Override
+    public String formatLnFunction(String operand) {
+        return "ln(" + operand + ")";
+    }
+
+    @Override
     public String formatRoundFunction(String operand) {
         return "round(" + operand + ")";
     }

@@ -91,6 +91,11 @@ public class AnsiIsoDialect implements Dialect {
     }
 
     @Override
+    public String formatLnFunction(String operand) {
+        return "ln(" + operand + ")";
+    }
+
+    @Override
     public String formatRoundFunction(String operand) {
         return "round(" + operand + ")";
     }

@@ -102,6 +102,23 @@ public interface Dialect {
     String formatCeilFunction(String operand);
 
     /**
+     * Returns the 'ln' function formatted for a specific SQL dialect.
+     * @param operand the numeric expression to get natural logarithm of
+     * @return the 'ln' function for a specific SQL dialect.
+     */
+    String formatLnFunction(String operand);
+
+    /**
+     * Returns the 'pow' function formatted for a specific SQL dialect.
+     * @param base the numeric expression for base operand
+     * @param exponent the numeric expression for exponent operand
+     * @return the 'pow' function for a specific SQL dialect.
+     */
+    default String formatPowerFunction(String base, String exponent) {
+        return "power(" + base + ", " + exponent + ")";
+    }
+
+    /**
      * Returns the 'round' function formatted for a specific SQL dialect.
      * @param operand the numeric expression to perform rounding on
      * @return the 'round' function for a specific SQL dialect.

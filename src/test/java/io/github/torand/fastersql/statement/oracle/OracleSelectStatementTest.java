@@ -37,9 +37,13 @@ import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.m
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.exp;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ln;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.pow;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.sqrt;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toNumber;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
@@ -541,23 +545,27 @@ public class OracleSelectStatementTest extends OracleTest {
     @Test
     public void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
-            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"))
+            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln($(Math.E)).as("LN"), exp($(1)).as("EXP"), sqrt($(4)).as("SQRT"), pow($(3), $(2)).as("POW"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, round(PR.PRICE) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR \
+                select PR.NAME PR_NAME, round(PR.PRICE) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR, ln(?) LN, exp(?) EXP, sqrt(?) SQRT, power(?, ?) POW \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
-            .assertParams(-1)
+            .assertParams(-1, Math.E, 1, 4, 3, 2)
             .assertRowCount(5)
             .assertRow(2,
                 "ROUND", isBigDecimal(5434),
                 "ABS", isBigDecimal(1),
                 "CEIL", isBigDecimal(5434),
-                "FLOOR", isBigDecimal(5433))
+                "FLOOR", isBigDecimal(5433),
+                "LN", isBigDecimalCloseTo(1.0, 0.000001),
+                "EXP", isBigDecimalCloseTo(Math.E, 0.000001),
+                "SQRT", isBigDecimal(2),
+                "POW", isBigDecimal(9))
             .assertRow(3,
                 "ROUND", isBigDecimal(7122))
             .verify(stmt);

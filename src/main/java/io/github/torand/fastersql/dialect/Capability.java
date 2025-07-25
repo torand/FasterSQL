@@ -40,6 +40,11 @@ public enum Capability {
     MODULO_OPERATOR,
 
     /**
+     * Supports a numeric power infix operator
+     */
+    POWER_OPERATOR,
+
+    /**
      * Supports a current time literal or function
      */
     CURRENT_TIME,

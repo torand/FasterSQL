@@ -94,6 +94,16 @@ public class HsqldbDialect implements Dialect {
     }
 
     @Override
+    public String formatLnFunction(String operand) {
+        return "ln(" + operand + ")";
+    }
+
+    @Override
+    public String formatPowerFunction(String base, String exponent) {
+        return "power(cast(%s as decimal), cast(%s as decimal))".formatted(base, exponent);
+    }
+
+    @Override
     public String formatRoundFunction(String operand) {
         return "round(" + operand + ")";
     }

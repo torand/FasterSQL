@@ -106,6 +106,11 @@ public class SqlServerDialect implements Dialect {
     }
 
     @Override
+    public String formatLnFunction(String operand) {
+        return "log(" + operand + ")";
+    }
+
+    @Override
     public String formatRoundFunction(String operand) {
         return "round(" + operand + ", 0)";
     }

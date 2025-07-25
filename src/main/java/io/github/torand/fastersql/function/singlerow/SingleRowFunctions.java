@@ -151,4 +151,41 @@ public final class SingleRowFunctions {
     public static Floor floor(Expression expression) {
         return new Floor(expression, null);
     }
+
+    /**
+     * Creates the natural logarithm function for a numeric expression.
+     * @param expression the numeric expression.
+     * @return the numeric function.
+     */
+    public static Ln ln(Expression expression) {
+        return new Ln(expression, null);
+    }
+
+    /**
+     * Creates the natural exponential function for a numeric expression.
+     * @param expression the numeric expression.
+     * @return the numeric function.
+     */
+    public static Exp exp(Expression expression) {
+        return new Exp(expression, null);
+    }
+
+    /**
+     * Creates the square root function for a numeric expression.
+     * @param expression the numeric expression.
+     * @return the numeric function.
+     */
+    public static Sqrt sqrt(Expression expression) {
+        return new Sqrt(expression, null);
+    }
+
+    /**
+     * Creates the power function for numeric expressions.
+     * @param base the numeric base expression.
+     * @param exponent the numeric exponent expression.
+     * @return the numeric function.
+     */
+    public static Power pow(Expression base, Expression exponent) {
+        return new Power(base, exponent, null);
+    }
 }

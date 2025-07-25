@@ -117,7 +117,7 @@ FasterSQL supports the most widely used SQL data query and manipulation language
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer, right outer
 * Scalar string functions: upper, lower, to_number, to_char, substring, concat, length
-* Scalar math functions: round, abs, ceil, floor
+* Scalar math functions: round, abs, ceil, floor, ln, exp, sqrt, power
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp, current_date, current_time
 * Comparison operators: eq (=), ge (>=), gt (>), le (<=), lt (<)
