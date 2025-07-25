@@ -72,4 +72,13 @@ public final class ArithmeticExpressions {
     public static Modulo mod(Expression dividend, Expression divisor) {
         return new Modulo(dividend, divisor, null);
     }
+
+    /**
+     * Creates a negatation expression.
+     * @param expression the numeric expression.
+     * @return the negation expression.
+     */
+    public static Negate neg(Expression expression) {
+        return new Negate(expression, null);
+    }
 }

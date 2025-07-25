@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Supporting the 'ln', 'exp', 'sqrt' and 'power' math functions.
+- Supporting the negation operator in numeric expressions.
 
 ## [1.7.1] - 2025-05-30
 

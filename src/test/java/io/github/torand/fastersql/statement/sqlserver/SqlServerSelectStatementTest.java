@@ -31,6 +31,7 @@ import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
+import static io.github.torand.fastersql.expression.arithmetic.ArithmeticExpressions.neg;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
@@ -509,24 +510,25 @@ public class SqlServerSelectStatementTest extends SqlServerTest {
     @Test
     public void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
-            select(PRODUCT.NAME, PRODUCT.PRICE.plus(1).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"))
+            select(PRODUCT.NAME, PRODUCT.PRICE.plus(1).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, PR.PRICE % ? MOD_ \
+                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, PR.PRICE % ? MOD_, -(? + ?) NEG_ \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
-            .assertParams(1, 2, 3, 4, 5)
+            .assertParams(1, 2, 3, 4, 5, 6, 7)
             .assertRowCount(5)
             .assertRow(2,
                 "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
                 "MINUS_", isBigDecimalCloseTo(5431.5, 0.01),
                 "TIMES_", isBigDecimalCloseTo(16300.5, 0.01),
                 "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.0001),
-                "MOD_", isBigDecimalCloseTo(3.50, 0.001))
+                "MOD_", isBigDecimalCloseTo(3.50, 0.001),
+                "NEG_", isInteger(-13))
             .verify(stmt);
     }
 }
