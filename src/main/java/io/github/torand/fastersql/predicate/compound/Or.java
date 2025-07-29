@@ -64,6 +64,6 @@ public class Or implements Predicate {
 
     @Override
     public String negatedSql(Context context) {
-        return "not " + sql(context);
+        return "not (" + sql(context) + ")";
     }
 }

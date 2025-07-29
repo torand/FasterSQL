@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Supporting the negation operator in numeric expressions.
 - Supporting the 'between' and 'ne' comparison operators.
 
+### Fixed
+- Logical operator 'not' now adds parentheses around an 'or' predicate. 
+
 ## [1.7.1] - 2025-05-30
 
 ### Added
