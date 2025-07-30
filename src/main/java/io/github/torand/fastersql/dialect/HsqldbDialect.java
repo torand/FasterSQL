@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
+import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
@@ -30,7 +31,7 @@ import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
  * Defines the <a href="https://hsqldb.org/doc/2.0/guide/sqlgeneral-chapt.html">HyperSQL</a> (HSQLDB) SQL dialect.
  */
 public class HsqldbDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN);
 
     /**
      * Creates a HyperSQL (HSQLDB) {@link Dialect} implementation.

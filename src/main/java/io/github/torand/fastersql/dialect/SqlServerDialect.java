@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
@@ -34,7 +35,7 @@ public class SqlServerDialect implements Dialect {
      * Creates a Microsoft SQL Server {@link Dialect} implementation.
      */
     public SqlServerDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, TRUNCATE_TABLE));
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, TRUNCATE_TABLE, FULL_OUTER_JOIN));
     }
 
     private SqlServerDialect(EnumSet<Capability> capabilities) {

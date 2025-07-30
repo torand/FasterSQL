@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
@@ -36,7 +37,7 @@ public class OracleDialect implements Dialect {
      * Creates an Oracle {@link Dialect} implementation.
      */
     public OracleDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE));
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN));
     }
 
     private OracleDialect(EnumSet<Capability> capabilities) {

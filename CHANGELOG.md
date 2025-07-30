@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Supporting the 'ln', 'exp', 'sqrt' and 'power' math functions.
 - Supporting the negation operator in numeric expressions.
 - Supporting the 'between' and 'ne' comparison operators.
+- Supporting full outer joins.
 
 ### Fixed
 - Logical operator 'not' now adds parentheses around an 'or' predicate. 

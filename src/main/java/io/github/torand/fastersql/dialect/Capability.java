@@ -62,5 +62,10 @@ public enum Capability {
     /**
      * Supports "TRUNCATE TABLE..." clauses
      */
-    TRUNCATE_TABLE
+    TRUNCATE_TABLE,
+
+    /**
+     * Supports full outer joins
+     */
+    FULL_OUTER_JOIN
 }

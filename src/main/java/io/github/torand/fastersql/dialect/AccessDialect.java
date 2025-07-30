@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
+import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.POWER_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
@@ -35,7 +36,7 @@ public class AccessDialect implements Dialect {
      * Creates a Microsoft Access {@link Dialect} implementation.
      */
     public AccessDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, POWER_OPERATOR, TRUNCATE_TABLE));
+        this(EnumSet.of(LIMIT_OFFSET, SELECT_FOR_UPDATE, CONCAT_OPERATOR, POWER_OPERATOR, TRUNCATE_TABLE, FULL_OUTER_JOIN));
     }
 
     private AccessDialect(EnumSet<Capability> capabilities) {

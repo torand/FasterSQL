@@ -242,6 +242,45 @@ public class SqlServerSelectStatementTest extends SqlServerTest {
     }
 
     @Test
+    void shouldHandleFullOuterJoin() {
+        SelectStatement stmt =
+            select(PURCHASE_ITEM.ID, PRODUCT.NAME)
+                .from(PURCHASE_ITEM)
+                .fullOuterJoin(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
+                .orderBy(PRODUCT.NAME.asc());
+
+        statementTester()
+            .assertSql("""
+                select PI.ID PI_ID, PR.NAME PR_NAME \
+                from PURCHASE_ITEM PI \
+                full outer join PRODUCT PR on PI.PRODUCT_ID = PR.ID \
+                order by PR.NAME asc"""
+            )
+            .assertRowCount(5)
+            .assertRow(1,
+                "PI_ID", isNull(),
+                "PR_NAME", is("Apple iPad Pro tablet")
+            )
+            .assertRow(2,
+                "PI_ID", is("6d35986a-04ee-4ba0-a3f6-d421e98139db"),
+                "PR_NAME", is("Ekornes Stressless resting chair")
+            )
+            .assertRow(3,
+                "PI_ID", isNull(),
+                "PR_NAME", is("Electrolux 800 UltraCare washing machine")
+            )
+            .assertRow(4,
+                "PI_ID", is("a6fd519a-3baf-4892-b435-d11f7a080385"),
+                "PR_NAME", is("Louis Poulsen Panthella 160 table lamp")
+            )
+            .assertRow(5,
+                "PI_ID", isNull(),
+                "PR_NAME", is("Samsung Galaxy S25 Ultra mobile phone")
+            )
+            .verify(stmt);
+    }
+
+    @Test
     public void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))

@@ -124,6 +124,16 @@ public class SelectStatement implements PreparableStatement {
     }
 
     /**
+     * Adds a FULL OUTER JOIN clause.
+     * @param join the JOIN clause.
+     * @return the modified statement.
+     */
+    public SelectStatement fullOuterJoin(Join join) {
+        requireNonNull(join, "No join specified");
+        return join(join.fullOuter());
+    }
+
+    /**
      * Adds one or more JOIN clauses, if the condition is true.
      * @param condition the condition.
      * @param joinSuppliers the suppliers of JOIN clauses.

@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
+import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
@@ -29,7 +30,7 @@ import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
  * Defines the <a href="https://www.sqlite.org/lang.html">SQLite</a> SQL dialect.
  */
 public class SqliteDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, FULL_OUTER_JOIN);
 
     /**
      * Creates a SQLite {@link Dialect} implementation.

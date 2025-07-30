@@ -32,7 +32,12 @@ enum JoinMode {
     /**
      * The right outer join.
      */
-    RIGHT_OUTER("right outer join");
+    RIGHT_OUTER("right outer join"),
+
+    /**
+     * The full outer join.
+     */
+    FULL_OUTER("full outer join");
 
     final String sql;
 

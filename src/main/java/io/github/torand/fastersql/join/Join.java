@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.join;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
+import io.github.torand.fastersql.dialect.Capability;
 import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.model.Table;
 import io.github.torand.fastersql.sql.Context;
@@ -74,6 +75,14 @@ public class Join implements Sql {
     }
 
     /**
+     * Specifies that this is a FULL OUTER JOIN clause.
+     * @return the modified JOIN clause.
+     */
+    public Join fullOuter() {
+        return new Join(lefts, rights, JoinMode.FULL_OUTER);
+    }
+
+    /**
      * Creates a nested JOIN clause by combining this JOIN clause with the specified JOIN clause.
      * @param next the JOIN clause to combine with.
      * @return the nested JOIN clause.
@@ -100,6 +109,10 @@ public class Join implements Sql {
 
     @Override
     public String sql(Context context) {
+        if (mode == JoinMode.FULL_OUTER && !context.getDialect().supports(Capability.FULL_OUTER_JOIN)) {
+            throw new UnsupportedOperationException("%s does not support FULL OUTER JOIN".formatted(context.getDialect().getProductName()));
+        }
+
         Table<?> rightTable = headOf(this.rights).table();
         StringBuilder sql = new StringBuilder()
             .append(mode.sql)
