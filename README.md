@@ -160,7 +160,7 @@ Include in a ```pom.xml``` file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.7.1</version>
+    <version>1.8.0</version>
   </dependency>
 </dependencies>
 ```
@@ -171,7 +171,7 @@ Include in a ```build.gradle``` file like this:
 
 ```groovy
 dependencies {
-    implementation 'io.github.torand:fastersql:1.7.1'
+    implementation 'io.github.torand:fastersql:1.8.0'
 }
 ```
 
