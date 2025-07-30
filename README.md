@@ -81,7 +81,7 @@ ResultSet findPersons(Connection connection) {
     PreparableStatement stmt =
         select(upper(PERSON.NAME), PERSON.SSN, ADDRESS.STREET, ADDRESS.ZIP)
             .from(PERSON)
-            .join(PERSON.ID.on(ADDRESS.PERSON_ID).leftOuter())
+            .leftOuterJoin(PERSON.ID.on(ADDRESS.PERSON_ID))
             .where(PERSON.SSN.eq("31129912345")
                 .and(not(PERSON.NAME.isNull()))
                 .and(ADDRESS.ZIP.eq("7089").or(ADDRESS.ZIP.eq("7088")))
