@@ -26,6 +26,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 import static io.github.torand.javacommons.lang.StringHelper.generate;
 
@@ -33,7 +34,7 @@ import static io.github.torand.javacommons.lang.StringHelper.generate;
  * Defines the <a href="https://www.postgresql.org/docs/current/">PostgreSQL</a> SQL dialect
  */
 public class PostgreSqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN, SET_OPERATION_PARENTHESES);
 
     /**
      * Creates a PostgreSQL {@link Dialect} implementation.

@@ -28,6 +28,8 @@ import io.github.torand.fastersql.predicate.OptionalPredicate;
 import io.github.torand.fastersql.predicate.Predicate;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.relation.Relation;
+import io.github.torand.fastersql.setoperation.SetOperation;
+import io.github.torand.fastersql.setoperation.SetOperator;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.subquery.Subquery;
 
@@ -54,6 +56,7 @@ import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static io.github.torand.javacommons.functional.Functions.castTo;
 import static io.github.torand.javacommons.functional.Optionals.mapSafely;
 import static io.github.torand.javacommons.functional.Predicates.instanceOf;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static java.util.function.Predicate.not;
@@ -254,7 +257,6 @@ public class SelectStatement implements PreparableStatement {
      */
     public SelectStatement orderBy(Order... orders) {
         requireNonEmpty(orders, "No orders specified");
-
         List<Order> concatenated = concat(this.orders, orders);
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, concatenated, distinct, limit, offset, forUpdate);
     }
@@ -283,6 +285,68 @@ public class SelectStatement implements PreparableStatement {
      */
     public SelectStatement forUpdate() {
         return new SelectStatement(projections, relations, joins, wherePredicates, groups, havingPredicates, orders, distinct, limit, offset, true);
+    }
+
+    /**
+     * Creates a UNION set operation between this and the specified statement.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement union(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.UNION);
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
+    }
+
+    /**
+     * Creates a UNION ALL set operation between this and the specified statement.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement unionAll(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.UNION).all();
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
+    }
+
+    /**
+     * Creates an INTERSECT set operation between this and the specified statement.
+     * Note that INTERSECT has precedence over UNION and EXCEPT.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement intersect(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.INTERSECT);
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
+    }
+
+    /**
+     * Creates an INTERSECT ALL set operation between this and the specified statement.
+     * Note that INTERSECT has precedence over UNION and EXCEPT.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement intersectAll(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.INTERSECT).all();
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
+    }
+
+    /**
+     * Creates an EXCEPT set operation between this and the specified statement.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement except(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.EXCEPT);
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
+    }
+
+    /**
+     * Creates an EXCEPT ALL set operation between this and the specified statement.
+     * @param other the other SELECT statement
+     * @return the SELECT set operation statement.
+     */
+    public SelectSetOpStatement exceptAll(SelectStatement other) {
+        SetOperation setOperation = new SetOperation(other, SetOperator.EXCEPT).all();
+        return new SelectSetOpStatement(this, asList(setOperation), emptyList());
     }
 
     @Override
@@ -370,6 +434,10 @@ public class SelectStatement implements PreparableStatement {
         return sb.toString();
     }
 
+    Stream<Projection> projections() {
+        return streamSafely(projections);
+    }
+
     private Long rowFrom() {
         return mapSafely(offset, o -> o + 1);
     }
@@ -448,11 +516,11 @@ public class SelectStatement implements PreparableStatement {
             .flatMap(Expression::columnRefs);
         validateColumnTableRelations(context, projectedColumns);
 
-        if (nonNull(joins)) {
+        if (nonEmpty(joins)) {
             validateColumnTableRelations(context, streamSafely(joins).flatMap(Join::columnRefs));
         }
 
-        if (nonNull(orders)) {
+        if (nonEmpty(orders)) {
             Set<String> orderableAliases = streamSafely(projections)
                 .map(Projection::alias)
                 .flatMap(Optional::stream)

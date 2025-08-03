@@ -17,6 +17,7 @@ package io.github.torand.fastersql.statement.mysql;
 
 import io.github.torand.fastersql.datamodel.CustomerTable;
 import io.github.torand.fastersql.statement.PreparableStatement;
+import io.github.torand.fastersql.statement.SelectSetOpStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
 import org.junit.jupiter.api.Test;
 
@@ -50,7 +51,6 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.u
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTime;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
-import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.projection.Projections.colPos;
 import static io.github.torand.fastersql.projection.Projections.subquery;
 import static io.github.torand.fastersql.relation.Relations.table;
@@ -79,7 +79,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
                 .join(PURCHASE.ID.on(PURCHASE_ITEM.PURCHASE_ID))
                 .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
                 .where(CUSTOMER.MOBILE_NO_VERIFIED.eq(true)
-                    .and(not(CUSTOMER.EMAIL_ADDRESS.isNull()))
+                    .and(CUSTOMER.EMAIL_ADDRESS.isNotNull())
                     .and(CUSTOMER.COUNTRY_CODE.in("NOR", "DEN"))
                     .and(PRODUCT.CATEGORY.eq("FURNITURE").or(PRODUCT.CATEGORY.eq("LAMP")))
                     .and(PURCHASE.CREATED_TIME.gt(since)))
@@ -593,6 +593,63 @@ public class MySqlSelectStatementTest extends MySqlTest {
                 "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.0001),
                 "MOD_", isBigDecimalCloseTo(3.50, 0.001),
                 "NEG_", isLong(-13))
+            .verify(stmt);
+    }
+
+    @Test
+    void shouldHandleSetOperations() {
+        SelectSetOpStatement stmt =
+            select(PRODUCT.NAME.as("PR_NAME"))
+                .from(PRODUCT)
+                .where(PRODUCT.NAME.like("Apple").or(PRODUCT.NAME.like("Ekornes")))
+                .orderBy(PRODUCT.NAME.asc())
+                .intersect(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Ekornes"))
+                )
+                .unionAll(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Apple").or(PRODUCT.NAME.like("Electrolux")))
+                        .orderBy(PRODUCT.NAME.asc())
+                )
+                .except(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Electrolux"))
+                )
+                .orderBy(alias("PR_NAME").asc());
+
+        statementTester()
+            .assertSql("""
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ? or PR.NAME like ? \
+                order by PR.NAME asc) \
+                intersect \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ?) \
+                union all \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ? or PR.NAME like ? \
+                order by PR.NAME asc) \
+                except \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ?) \
+                order by PR_NAME asc"""
+            )
+            .assertParams("%Apple%", "%Ekornes%", "%Ekornes%", "%Apple%", "%Electrolux%", "%Electrolux%")
+            .assertRowCount(2)
+            .assertRow(1,
+                "PR_NAME", is("Apple iPad Pro tablet")
+            )
+            .assertRow(2,
+                "PR_NAME", is("Ekornes Stressless resting chair")
+            )
             .verify(stmt);
     }
 }

@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.setoperation.SetOperator;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +26,7 @@ import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 import static io.github.torand.javacommons.lang.StringHelper.generate;
 
@@ -37,7 +40,7 @@ public class OracleDialect implements Dialect {
      * Creates an Oracle {@link Dialect} implementation.
      */
     public OracleDialect() {
-        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN));
+        this(EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN, SET_OPERATION_PARENTHESES));
     }
 
     private OracleDialect(EnumSet<Capability> capabilities) {
@@ -73,6 +76,11 @@ public class OracleDialect implements Dialect {
     @Override
     public Optional<String> formatRowNumLiteral() {
         return Optional.of("rownum");
+    }
+
+    @Override
+    public String formatSetOperator(SetOperator setOperator) {
+        return setOperator == SetOperator.EXCEPT ? "minus" : setOperator.sql();
     }
 
     @Override

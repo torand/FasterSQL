@@ -24,6 +24,7 @@ import io.github.torand.fastersql.subquery.ExpressionSubquery;
 import java.util.Collection;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -278,6 +279,26 @@ public interface LeftOperand extends Sql {
     }
 
     /**
+     * Creates a 'not between' predicate from this left operand and the specified lower and upper bound constant values.
+     * @param lowerBound the lower bound constant value.
+     * @param upperBound the upper bound constant value.
+     * @return the predicate.
+     */
+    default Predicate notBetween(Object lowerBound, Object upperBound) {
+        return not(between(lowerBound, upperBound));
+    }
+
+    /**
+     * Creates a 'not between' predicate from this left operand and the specified lower and upper bound expressions.
+     * @param lowerBound the lower bound expression.
+     * @param upperBound the upper bound expression.
+     * @return the predicate.
+     */
+    default Predicate notBetween(Expression lowerBound, Expression upperBound) {
+        return not(between(lowerBound, upperBound));
+    }
+
+    /**
      * Creates a 'member of set' predicate from this left operand and the specified array of constant values.
      * @param values the constant values.
      * @return the predicate.
@@ -331,6 +352,33 @@ public interface LeftOperand extends Sql {
     }
 
     /**
+     * Creates a 'not member of set' predicate from this left operand and the specified array of constant values.
+     * @param values the constant values.
+     * @return the predicate.
+     */
+    default Predicate notIn(Object... values) {
+        return not(in(values));
+    }
+
+    /**
+     * Creates a 'not member of set' predicate from this left operand and the specified collection of constant values.
+     * @param values the constant values.
+     * @return the predicate.
+     */
+    default Predicate notIn(Collection<?> values) {
+        return not(in(values));
+    }
+
+    /**
+     * Creates a 'not member of set' predicate from this left operand and the specified subquery.
+     * @param query the subquery.
+     * @return the predicate.
+     */
+    default Predicate notIn(SelectStatement query) {
+        return not(in(query));
+    }
+
+    /**
      * Creates a pattern matching predicate from this left operand and the specified string pattern.
      * @param pattern the string pattern.
      * @return the predicate.
@@ -350,10 +398,27 @@ public interface LeftOperand extends Sql {
     }
 
     /**
+     * Creates a negated pattern matching predicate from this left operand and the specified string pattern.
+     * @param pattern the string pattern.
+     * @return the predicate.
+     */
+    default Predicate notLike(String pattern) {
+        return not(like(pattern));
+    }
+
+    /**
      * Creates an 'is null' predicate from this left operand.
      * @return the predicate.
      */
     default Predicate isNull() {
         return Predicates.isNull(this);
+    }
+
+    /**
+     * Creates an 'is not null' predicate from this left operand.
+     * @return the predicate.
+     */
+    default Predicate isNotNull() {
+        return not(isNull());
     }
 }

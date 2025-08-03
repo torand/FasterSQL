@@ -23,6 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ...
 
+## [1.9.0] - 2025-08-xx
+
+### Added
+- Supporting the 'union', 'intersect', and 'except' set operations.
+- Convenience methods for negated predicates: notBetween, notIn, notLike, isNotNull
+
 ## [1.8.0] - 2025-07-30
 
 ### Added

@@ -67,5 +67,10 @@ public enum Capability {
     /**
      * Supports full outer joins
      */
-    FULL_OUTER_JOIN
+    FULL_OUTER_JOIN,
+
+    /**
+     * Supports parentheses around operands of a set operqtion
+     */
+    SET_OPERATION_PARENTHESES
 }

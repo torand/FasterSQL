@@ -23,13 +23,14 @@ import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
  * Defines the <a href="https://dev.mysql.com/doc/refman/8.4/en/">MySQL</a> SQL dialect.
  */
 public class MySqlDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CURRENT_TIME, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE, SET_OPERATION_PARENTHESES);
 
     /**
      * Creates a MySQL {@link Dialect} implementation.

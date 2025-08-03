@@ -128,6 +128,7 @@ FasterSQL supports the most widely used SQL data query and manipulation language
 * Ordering: asc, desc, nulls first/last
 * Grouping: group by, having
 * Subqueries: Supported as projections (SELECT clause), relations (FROM clause) and as right operand of predicates (WHERE clause)
+* Set operations: union, union all, intersect, intersect all, except, except all
 
 ### Supported Statement Parameters
 
@@ -160,7 +161,7 @@ Include in a ```pom.xml``` file like this:
   <dependency>
     <groupId>io.github.torand</groupId>
     <artifactId>fastersql</artifactId>
-    <version>1.8.0</version>
+    <version>1.9.0</version>
   </dependency>
 </dependencies>
 ```
@@ -171,7 +172,7 @@ Include in a ```build.gradle``` file like this:
 
 ```groovy
 dependencies {
-    implementation 'io.github.torand:fastersql:1.8.0'
+    implementation 'io.github.torand:fastersql:1.9.0'
 }
 ```
 

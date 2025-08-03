@@ -114,7 +114,7 @@ public class StatementTester {
                 assertThat(stmt.params(context).toList()).describedAs("Parameters").containsExactly(expectedParams);
             }
 
-            if (stmt instanceof SelectStatement) {
+            if (stmt instanceof SelectStatement || stmt instanceof SelectSetOpStatement) {
                 if (nonNull(expectedResultSet)) {
                     ResultSet rs = PreparedStatementBuilder
                         .using(conn, dialect)

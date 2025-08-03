@@ -25,6 +25,11 @@ public enum Command {
     SELECT,
 
     /**
+     * The SELECT command using set operations.
+     */
+    SELECT_SET_OP,
+
+    /**
      * The UPDATE command.
      */
     UPDATE,

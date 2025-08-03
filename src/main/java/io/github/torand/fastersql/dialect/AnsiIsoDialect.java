@@ -23,13 +23,14 @@ import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
 import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
+import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
  * Defines the <a href="https://standards.iso.org/iso-iec/9075/-2/ed-6/en/ISO_IEC_9075-2(E)_Foundation.bnf.txt">ANSI/ISO</a> (ISO/IEC 9075) SQL dialect.
  */
 public class AnsiIsoDialect implements Dialect {
-    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN);
+    private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, MODULO_OPERATOR, SELECT_FOR_UPDATE, TRUNCATE_TABLE, FULL_OUTER_JOIN, SET_OPERATION_PARENTHESES);
 
     /**
      * Creates an ANSI/ISO {@link Dialect} implementation.

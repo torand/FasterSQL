@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.setoperation.SetOperator;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -53,6 +55,15 @@ public interface Dialect {
      * @return the <i>row number</i> literal formatted for a specific SQL dialect.
      */
     Optional<String> formatRowNumLiteral();
+
+    /**
+     * Returns the specified set operator formatted for a specific SQL dialect.
+     * @param setOperator the set operator.
+     * @return the set operator for a specific SQL dialect.
+     */
+    default String formatSetOperator(SetOperator setOperator) {
+        return setOperator.sql();
+    }
 
     /**
      * Returns the 'to_number' function formatted for a specific SQL dialect.

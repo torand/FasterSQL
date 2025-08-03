@@ -17,6 +17,7 @@ package io.github.torand.fastersql.statement.access;
 
 import io.github.torand.fastersql.datamodel.CustomerTable;
 import io.github.torand.fastersql.statement.PreparableStatement;
+import io.github.torand.fastersql.statement.SelectSetOpStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
 import org.junit.jupiter.api.Test;
 
@@ -41,6 +42,7 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.e
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ln;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.pow;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.sqrt;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
@@ -48,7 +50,6 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.t
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
-import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.fastersql.projection.Projections.colPos;
 import static io.github.torand.fastersql.projection.Projections.subquery;
 import static io.github.torand.fastersql.relation.Relations.table;
@@ -76,7 +77,7 @@ public class AccessSelectStatementTest extends AccessTest {
                 .join(PURCHASE.ID.on(PURCHASE_ITEM.PURCHASE_ID))
                 .join(PURCHASE_ITEM.PRODUCT_ID.on(PRODUCT.ID))
                 .where(CUSTOMER.MOBILE_NO_VERIFIED.eq(true)
-                    .and(not(CUSTOMER.EMAIL_ADDRESS.isNull()))
+                    .and(CUSTOMER.EMAIL_ADDRESS.isNotNull())
                     .and(CUSTOMER.COUNTRY_CODE.in("NOR", "DEN"))
                     .and(PRODUCT.CATEGORY.eq("FURNITURE").or(PRODUCT.CATEGORY.eq("LAMP")))
                     .and(PURCHASE.CREATED_TIME.gt(since)))
@@ -545,17 +546,17 @@ public class AccessSelectStatementTest extends AccessTest {
     public void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             // UCanAccess library currently has a bug supporting the power operator: https://github.com/spannm/ucanaccess/issues/26
-            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln($(Math.E)).as("LN"), exp($(1)).as("EXP"), sqrt($(4)).as("SQRT") /*, pow($(3), $(2)).as("POW")*/)
+            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln($(Math.E)).as("LN"), exp($(1)).as("EXP"), sqrt($(4)).as("SQRT"), pow(PRODUCT.PRICE, $(2)).as("POW"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, round(PR.PRICE, 0) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR, ln(?) LN, exp(?) EXP, sqrt(?) SQRT \
+                select PR.NAME PR_NAME, round(PR.PRICE, 0) ROUND, abs(?) ABS, ceil(PR.PRICE) CEIL, floor(PR.PRICE) FLOOR, ln(?) LN, exp(?) EXP, sqrt(?) SQRT, (PR.PRICE ^ ?) POW \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
-            .assertParams(-1, Math.E, 1, 4 /*, 3, 2,*/)
+            .assertParams(-1, Math.E, 1, 4, 2)
             .assertRowCount(5)
             .assertRow(2,
                 "ROUND", isDouble(5434.0),
@@ -564,8 +565,8 @@ public class AccessSelectStatementTest extends AccessTest {
                 "FLOOR", isBigDecimal(5433),
                 "LN", isDouble(1.0),
                 "EXP", isDoubleCloseTo(Math.E, 0.000001),
-                "SQRT", isDouble(2.0))
-                //"POW", isDouble(9.0))
+                "SQRT", isDouble(2.0),
+                "POW", isDouble(29522922.25))
             .assertRow(3,
                 "ROUND", isDouble(7122.0))
             .verify(stmt);
@@ -593,6 +594,63 @@ public class AccessSelectStatementTest extends AccessTest {
                 "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.01),
                 "MOD_", isBigDecimalCloseTo(3.50, 0.001),
                 "NEG_", isLong(-13))
+            .verify(stmt);
+    }
+
+    @Test
+    void shouldHandleSetOperations() {
+        SelectSetOpStatement stmt =
+            select(PRODUCT.NAME.as("PR_NAME"))
+                .from(PRODUCT)
+                .where(PRODUCT.NAME.like("Apple").or(PRODUCT.NAME.like("Ekornes")))
+                .orderBy(PRODUCT.NAME.asc())
+                .intersect(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Ekornes"))
+                )
+                .unionAll(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Apple").or(PRODUCT.NAME.like("Electrolux")))
+                        .orderBy(PRODUCT.NAME.asc())
+                )
+                .except(
+                    select(PRODUCT.NAME)
+                        .from(PRODUCT)
+                        .where(PRODUCT.NAME.like("Electrolux"))
+                )
+                .orderBy(alias("PR_NAME").asc());
+
+        statementTester()
+            .assertSql("""
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ? or PR.NAME like ? \
+                order by PR.NAME asc) \
+                intersect \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ?) \
+                union all \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ? or PR.NAME like ? \
+                order by PR.NAME asc) \
+                except \
+                (select PR.NAME PR_NAME \
+                from PRODUCT PR \
+                where PR.NAME like ?) \
+                order by PR_NAME asc"""
+            )
+            .assertParams("%Apple%", "%Ekornes%", "%Ekornes%", "%Apple%", "%Electrolux%", "%Electrolux%")
+            .assertRowCount(2)
+            .assertRow(1,
+                "PR_NAME", is("Apple iPad Pro tablet")
+            )
+            .assertRow(2,
+                "PR_NAME", is("Ekornes Stressless resting chair")
+            )
             .verify(stmt);
     }
 }

@@ -23,11 +23,13 @@ import java.util.Collection;
  * Provides factory methods for predicates.
  */
 public final class Predicates {
-    private Predicates() {}
+    private Predicates() {
+    }
 
     /**
      * Create a 'member of set' predicate taking a collection of scalar values as right operand.
-     * @param left the left operand.
+     *
+     * @param left  the left operand.
      * @param right the right operand (scalar value collection).
      * @return the predicate.
      */
@@ -37,7 +39,8 @@ public final class Predicates {
 
     /**
      * Create a 'member of set' predicate taking a subquery as right operand.
-     * @param left the left operand.
+     *
+     * @param left  the left operand.
      * @param right the right operand (subquery).
      * @return the predicate.
      */
@@ -47,6 +50,7 @@ public final class Predicates {
 
     /**
      * Create an 'existence' (at least one row) predicate taking a subquery as right operand.
+     *
      * @param operand the operand (subquery).
      * @return the predicate.
      */
@@ -56,7 +60,8 @@ public final class Predicates {
 
     /**
      * Creates a pattern matching predicate.
-     * @param left the left operand.
+     *
+     * @param left  the left operand.
      * @param right the right operand (pattern).
      * @return the predicate.
      */
@@ -66,6 +71,7 @@ public final class Predicates {
 
     /**
      * Creates an 'is null' predicate.
+     *
      * @param operand the operand.
      * @return the predicate.
      */
