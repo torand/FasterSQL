@@ -49,20 +49,16 @@
         </developer>
     </developers>
 
-    <!-- Temporarily use UCanAccess snapshot -->
+    <!-- Temporarily enable snapshot to find UCanAccess dep -->
     <repositories>
         <repository>
-            <name>Nexus Releases</name>
-            <id>releases-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/releases</url>
-        </repository>
-        <repository>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <layout>default</layout>
             <snapshots>
-                <enabled />
+                <enabled>true</enabled>
             </snapshots>
-            <name>Nexus Snapshots</name>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
     </repositories>
 
