@@ -731,7 +731,7 @@ public class MySqlSelectStatementTest extends MySqlTest {
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, PR.PRICE + cast(? as decimal(1)) DEC_CAST, cast(? as char(1)) STR_CAST \
+                select PR.NAME PR_NAME, PR.PRICE + cast(? as decimal(1, 0)) DEC_CAST, cast(? as char(1)) STR_CAST \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )

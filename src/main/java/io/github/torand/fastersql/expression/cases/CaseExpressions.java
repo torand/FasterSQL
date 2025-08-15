@@ -17,8 +17,6 @@ package io.github.torand.fastersql.expression.cases;
 
 import io.github.torand.fastersql.expression.Expression;
 
-import static io.github.torand.fastersql.constant.Constants.$;
-
 /**
  * Provides factory methods for CASE expressions.
  */
@@ -32,24 +30,6 @@ public final class CaseExpressions {
      */
     public static SimpleCaseBuilder case_(Expression caseExpression) {
         return new SimpleCaseBuilder(caseExpression);
-    }
-
-    /**
-     * Creates a simple CASE expression.
-     * @param caseValue the constant value CASE expression.
-     * @return the simple CASE builder.
-     */
-    public static SimpleCaseBuilder case_(String caseValue) {
-        return case_($(caseValue));
-    }
-
-    /**
-     * Creates a simple CASE expression.
-     * @param caseValue the constant value CASE expression.
-     * @return the simple CASE builder.
-     */
-    public static SimpleCaseBuilder case_(Number caseValue) {
-        return case_($(caseValue));
     }
 
     /**

@@ -31,7 +31,7 @@ public interface Expression extends Projection {
      * @return the addition expression.
      */
     default Expression plus(Number value) {
-        return ArithmeticExpressions.add(this, $(value));
+        return plus($(value));
     }
 
     /**
@@ -49,7 +49,7 @@ public interface Expression extends Projection {
      * @return the subtraction expression.
      */
     default Expression minus(Number value) {
-        return ArithmeticExpressions.subtract(this, $(value));
+        return minus($(value));
     }
 
     /**
@@ -67,7 +67,7 @@ public interface Expression extends Projection {
      * @return the multiplication expression.
      */
     default Expression times(Number value) {
-        return ArithmeticExpressions.multiply(this, $(value));
+        return times($(value));
     }
 
     /**
@@ -85,7 +85,7 @@ public interface Expression extends Projection {
      * @return the division expression.
      */
     default Expression dividedBy(Number value) {
-        return ArithmeticExpressions.divide(this, $(value));
+        return dividedBy($(value));
     }
 
     /**
@@ -103,7 +103,7 @@ public interface Expression extends Projection {
      * @return the modulo expression.
      */
     default Expression mod(Number value) {
-        return ArithmeticExpressions.mod(this, $(value));
+        return mod($(value));
     }
 
     /**

@@ -81,8 +81,8 @@ public class SimpleCaseBuilder {
      * @return the modified CASE expression.
      */
     public SimpleCaseBuilder else_(String elseConstant) {
-        this.elseExpression = $(requireNonNull(elseConstant, "No else constant specified"));
-        return this;
+        requireNonNull(elseConstant, "No else constant specified");
+        return else_($(elseConstant));
     }
 
     /**
@@ -91,8 +91,8 @@ public class SimpleCaseBuilder {
      * @return the modified CASE expression.
      */
     public SimpleCaseBuilder else_(Number elseConstant) {
-        this.elseExpression = $(requireNonNull(elseConstant, "No else constant specified"));
-        return this;
+        requireNonNull(elseConstant, "No else constant specified");
+        return else_($(elseConstant));
     }
 
     /**

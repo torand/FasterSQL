@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents an inline string constant.
- * The string value is inserted into the SQL expression as is, not via a statement parameter.
+ * The string value is included in the SQL statement directly, not via a statement parameter.
  */
 public class InlineStringConstant implements Constant {
     private final String value;

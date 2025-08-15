@@ -69,7 +69,7 @@ public class DataTypes {
      * @return the data type.
      */
     public static DataType numeric(int precision) {
-        return new DataType(IsoDataType.NUMERIC, precision);
+        return numeric(precision, 0);
     }
 
     /**
@@ -91,22 +91,22 @@ public class DataTypes {
     }
 
     /**
-     * Creates a DECIMALNUMERIC data type.
+     * Creates a DECIMAL data type.
      * @param precision the total number of digits.
      * @return the data type.
      */
     public static DataType decimal(int precision) {
-        return new DataType(IsoDataType.DECIMAL, precision);
+        return decimal(precision, 0);
     }
 
     /**
-     * Creates a NUMERIC data type.
+     * Creates a DECIMAL data type.
      * @param precision the total number of digits.
      * @param scale the number of decimals.
      * @return the data type.
      */
     public static DataType decimal(int precision, int scale) {
-        return new DataType(IsoDataType.NUMERIC, precision, scale);
+        return new DataType(IsoDataType.DECIMAL, precision, scale);
     }
 
     /**
