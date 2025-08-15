@@ -49,12 +49,12 @@
         </developer>
     </developers>
 
-    <!-- Temporarily enable snapshot to find UCanAccess dep -->
+    <!-- Temporarily enable snapshot repo to find UCanAccess dep -->
     <repositories>
         <repository>
-            <id>central</id>
-            <name>Central Repository</name>
-            <url>https://repo.maven.apache.org/maven2</url>
+            <id>central-snapshots</id>
+            <name>Central Repository Snapshots</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
             <layout>default</layout>
             <snapshots>
                 <enabled>true</enabled>
