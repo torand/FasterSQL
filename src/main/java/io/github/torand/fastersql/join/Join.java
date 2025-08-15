@@ -28,8 +28,8 @@ import java.util.stream.Stream;
 import static io.github.torand.javacommons.collection.CollectionHelper.asList;
 import static io.github.torand.javacommons.collection.CollectionHelper.concat;
 import static io.github.torand.javacommons.collection.CollectionHelper.headOf;
-import static io.github.torand.javacommons.collection.CollectionHelper.streamSafely;
 import static io.github.torand.javacommons.contract.Requires.require;
+import static io.github.torand.javacommons.stream.StreamHelper.streamSafely;
 import static java.util.Objects.requireNonNull;
 
 /**

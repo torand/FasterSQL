@@ -15,12 +15,17 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
 import io.github.torand.fastersql.setoperation.SetOperator;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
+
+import static io.github.torand.javacommons.collection.ArrayHelper.nonEmpty;
+import static java.util.stream.Collectors.joining;
 
 /**
  * Defines an SQL dialect as implemented by a specific database vendor.
@@ -126,7 +131,7 @@ public interface Dialect {
      * @return the 'pow' function for a specific SQL dialect.
      */
     default String formatPowerFunction(String base, String exponent) {
-        return "power(" + base + ", " + exponent + ")";
+        return "power(%s, %s)".formatted(base, exponent);
     }
 
     /**
@@ -149,6 +154,31 @@ public interface Dialect {
      * @return the 'current_date' function for a specific SQL dialect.
      */
     String formatCurrentDateFunction();
+
+    /**
+     * Returns the 'cast' function formatted for a specific SQL dialect.
+     * @param operand  the expression to cast.
+     * @param targetType the data type to cast to.
+     * @return the 'cast' function formatted for a specific SQL dialect.
+     */
+    default String formatCastFunction(String operand, DataType targetType) {
+        String dataType = getDataType(targetType).orElseThrow(
+            () -> new UnsupportedOperationException("%s does not support the %s data type".formatted(getProductName(), targetType.getIsoDataType().name())));
+
+        if (nonEmpty(targetType.getArgs())) {
+            String args = IntStream.of(targetType.getArgs()).boxed().map(Object::toString).collect(joining(", "));
+            dataType += "(" + args + ")";
+        }
+
+        return "cast(%s as %s)".formatted(operand, dataType);
+    }
+
+    /**
+     * Returns the data type for a specific SQL dialect.
+     * @param dataType the ISO data type
+     * @return the data type for a specific SQL dialect.
+     */
+    Optional<String> getDataType(DataType dataType);
 
     /**
      * Returns the string concatenation operator for a specific SQL Dialect.

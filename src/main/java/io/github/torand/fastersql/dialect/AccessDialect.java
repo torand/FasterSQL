@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import static io.github.torand.fastersql.dialect.Capability.POWER_OPERATOR;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
+import static java.util.Objects.isNull;
 
 /**
  * Defines the <a href="https://support.microsoft.com/en-us/office/Queries-93fb69b7-cfc1-4f3e-ab56-b0a01523bb50#ID0EAABAAA=SQL_syntax&id0ebbd=sql_syntax">Microsoft Access</a> SQL dialect.
@@ -122,6 +125,57 @@ public class AccessDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public String formatCastFunction(String operand, DataType targetType) {
+        // https://support.microsoft.com/en-us/office/type-conversion-functions-8ebb0e94-2d43-4975-bb13-87ac8d1a2202
+        String function = switch(targetType.getIsoDataType()) {
+            case BOOLEAN -> "cbool";
+            case CHAR -> "cstr";
+            case VARCHAR -> "cstr";
+            case BIT -> null;
+            case BIT_VARYING -> null;
+            case NUMERIC -> "cdec";
+            case DECIMAL -> "cdec";
+            case INTEGER -> "clng";
+            case SMALLINT -> "cint";
+            case FLOAT -> "csng";
+            case REAL -> "cdbl";
+            case DOUBLE_PRECISION -> "cdbl";
+            case DATE -> "cdate";
+            case TIME -> null;
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> null;
+            case BINARY_LARGE_OBJECT -> null;
+        };
+
+        if (isNull(function)) {
+            throw new UnsupportedOperationException("Access does not support the %s data type".formatted(targetType.getIsoDataType().name()));
+        }
+
+        return "%s(%s)".formatted(function, operand);
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://learn.microsoft.com/en-us/office/client-developer/access/desktop-database-reference/equivalent-ansi-sql-data-types
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "bit";
+            case CHAR -> "char";
+            case VARCHAR -> "text";
+            case BIT, BIT_VARYING -> "binary";
+            case NUMERIC -> null;
+            case DECIMAL -> "numeric";
+            case INTEGER -> "long";
+            case SMALLINT -> "smallint";
+            case FLOAT, DOUBLE_PRECISION -> "float";
+            case REAL -> "real";
+            case DATE, TIME -> "datetime";
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> null;
+            case BINARY_LARGE_OBJECT -> null;
+        });
     }
 
     @Override

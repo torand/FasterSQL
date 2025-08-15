@@ -13,36 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.function.singlerow;
+package io.github.torand.fastersql.function.singlerow.cast;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.function.singlerow.SingleRowFunction;
 import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.sql.Context;
-import io.github.torand.fastersql.sql.Sql;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
-import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static io.github.torand.javacommons.lang.StringHelper.nonBlank;
-import static io.github.torand.javacommons.stream.StreamHelper.streamSafely;
-import static java.util.stream.Collectors.joining;
 
 /**
- * Implements the concatenation string function.
+ * Implements the cast function.
  */
-public class Concat implements SingleRowFunction {
-    private final List<Expression> expressions;
+public class Cast implements SingleRowFunction {
+    private final Expression operand;
+    private final DataType targetType;
     private final ColumnAlias alias;
 
-    Concat(List<Expression> expressions, String alias) {
-        this.expressions = new ArrayList<>(requireNonEmpty(expressions, "No expression specified"));
+    Cast(Expression operand, DataType targetType, String alias) {
+        this.operand = operand;
+        this.targetType = targetType;
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
@@ -50,28 +46,23 @@ public class Concat implements SingleRowFunction {
 
     @Override
     public String sql(Context context) {
-        if (context.getDialect().supports(CONCAT_OPERATOR)) {
-            String operator = context.getDialect().getConcatOperator().orElseThrow();
-            return streamSafely(expressions).map(e -> e.sql(context)).collect(joining(" " + operator + " "));
-        }
-
-        List<String> expressionsAsSql = streamSafely(expressions).map(e -> e.sql(context)).toList();
-        return context.getDialect().formatConcatFunction(expressionsAsSql);
+        String operandSql = operand.sql(context);
+        return context.getDialect().formatCastFunction(operandSql, targetType);
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return streamSafely(expressions).flatMap(e -> e.params(context));
+        return operand.params(context);
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return streamSafely(expressions).flatMap(Sql::columnRefs);
+        return operand.columnRefs();
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return streamSafely(expressions).flatMap(Sql::aliasRefs);
+        return operand.aliasRefs();
     }
 
     // Projection
@@ -79,7 +70,7 @@ public class Concat implements SingleRowFunction {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Concat(expressions, alias);
+        return new Cast(operand, targetType, alias);
     }
 
     @Override
@@ -88,6 +79,6 @@ public class Concat implements SingleRowFunction {
     }
 
     private ColumnAlias defaultAlias() {
-        return ColumnAlias.generate("CONCAT_");
+        return ColumnAlias.generate("CAST_");
     }
 }

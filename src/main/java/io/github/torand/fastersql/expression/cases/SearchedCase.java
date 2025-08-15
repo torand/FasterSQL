@@ -13,36 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.torand.fastersql.function.singlerow;
+package io.github.torand.fastersql.expression.cases;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.sql.Context;
-import io.github.torand.fastersql.sql.Sql;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
 import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static io.github.torand.javacommons.lang.StringHelper.nonBlank;
 import static io.github.torand.javacommons.stream.StreamHelper.streamSafely;
-import static java.util.stream.Collectors.joining;
+import static java.util.Objects.nonNull;
 
 /**
- * Implements the concatenation string function.
+ * Implements a searched CASE expression.
  */
-public class Concat implements SingleRowFunction {
-    private final List<Expression> expressions;
+public class SearchedCase implements Expression {
+    private final List<SearchedWhenThen> whenThenExpressions;
+    private final Expression elseExpression;
     private final ColumnAlias alias;
 
-    Concat(List<Expression> expressions, String alias) {
-        this.expressions = new ArrayList<>(requireNonEmpty(expressions, "No expression specified"));
+    SearchedCase(List<SearchedWhenThen> whenThenExpressions, Expression elseExpression, String alias) {
+        this.whenThenExpressions = requireNonEmpty(whenThenExpressions, "No when-then expressions specified");
+        this.elseExpression = elseExpression;
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
 
@@ -50,28 +49,38 @@ public class Concat implements SingleRowFunction {
 
     @Override
     public String sql(Context context) {
-        if (context.getDialect().supports(CONCAT_OPERATOR)) {
-            String operator = context.getDialect().getConcatOperator().orElseThrow();
-            return streamSafely(expressions).map(e -> e.sql(context)).collect(joining(" " + operator + " "));
+        StringBuilder sql = new StringBuilder();
+        sql.append("case ");
+        streamSafely(whenThenExpressions).forEach(wt -> sql.append(wt.sql(context)).append(" "));
+        if (nonNull(elseExpression)) {
+            sql.append("else ").append(elseExpression.sql(context)).append(" ");
         }
-
-        List<String> expressionsAsSql = streamSafely(expressions).map(e -> e.sql(context)).toList();
-        return context.getDialect().formatConcatFunction(expressionsAsSql);
+        sql.append("end");
+        return sql.toString();
     }
 
     @Override
     public Stream<Object> params(Context context) {
-        return streamSafely(expressions).flatMap(e -> e.params(context));
+        return Stream.concat(
+            streamSafely(whenThenExpressions).flatMap(wh -> wh.params(context)),
+            Stream.ofNullable(elseExpression).flatMap(e -> e.params(context))
+        );
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return streamSafely(expressions).flatMap(Sql::columnRefs);
+        return Stream.concat(
+            streamSafely(whenThenExpressions).flatMap(wh -> wh.columnRefs()),
+            Stream.ofNullable(elseExpression).flatMap(e -> e.columnRefs())
+        );
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return streamSafely(expressions).flatMap(Sql::aliasRefs);
+        return Stream.concat(
+            streamSafely(whenThenExpressions).flatMap(wh -> wh.aliasRefs()),
+            Stream.ofNullable(elseExpression).flatMap(e -> e.aliasRefs())
+        );
     }
 
     // Projection
@@ -79,7 +88,7 @@ public class Concat implements SingleRowFunction {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new Concat(expressions, alias);
+        return new SearchedCase(whenThenExpressions, elseExpression, alias);
     }
 
     @Override
@@ -88,6 +97,6 @@ public class Concat implements SingleRowFunction {
     }
 
     private ColumnAlias defaultAlias() {
-        return ColumnAlias.generate("CONCAT_");
+        return ColumnAlias.generate("CASE_");
     }
 }

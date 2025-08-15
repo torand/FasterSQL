@@ -20,7 +20,7 @@ Java library for a faster and more efficient integration with relational databas
 
 ## Overview
 
-Writing SQL statements as Java strings and executing them with the JDBC API is tedious, time-consuming, repetitive and
+Writing SQL statements dataType Java strings and executing them with the JDBC API is tedious, time-consuming, repetitive and
 thus error-prone.
 
 FasterSQL lets you write SQL using plain Java, by emulating the syntax and structure of SQL DQL and DML statements
@@ -30,7 +30,7 @@ from the SQL language. A Java DSL (Domain Specific Language) for database operat
 ### Benefits
 
 * Enables code completion of standard SQL clauses and your database model in the IDE.
-* SQL authored as Java code enables SQL error detection at compile time.
+* SQL authored dataType Java code enables SQL error detection at compile time.
 * Semantic validation at run time produces more readable error messages than the JDBC wrapped messages from the RDBMS.
 * Write SQL once, run against (almost) any database engine using the SQL dialect awareness feature. The DSL emulates
   the ANSI/ISO SQL standard ([ISO/IEC 9075](https://www.iso.org/standard/76583.html)), while a statement builder translates into the SQL dialect of the underlying RDBMS product.
@@ -116,25 +116,26 @@ FasterSQL supports the most widely used SQL data query and manipulation language
 
 * Statements: SELECT, SELECT FOR UPDATE, INSERT (both single row and batch), UPDATE, DELETE, TRUNCATE
 * Joins: inner, left outer, right outer, full outer
-* Scalar string functions: upper, lower, to_number, to_char, substring, concat, length
+* Scalar string functions: upper, lower, substring, concat, length
 * Scalar math functions: round, abs, ceil, floor, ln, exp, sqrt, power
+* Scalar conversion functions: to_number, to_char, cast
 * Aggregate functions: count, max, min, sum, avg
 * System functions: current_timestamp, current_date, current_time
 * Comparison operators: eq (=), ge (>=), gt (>), le (<=), lt (<), ne (<>), between
 * Arithmetic operators: add (+), subtract (-), multiply (*), divide (/), modulo (%), negate (-)
 * Logical operators: and, or, not
-* Other operators: in, is null, like, exists
+* Other operators: in, is null, like, exists, case-when-then
 * Expressions: Any nested expression using functions, operators and constant values
 * Ordering: asc, desc, nulls first/last
 * Grouping: group by, having
-* Subqueries: Supported as projections (SELECT clause), relations (FROM clause) and as right operand of predicates (WHERE clause)
+* Subqueries: Supported dataType projections (SELECT clause), relations (FROM clause) and dataType right operand of predicates (WHERE clause)
 * Set operations: union, union all, intersect, intersect all, except, except all
 
 ### Supported Statement Parameters
 
 Statement parameter values are registered with a PreparedStatement using the setObject method, by default. This covers all the basic
 Java primitive types like Integer, Long, BigInteger, Float, Double, BigDecimal, String and Boolean. More complex standard Java types
-are transformed into their Java SQL counterparts before registration, as specified by the table below:
+are transformed into their Java SQL counterparts before registration, dataType specified by the table below:
 
 | Java Standard Type | Java SQL Type | Parameter method |
 |--------------------|---------------|------------------|
@@ -181,7 +182,7 @@ dependencies {
 1. Define a database model using the [Table](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Table.java) and [Column](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/model/Column.java) classes
 2. Write an SQL statement using the DSL factories. E.g. start with the [Statements.select](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/Statements.java#L39) factory method.
 3. Transform to a JDBC PreparedStatement with parameters set automatically using the [PreparedStatementBuilder](https://github.com/torand/FasterSQL/blob/main/src/main/java/io/github/torand/fastersql/statement/PreparedStatementBuilder.java) class
-4. Execute the PreparedStatement as normal.
+4. Execute the PreparedStatement dataType normal.
 
 ## Logging
 

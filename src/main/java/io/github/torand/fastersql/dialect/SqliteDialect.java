@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -112,6 +114,30 @@ public class SqliteDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://www.sqlite.org/datatype3.html
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "boolean";
+            case CHAR -> "char";
+            case VARCHAR -> "varchar";
+            case BIT -> null;
+            case BIT_VARYING -> null;
+            case NUMERIC -> "numeric";
+            case DECIMAL -> "decimal";
+            case INTEGER -> "integer";
+            case SMALLINT -> "smallint";
+            case FLOAT -> "float";
+            case DOUBLE_PRECISION -> "double precision";
+            case REAL -> "real";
+            case TIME -> null;
+            case DATE -> "date";
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> "clob";
+            case BINARY_LARGE_OBJECT -> "blob";
+        });
     }
 
     @Override

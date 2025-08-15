@@ -30,7 +30,7 @@ public interface Expression extends Projection {
      * @param value the constant value.
      * @return the addition expression.
      */
-    default Expression plus(Object value) {
+    default Expression plus(Number value) {
         return ArithmeticExpressions.add(this, $(value));
     }
 
@@ -48,7 +48,7 @@ public interface Expression extends Projection {
      * @param value the constant value.
      * @return the subtraction expression.
      */
-    default Expression minus(Object value) {
+    default Expression minus(Number value) {
         return ArithmeticExpressions.subtract(this, $(value));
     }
 
@@ -66,7 +66,7 @@ public interface Expression extends Projection {
      * @param value the constant value.
      * @return the multiplication expression.
      */
-    default Expression times(Object value) {
+    default Expression times(Number value) {
         return ArithmeticExpressions.multiply(this, $(value));
     }
 
@@ -84,7 +84,7 @@ public interface Expression extends Projection {
      * @param value the constant value.
      * @return the division expression.
      */
-    default Expression dividedBy(Object value) {
+    default Expression dividedBy(Number value) {
         return ArithmeticExpressions.divide(this, $(value));
     }
 
@@ -102,7 +102,7 @@ public interface Expression extends Projection {
      * @param value the constant value.
      * @return the modulo expression.
      */
-    default Expression mod(Object value) {
+    default Expression mod(Number value) {
         return ArithmeticExpressions.mod(this, $(value));
     }
 

@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -115,6 +117,28 @@ public class H2Dialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://www.h2database.com/html/datatypes.html
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "boolean";
+            case CHAR -> "char";
+            case VARCHAR -> "varchar";
+            case BIT, BIT_VARYING -> null;
+            case NUMERIC -> "numeric";
+            case DECIMAL -> "decimal";
+            case INTEGER -> "integer";
+            case SMALLINT -> "smallint";
+            case FLOAT, DOUBLE_PRECISION -> "float";
+            case REAL -> "real";
+            case DATE -> "date";
+            case TIME -> "time";
+            case INTERVAL -> "interval";
+            case CHARACTER_LARGE_OBJECT -> "clob";
+            case BINARY_LARGE_OBJECT -> "blob";
+        });
     }
 
     @Override

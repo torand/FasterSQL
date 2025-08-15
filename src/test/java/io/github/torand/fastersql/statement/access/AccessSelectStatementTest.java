@@ -27,16 +27,19 @@ import java.util.Optional;
 import static io.github.torand.fastersql.alias.Aliases.alias;
 import static io.github.torand.fastersql.alias.Aliases.colRef;
 import static io.github.torand.fastersql.constant.Constants.$;
+import static io.github.torand.fastersql.constant.Constants.$i;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
 import static io.github.torand.fastersql.expression.arithmetic.ArithmeticExpressions.neg;
+import static io.github.torand.fastersql.expression.cases.CaseExpressions.case_;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.cast;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.exp;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
@@ -48,6 +51,8 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.s
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toNumber;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
+import static io.github.torand.fastersql.function.singlerow.cast.DataTypes.decimal;
+import static io.github.torand.fastersql.function.singlerow.cast.DataTypes.varchar;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentTimestamp;
 import static io.github.torand.fastersql.projection.Projections.colPos;
@@ -63,6 +68,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isLong;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.startsWith;
 
 public class AccessSelectStatementTest extends AccessTest {
 
@@ -546,7 +552,7 @@ public class AccessSelectStatementTest extends AccessTest {
     public void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             // UCanAccess library currently has a bug supporting the power operator: https://github.com/spannm/ucanaccess/issues/26
-            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs($(-1)).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln($(Math.E)).as("LN"), exp($(1)).as("EXP"), sqrt($(4)).as("SQRT"), pow(PRODUCT.PRICE, $(2)).as("POW"))
+            select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs(-1).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln(Math.E).as("LN"), exp(1).as("EXP"), sqrt(4).as("SQRT"), pow(PRODUCT.PRICE, 2).as("POW"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
@@ -575,17 +581,17 @@ public class AccessSelectStatementTest extends AccessTest {
     @Test
     public void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
-            select(PRODUCT.NAME, PRODUCT.PRICE.plus(1).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
+            select(PRODUCT.NAME, PRODUCT.PRICE.plus($i(1)).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
                 .orderBy(PRODUCT.NAME.asc());
 
         statementTester()
             .assertSql("""
-                select PR.NAME PR_NAME, PR.PRICE + ? PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, mod(PR.PRICE, ?) MOD_, -(? + ?) NEG_ \
+                select PR.NAME PR_NAME, PR.PRICE + 1 PLUS_, PR.PRICE - ? MINUS_, PR.PRICE * ? TIMES_, PR.PRICE / ? DIVIDE_, mod(PR.PRICE, ?) MOD_, -(? + ?) NEG_ \
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
-            .assertParams(1, 2, 3, 4, 5, 6, 7)
+            .assertParams(2, 3, 4, 5, 6, 7)
             .assertRowCount(5)
             .assertRow(2,
                 "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
@@ -650,6 +656,92 @@ public class AccessSelectStatementTest extends AccessTest {
             )
             .assertRow(2,
                 "PR_NAME", is("Ekornes Stressless resting chair")
+            )
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleSimpleCaseExpressions() {
+        PreparableStatement stmt =
+            select(
+                case_(CUSTOMER.LAST_NAME)
+                    .when($i("Nordmann")).then($i("Norwegian"))
+                    .when($i("Hansen")).then($i("Dane"))
+                    .when($i("Svensson")).then($i("Swede"))
+                    .else_($i("Not Scandinavian"))
+                    .end().as("Nationality"))
+                .from(CUSTOMER)
+                .orderBy(colPos(1).asc());
+
+        statementTester()
+            .assertSql("""
+                select case C.LAST_NAME \
+                when 'Nordmann' then 'Norwegian' \
+                when 'Hansen' then 'Dane' \
+                when 'Svensson' then 'Swede' \
+                else 'Not Scandinavian' \
+                end Nationality \
+                from CUSTOMER C \
+                order by 1 asc"""
+            )
+            .assertNoParams()
+            .assertRowCount(3)
+            .assertRow(1, "NATIONALITY", startsWith("Dane"))
+            .assertRow(2, "NATIONALITY", startsWith("Norwegian"))
+            .assertRow(3, "NATIONALITY", startsWith("Swede"))
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleSearchedCaseExpressions() {
+        PreparableStatement stmt =
+            select(
+                case_()
+                    .when(CUSTOMER.LAST_NAME.eq("Nordmann")).then("Norwegian")
+                    .when(CUSTOMER.LAST_NAME.eq("Hansen")).then("Dane")
+                    .when(CUSTOMER.LAST_NAME.eq("Svensson")).then("Swede")
+                    .else_($i("Not Scandinavian"))
+                    .end().as("Nationality"))
+                .from(CUSTOMER)
+                .orderBy(colPos(1).asc());
+
+        statementTester()
+            .assertSql("""
+                select case \
+                when C.LAST_NAME = ? then ? \
+                when C.LAST_NAME = ? then ? \
+                when C.LAST_NAME = ? then ? \
+                else 'Not Scandinavian' \
+                end Nationality \
+                from CUSTOMER C \
+                order by 1 asc"""
+            )
+            .assertParams("Nordmann", "Norwegian", "Hansen", "Dane", "Svensson", "Swede")
+            .assertRowCount(3)
+            .assertRow(1, "NATIONALITY", is("Dane"))
+            .assertRow(2, "NATIONALITY", is("Norwegian"))
+            .assertRow(3, "NATIONALITY", is("Swede"))
+            .verify(stmt);
+    }
+
+    @Test
+    public void shouldHandleCastFunction() {
+        PreparableStatement stmt =
+            select(PRODUCT.NAME, PRODUCT.PRICE.plus(cast(1.0).as(decimal())).as("DEC_CAST"), cast($i("2")).as(varchar()).as("STR_CAST"))
+                .from(PRODUCT)
+                .orderBy(PRODUCT.NAME.asc());
+
+        statementTester()
+            .assertSql("""
+                select PR.NAME PR_NAME, PR.PRICE + cdec(?) DEC_CAST, cstr('2') STR_CAST \
+                from PRODUCT PR \
+                order by PR.NAME asc"""
+            )
+            .assertParams(1.0)
+            .assertRowCount(5)
+            .assertRow(2,
+                "DEC_CAST", isDoubleCloseTo(5434.5, 0.01),
+                "STR_CAST", is("2")
             )
             .verify(stmt);
     }

@@ -39,6 +39,32 @@ public final class Constants {
     }
 
     /**
+     * Creates a string inline constant.
+     * @param value the constant value.
+     * @return the constant.
+     */
+    public static Constant $i(String value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+
+        return new InlineStringConstant(value, null);
+    }
+
+    /**
+     * Creates a numeric inline constant.
+     * @param value the constant value.
+     * @return the constant.
+     */
+    public static Constant $i(Number value) {
+        if (isNull(value)) {
+            return nullValue();
+        }
+
+        return new InlineNumberConstant(value, null);
+    }
+
+    /**
      * Creates a scalar value constant.
      * @param value the constant value.
      * @return the constant.

@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -102,7 +104,7 @@ public class HsqldbDialect implements Dialect {
 
     @Override
     public String formatPowerFunction(String base, String exponent) {
-        return "power(cast(%s as decimal), cast(%s as decimal))".formatted(base, exponent);
+        return "power(%s, %s)".formatted(base, exponent);
     }
 
     @Override
@@ -118,6 +120,29 @@ public class HsqldbDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://hsqldb.org/doc/guide/sqlgeneral-chapt.html#sgc_data_type_guide
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "boolean";
+            case CHAR -> "char";
+            case VARCHAR -> "varchar";
+            case BIT -> "bit";
+            case BIT_VARYING -> "bit varying";
+            case NUMERIC -> "numeric";
+            case DECIMAL -> "decimal";
+            case INTEGER -> "integer";
+            case SMALLINT -> "smallint";
+            case FLOAT, DOUBLE_PRECISION -> "float";
+            case REAL -> null;
+            case DATE -> "date";
+            case TIME -> "time";
+            case INTERVAL -> "interval";
+            case CHARACTER_LARGE_OBJECT -> "clob";
+            case BINARY_LARGE_OBJECT -> "blob";
+        });
     }
 
     @Override

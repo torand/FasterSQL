@@ -63,6 +63,11 @@ public class StatementTester {
         return this;
     }
 
+    public StatementTester assertNoParams() {
+        this.expectedParams = new Object[]{};
+        return this;
+    }
+
     public StatementTester assertAffectedRowCount(int expectedAffectedRowCount) {
         this.expectedAffectedRowCount = expectedAffectedRowCount;
         return this;

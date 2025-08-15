@@ -16,10 +16,12 @@
 package io.github.torand.fastersql.function.singlerow;
 
 import io.github.torand.fastersql.expression.Expression;
+import io.github.torand.fastersql.function.singlerow.cast.CastBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.torand.fastersql.constant.Constants.$;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 
@@ -30,7 +32,7 @@ public final class SingleRowFunctions {
     private SingleRowFunctions() {}
 
     /**
-     * Creates the upper case function for a string expression.
+     * Creates the UPPER function for a string expression.
      * @param expression the string expression.
      * @return the string function.
      */
@@ -39,7 +41,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the lower case function for a string expression.
+     * Creates the UPPER function for a string constant value.
+     * @param constantValue the string value.
+     * @return the string function.
+     */
+    public static Upper upper(String constantValue) {
+        return upper($(constantValue));
+    }
+
+    /**
+     * Creates the LOWER function for a string expression.
      * @param expression the string expression.
      * @return the string function.
      */
@@ -48,7 +59,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the string to decimal number conversion function for an expression.
+     * Creates the LOWER function for a string constant value.
+     * @param constantValue the string value.
+     * @return the string function.
+     */
+    public static Lower lower(String constantValue) {
+        return lower($(constantValue));
+    }
+
+    /**
+     * Creates the TO_NUMBER function converting from a string expression to decimal number.
      * @param expression the string expression.
      * @param precision the total number of digits (including decimals).
      * @param scale the number of decimals.
@@ -59,7 +79,18 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the string to integer number conversion function for an expression.
+     * Creates the TO_NUMBER function converting from a string constant value to decimal number.
+     * @param constantValue the string value.
+     * @param precision the total number of digits (including decimals).
+     * @param scale the number of decimals.
+     * @return the conversion function.
+     */
+    public static ToNumber toNumber(String constantValue, int precision, int scale) {
+        return toNumber($(constantValue), precision, scale);
+    }
+
+    /**
+     * Creates the TO_NUMBER function converting from a string expression to integer.
      * @param expression the string expression.
      * @param precision the total number of digits.
      * @return the conversion function.
@@ -69,7 +100,17 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the substring function for a string expression.
+     * Creates the TO_NUMBER function converting from a string constant value to integer.
+     * @param constantValue the string value.
+     * @param precision the total number of digits.
+     * @return the conversion function.
+     */
+    public static ToNumber toNumber(String constantValue, int precision) {
+        return toNumber($(constantValue), precision);
+    }
+
+    /**
+     * Creates the SUBSTRING function for a string expression.
      * @param expression the string expression.
      * @param startPos the substring start position, 1-based.
      * @param length the substring length.
@@ -80,7 +121,18 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the timestamp/number to string conversion function for an expression.
+     * Creates the SUBSTRING function for a string constant value.
+     * @param constantValue the string value.
+     * @param startPos the substring start position, 1-based.
+     * @param length the substring length.
+     * @return the string function.
+     */
+    public static Substring substring(String constantValue, int startPos, int length) {
+        return substring($(constantValue), startPos, length);
+    }
+
+    /**
+     * Creates the TO_CHAR function converting from a timestamp/number expression to string.
      * @param expression the timestamp or number expression.
      * @param format the format specifier.
      * @return the conversion function.
@@ -90,7 +142,7 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the concatenation function for string expressions.
+     * Creates the CONCAT function for two or more string expressions.
      * @param expression1 the first string expression.
      * @param expression2 the second string expression.
      * @param otherExpressions the additional string expressions.
@@ -108,7 +160,7 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the length function for a string expression.
+     * Creates the LENGTH function for a string expression.
      * @param expression the string expression.
      * @return the string function.
      */
@@ -117,7 +169,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the round function for a numeric expression.
+     * Creates the LENGTH function for a string constant value.
+     * @param constantValue the string value.
+     * @return the string function.
+     */
+    public static Length length(String constantValue) {
+        return length($(constantValue));
+    }
+
+    /**
+     * Creates the ROUND function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -126,7 +187,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the absolute value function for a numeric expression.
+     * Creates the ROUND function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Round round(Number constantValue) {
+        return round($(constantValue));
+    }
+
+    /**
+     * Creates the ABS function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -135,7 +205,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the ceiling function for a numeric expression.
+     * Creates the ABS function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Abs abs(Number constantValue) {
+        return abs($(constantValue));
+    }
+
+    /**
+     * Creates the CEIL function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -144,7 +223,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the floor function for a numeric expression.
+     * Creates the CEIL function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Ceil ceil(Number constantValue) {
+        return ceil($(constantValue));
+    }
+
+    /**
+     * Creates the FLOOR function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -153,7 +241,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the natural logarithm function for a numeric expression.
+     * Creates the FLOOR function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Floor floor(Number constantValue) {
+        return floor($(constantValue));
+    }
+
+    /**
+     * Creates the LN (natural logarithm) function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -162,7 +259,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the natural exponential function for a numeric expression.
+     * Creates the LN (natural logarithm) function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Ln ln(Number constantValue) {
+        return ln($(constantValue));
+    }
+
+    /**
+     * Creates the EXP (natural exponential) function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -171,7 +277,16 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the square root function for a numeric expression.
+     * Creates the EXP (natural exponential) function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Exp exp(Number constantValue) {
+        return exp($(constantValue));
+    }
+
+    /**
+     * Creates the SQRT (square root) function for a numeric expression.
      * @param expression the numeric expression.
      * @return the numeric function.
      */
@@ -180,12 +295,58 @@ public final class SingleRowFunctions {
     }
 
     /**
-     * Creates the power function for numeric expressions.
+     * Creates the SQRT (square root) function for a numeric constant value.
+     * @param constantValue the numeric value.
+     * @return the numeric function.
+     */
+    public static Sqrt sqrt(Number constantValue) {
+        return sqrt($(constantValue));
+    }
+
+    /**
+     * Creates the POW (exponentiation) function for a numeric expression.
      * @param base the numeric base expression.
      * @param exponent the numeric exponent expression.
      * @return the numeric function.
      */
     public static Power pow(Expression base, Expression exponent) {
         return new Power(base, exponent, null);
+    }
+
+    /**
+     * Creates the POW (exponentiation) function for a numeric expression with constant value exponent.
+     * @param base the numeric base expression.
+     * @param exponent the numeric exponent value.
+     * @return the numeric function.
+     */
+    public static Power pow(Expression base, Number exponent) {
+        return pow(base, $(exponent));
+    }
+
+    /**
+     * Creates the CAST function for an expression.
+     * @param expression the expression.
+     * @return the CAST function builder.
+     */
+    public static CastBuilder cast(Expression expression) {
+        return new CastBuilder(expression);
+    }
+
+    /**
+     * Creates the CAST function for a constant value.
+     * @param value the constant value.
+     * @return the CAST function builder.
+     */
+    public static CastBuilder cast(String value) {
+        return cast($(value));
+    }
+
+    /**
+     * Creates the CAST function for a constant value.
+     * @param value the constant value.
+     * @return the CAST function builder.
+     */
+    public static CastBuilder cast(Number value) {
+        return cast($(value));
     }
 }

@@ -15,6 +15,7 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
 import io.github.torand.fastersql.setoperation.SetOperator;
 
 import java.util.EnumSet;
@@ -139,6 +140,24 @@ public class OracleDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/Data-Types.html
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> null;
+            case CHAR -> "char";
+            case VARCHAR -> "varchar2";
+            case BIT -> null;
+            case BIT_VARYING -> null;
+            case NUMERIC, DECIMAL, INTEGER, SMALLINT -> "number";
+            case FLOAT, DOUBLE_PRECISION, REAL -> "float";
+            case DATE, TIME -> "date";
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> "clob";
+            case BINARY_LARGE_OBJECT -> "blob";
+        });
     }
 
     @Override

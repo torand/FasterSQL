@@ -2,15 +2,15 @@
 
 CREATE TABLE customer (
     id CHAR(36) NOT NULL PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50) NOT NULL,
-    street_address VARCHAR(30),
-    zip_code VARCHAR(10),
-    city VARCHAR(30),
+    first_name TEXT,
+    last_name TEXT NOT NULL,
+    street_address TEXT,
+    zip_code TEXT,
+    city TEXT,
     country_code CHAR(3),
-    email_address VARCHAR(50) NOT NULL,
-    mobile_no VARCHAR(15),
-    mobile_no_verified DECIMAL(1),
+    email_address TEXT NOT NULL,
+    mobile_no TEXT,
+    mobile_no_verified NUMERIC(1),
     created_time DATETIME,
     last_login_time DATETIME
 );
@@ -26,11 +26,11 @@ VALUES('ef17ec93-88a4-40dd-8a91-41e11d54d896', 'Björn', 'Svensson', 'Drottningg
 
 CREATE TABLE product (
     id CHAR(36) NOT NULL PRIMARY KEY,
-    name VARCHAR(60) NOT NULL,
-    description VARCHAR(256),
-    category VARCHAR(30) NOT NULL,
-    price DECIMAL(9,2) NOT NULL,
-    stock_count DECIMAL(5) NOT NULL
+    name TEXT NOT NULL,
+    description TEXT,
+    category TEXT NOT NULL,
+    price NUMERIC(9,2) NOT NULL,
+    stock_count NUMERIC(5) NOT NULL
 );
 
 INSERT INTO product
@@ -51,10 +51,10 @@ VALUES ('7a4b3e96-afee-4284-8ccd-f7461bcd602b', 'Samsung Galaxy S25 Ultra mobile
 CREATE TABLE purchase (
     id CHAR(36) NOT NULL PRIMARY KEY,
     customer_id CHAR(36) NOT NULL,
-    status VARCHAR(30) NOT NULL,
+    status TEXT NOT NULL,
     created_time DATETIME NOT NULL,
     shipped_time DATETIME,
-    notes VARCHAR(100),
+    notes TEXT,
     FOREIGN KEY (customer_id) REFERENCES customer(id)
 );
 
@@ -68,7 +68,7 @@ CREATE TABLE purchase_item (
     id CHAR(36) NOT NULL PRIMARY KEY,
     purchase_id CHAR(36) NOT NULL,
     product_id CHAR(36) NOT NULL,
-    quantity DECIMAL(5) NOT NULL,
+    quantity NUMERIC(5) NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES purchase(id),
     FOREIGN KEY (product_id) REFERENCES product(id)
 );

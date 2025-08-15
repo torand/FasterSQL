@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Supporting the 'union', 'intersect', and 'except' set operations.
 - Convenience methods for negated predicates: notBetween, notIn, notLike, isNotNull
+- Supporting 'case-when-then' expressions.
+- Supporting the 'cast' function.
+- Supporting inline string and numeric constants.
 
 ## [1.8.0] - 2025-07-30
 
@@ -65,9 +68,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Supporting multiple subqueries in FROM clause.
-- Supporting subqueries as projections.
+- Supporting subqueries dataType projections.
 - Supporting the HAVING clause.
-- IS NULL operator now supports any expression as operand.
+- IS NULL operator now supports any expression dataType operand.
 - ORDER BY now supports expressions.
 
 ## [1.3.0] - 2025-02-21
@@ -77,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Supporting the 'current_date' and 'current_time' system functions.
 - Supporting the 'round', 'abs', 'ceil' and 'floor' scalar functions
 - Validates that column aliases in ORDER BY are specified in the SELECT clause.
-- ORDER BY now supports column position as order expression.
+- ORDER BY now supports column position dataType order expression.
 - ORDER BY now supports the 'nulls first' and 'nulls last' clauses.
 - Supporting the modulo arithmetic operator.
 
@@ -88,7 +91,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Supporting the 'to_char', 'concat' and 'length' scalar functions.
-- INSERT and UPDATE now support any expression as column values.
+- INSERT and UPDATE now support any expression dataType column values.
 
 ### Fixed
 - Reversed limit - offset clause ordering for H2 and MySQL dialects.

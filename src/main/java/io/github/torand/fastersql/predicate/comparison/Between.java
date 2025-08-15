@@ -25,6 +25,7 @@ import io.github.torand.fastersql.sql.Context;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.sql.Clause.RESTRICTION;
+import static io.github.torand.javacommons.stream.StreamHelper.concatStreams;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -52,17 +53,17 @@ public class Between implements Predicate {
     @Override
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
-        return Stream.concat(Stream.concat(left.params(localContext), lowerBound.params(localContext)), upperBound.params(localContext));
+        return concatStreams(left.params(localContext), lowerBound.params(localContext), upperBound.params(localContext));
     }
 
     @Override
     public Stream<Column> columnRefs() {
-        return Stream.concat(Stream.concat(left.columnRefs(), lowerBound.columnRefs()), upperBound.columnRefs());
+        return concatStreams(left.columnRefs(), lowerBound.columnRefs(), upperBound.columnRefs());
     }
 
     @Override
     public Stream<ColumnAlias> aliasRefs() {
-        return Stream.concat(Stream.concat(left.aliasRefs(), lowerBound.aliasRefs()), upperBound.aliasRefs());
+        return concatStreams(left.aliasRefs(), lowerBound.aliasRefs(), upperBound.aliasRefs());
     }
 
     // Predicate

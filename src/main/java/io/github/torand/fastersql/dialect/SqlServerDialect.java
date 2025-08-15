@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -124,6 +126,27 @@ public class SqlServerDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "getdate()";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://learn.microsoft.com/en-us/office/client-developer/access/desktop-database-reference/equivalent-ansi-sql-data-types
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "bit";
+            case CHAR -> "char";
+            case VARCHAR -> "varchar";
+            case BIT, BIT_VARYING -> "binary";
+            case NUMERIC -> null;
+            case DECIMAL -> "decimal";
+            case INTEGER -> "integer";
+            case SMALLINT -> "smallint";
+            case FLOAT, DOUBLE_PRECISION -> "float";
+            case REAL -> "real";
+            case DATE, TIME -> "datetime";
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> null;
+            case BINARY_LARGE_OBJECT -> null;
+        });
     }
 
     @Override

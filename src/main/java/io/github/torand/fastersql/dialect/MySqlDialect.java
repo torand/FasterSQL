@@ -15,6 +15,8 @@
  */
 package io.github.torand.fastersql.dialect;
 
+import io.github.torand.fastersql.function.singlerow.cast.DataType;
+
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +112,30 @@ public class MySqlDialect implements Dialect {
     @Override
     public String formatCurrentDateFunction() {
         return "current_date";
+    }
+
+    @Override
+    public Optional<String> getDataType(DataType dataType) {
+        // https://dev.mysql.com/doc/refman/8.4/en/data-types.html
+        return Optional.ofNullable(switch(dataType.getIsoDataType()) {
+            case BOOLEAN -> "bool";
+            case CHAR -> "char";
+            case VARCHAR -> "varchar";
+            case BIT -> "bit";
+            case BIT_VARYING -> null;
+            case NUMERIC -> "numeric";
+            case DECIMAL -> "decimal";
+            case INTEGER -> "integer";
+            case SMALLINT -> "smallint";
+            case FLOAT -> "float";
+            case DOUBLE_PRECISION -> "double precision";
+            case REAL -> "real";
+            case DATE -> "date";
+            case TIME -> "time";
+            case INTERVAL -> null;
+            case CHARACTER_LARGE_OBJECT -> "text";
+            case BINARY_LARGE_OBJECT -> "blob";
+        });
     }
 
     @Override
