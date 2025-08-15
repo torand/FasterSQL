@@ -35,8 +35,10 @@ import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
 import static io.github.torand.fastersql.expression.arithmetic.ArithmeticExpressions.neg;
 import static io.github.torand.fastersql.expression.cases.CaseExpressions.case_;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.avg;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.min;
 import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
 import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.cast;
@@ -406,20 +408,23 @@ public class SqliteSelectStatementTest extends SqliteTest {
     @Test
     public void shouldHandleAggregates() {
         PreparableStatement stmt =
-            select(max(PRODUCT.PRICE).as("MAX_PRICE"))
+            select(min(PRODUCT.PRICE).as("MIN_PRICE"), avg(PRODUCT.PRICE).as("AVG_PRICE"), max(PRODUCT.PRICE).as("MAX_PRICE"), count().as("PRODUCT_COUNT"))
                 .from(PRODUCT)
                 .where(PRODUCT.PRICE.lt(10000));
 
         statementTester()
             .assertSql("""
-                select max(PR.PRICE) MAX_PRICE \
+                select min(PR.PRICE) MIN_PRICE, avg(PR.PRICE) AVG_PRICE, max(PR.PRICE) MAX_PRICE, count(*) PRODUCT_COUNT \
                 from PRODUCT PR \
                 where PR.PRICE < ?"""
             )
             .assertParams(10000)
             .assertRowCount(1)
             .assertRow(1,
-                "MAX_PRICE", isDouble(7122.09)
+                "MIN_PRICE", isDouble(3778.45),
+                "AVG_PRICE", isDoubleCloseTo(5444.68, 0.001),
+                "MAX_PRICE", isDouble(7122.09),
+                "PRODUCT_COUNT", isInteger(3)
             )
             .verify(stmt);
     }

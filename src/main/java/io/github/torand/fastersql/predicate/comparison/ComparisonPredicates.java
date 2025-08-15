@@ -18,23 +18,11 @@ package io.github.torand.fastersql.predicate.comparison;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 
-import static io.github.torand.fastersql.constant.Constants.$;
-
 /**
  * Provides factory methods for comparison predicates.
  */
 public final class ComparisonPredicates {
     private ComparisonPredicates() {}
-
-    /**
-     * Creates an equivalence predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Eq eq(LeftOperand left, Object right) {
-        return new Eq(left, $(right));
-    }
 
     /**
      * Creates an equivalence predicate taking an expression as right operand.
@@ -44,16 +32,6 @@ public final class ComparisonPredicates {
      */
     public static Eq eq(LeftOperand left, Expression right) {
         return new Eq(left, right);
-    }
-
-    /**
-     * Creates a non-equivalence predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Ne ne(LeftOperand left, Object right) {
-        return new Ne(left, $(right));
     }
 
     /**
@@ -67,16 +45,6 @@ public final class ComparisonPredicates {
     }
 
     /**
-     * Creates a less than predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Lt lt(LeftOperand left, Object right) {
-        return new Lt(left, $(right));
-    }
-
-    /**
      * Creates a less than predicate taking an expression as right operand.
      * @param left the left operand.
      * @param right the right operand.
@@ -84,16 +52,6 @@ public final class ComparisonPredicates {
      */
     public static Lt lt(LeftOperand left, Expression right) {
         return new Lt(left, right);
-    }
-
-    /**
-     * Creates a less than or equal predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Le le(LeftOperand left, Object right) {
-        return new Le(left, $(right));
     }
 
     /**
@@ -107,16 +65,6 @@ public final class ComparisonPredicates {
     }
 
     /**
-     * Creates a greater than predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Gt gt(LeftOperand left, Object right) {
-        return new Gt(left, $(right));
-    }
-
-    /**
      * Creates a greater than predicate taking an expression as right operand.
      * @param left the left operand.
      * @param right the right operand.
@@ -127,16 +75,6 @@ public final class ComparisonPredicates {
     }
 
     /**
-     * Creates a greater than or equal predicate taking a scalar value as right operand.
-     * @param left the left operand.
-     * @param right the right operand.
-     * @return the predicate.
-     */
-    public static Ge ge(LeftOperand left, Object right) {
-        return new Ge(left, $(right));
-    }
-
-    /**
      * Creates a greater than or equal predicate taking an expression as right operand.
      * @param left the left operand.
      * @param right the right operand.
@@ -144,17 +82,6 @@ public final class ComparisonPredicates {
      */
     public static Ge ge(LeftOperand left, Expression right) {
         return new Ge(left, right);
-    }
-
-    /**
-     * Creates a between predicate taking scalar values as lower and upper bound operands.
-     * @param left the left operand.
-     * @param lowerBound the lower bound operand.
-     * @param upperBound the upper bound operand.
-     * @return the predicate.
-     */
-    public static Between between(LeftOperand left, Object lowerBound, Object upperBound) {
-        return new Between(left, $(lowerBound), $(upperBound));
     }
 
     /**

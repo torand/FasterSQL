@@ -24,6 +24,7 @@ import io.github.torand.fastersql.subquery.ExpressionSubquery;
 import java.util.Collection;
 import java.util.Optional;
 
+import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.predicate.compound.CompoundPredicates.not;
 import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static java.util.Arrays.asList;
@@ -40,7 +41,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate eq(Object value) {
-        return ComparisonPredicates.eq(this, value);
+        return eq($(value));
     }
 
     /**
@@ -50,7 +51,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate eq(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.eq(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::eq).orElse(null));
     }
 
     /**
@@ -69,7 +70,7 @@ public interface LeftOperand extends Sql {
      */
 
     default Predicate eq(SelectStatement query) {
-        return ComparisonPredicates.eq(this, new ExpressionSubquery(query));
+        return eq(new ExpressionSubquery(query));
     }
 
 
@@ -79,7 +80,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate ne(Object value) {
-        return ComparisonPredicates.ne(this, value);
+        return ne($(value));
     }
 
     /**
@@ -89,7 +90,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate ne(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.ne(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::ne).orElse(null));
     }
 
     /**
@@ -107,7 +108,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate ne(SelectStatement query) {
-        return ComparisonPredicates.ne(this, new ExpressionSubquery(query));
+        return ne(new ExpressionSubquery(query));
     }
 
     /**
@@ -116,7 +117,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate lt(Object value) {
-        return ComparisonPredicates.lt(this, value);
+        return lt($(value));
     }
 
     /**
@@ -126,7 +127,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate lt(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.lt(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::lt).orElse(null));
     }
 
     /**
@@ -144,7 +145,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate lt(SelectStatement query) {
-        return ComparisonPredicates.lt(this, new ExpressionSubquery(query));
+        return lt(new ExpressionSubquery(query));
     }
 
     /**
@@ -153,7 +154,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate le(Object value) {
-        return ComparisonPredicates.le(this, value);
+        return le($(value));
     }
 
     /**
@@ -163,7 +164,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate le(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.le(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::le).orElse(null));
     }
 
     /**
@@ -181,7 +182,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate le(SelectStatement query) {
-        return ComparisonPredicates.le(this, new ExpressionSubquery(query));
+        return le(new ExpressionSubquery(query));
     }
 
     /**
@@ -190,7 +191,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate gt(Object value) {
-        return ComparisonPredicates.gt(this, value);
+        return gt($(value));
     }
 
     /**
@@ -200,7 +201,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate gt(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.gt(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::gt).orElse(null));
     }
 
     /**
@@ -218,7 +219,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate gt(SelectStatement query) {
-        return ComparisonPredicates.gt(this, new ExpressionSubquery(query));
+        return gt(new ExpressionSubquery(query));
     }
 
     /**
@@ -227,7 +228,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate ge(Object value) {
-        return ComparisonPredicates.ge(this, value);
+        return ge($(value));
     }
 
     /**
@@ -237,7 +238,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate ge(Optional<?> value) {
         requireNonNull(value, "No value specified");
-        return OptionalPredicate.ofNullable(value.map(v -> ComparisonPredicates.ge(this, v)).orElse(null));
+        return OptionalPredicate.ofNullable(value.map(this::ge).orElse(null));
     }
 
     /**
@@ -255,7 +256,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate ge(SelectStatement query) {
-        return ComparisonPredicates.ge(this, new ExpressionSubquery(query));
+        return ge(new ExpressionSubquery(query));
     }
 
     /**
@@ -265,7 +266,7 @@ public interface LeftOperand extends Sql {
      * @return the predicate.
      */
     default Predicate between(Object lowerBound, Object upperBound) {
-        return ComparisonPredicates.between(this, lowerBound, upperBound);
+        return between($(lowerBound), $(upperBound));
     }
 
     /**
@@ -306,9 +307,9 @@ public interface LeftOperand extends Sql {
     default Predicate in(Object... values) {
         requireNonEmpty(values, "No values specified");
         if (values.length == 1) {
-            return ComparisonPredicates.eq(this, values[0]);
+            return eq(values[0]);
         } else {
-            return Predicates.in(this, asList(values));
+            return in(asList(values));
         }
     }
 
@@ -320,7 +321,7 @@ public interface LeftOperand extends Sql {
     default Predicate in(Collection<?> values) {
         requireNonEmpty(values, "No values specified");
         if (values.size() == 1) {
-            return ComparisonPredicates.eq(this, values.iterator().next());
+            return eq(values.iterator().next());
         } else {
             return Predicates.in(this, values);
         }
@@ -335,9 +336,9 @@ public interface LeftOperand extends Sql {
         requireNonNull(values, "No values specified");
         return OptionalPredicate.ofNullable(values.map(v -> {
             if (v.size() == 1) {
-                return ComparisonPredicates.eq(this, v.iterator().next());
+                return eq(v.iterator().next());
             } else {
-                return Predicates.in(this, v);
+                return in(v);
             }
         }).orElse(null));
     }
@@ -394,7 +395,7 @@ public interface LeftOperand extends Sql {
      */
     default OptionalPredicate like(Optional<String> pattern) {
         requireNonNull(pattern, "No pattern specified");
-        return OptionalPredicate.ofNullable(pattern.map(p -> Predicates.like(this, p)).orElse(null));
+        return OptionalPredicate.ofNullable(pattern.map(this::like).orElse(null));
     }
 
     /**
