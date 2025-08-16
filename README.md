@@ -5,6 +5,7 @@ FasterSQL
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.torand/fastersql.svg?label=maven%20central)](https://central.sonatype.com/artifact/io.github.torand/fastersql)
 [![Javadoc](https://img.shields.io/badge/javadoc-online-green)](https://torand.github.io/FasterSQL/apidocs/)
 [![Coverage](https://coveralls.io/repos/github/torand/FasterSQL/badge.svg?branch=main)](https://coveralls.io/github/torand/FasterSQL?branch=main)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=torand_FasterSQL&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=torand_FasterSQL)
 [![Apache 2.0 License](https://img.shields.io/badge/license-Apache%202.0-orange)](LICENSE)
 
 Java library for a faster and more efficient integration with relational databases.
