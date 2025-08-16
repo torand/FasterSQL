@@ -25,11 +25,10 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.SQLException;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class H2Test {
+abstract class H2Test {
     private static final Logger logger = LoggerFactory.getLogger(H2Test.class);
 
     private static final String IMAGE = "torandon/h2database:2.3.232";
@@ -44,7 +43,7 @@ public abstract class H2Test {
     protected static JdbcDataSource ds;
 
     @BeforeAll
-    static void setUp() throws SQLException {
+    static void setUp() {
         h2Container.start();
 
         try {

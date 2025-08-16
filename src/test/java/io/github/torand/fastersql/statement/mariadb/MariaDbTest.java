@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class MariaDbTest {
+abstract class MariaDbTest {
     private static final Logger logger = LoggerFactory.getLogger(MariaDbTest.class);
 
     @Container

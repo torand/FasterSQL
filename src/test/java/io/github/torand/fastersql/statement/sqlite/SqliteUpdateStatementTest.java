@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class SqliteUpdateStatementTest extends SqliteTest {
+class SqliteUpdateStatementTest extends SqliteTest {
 
     @Test
     void shouldRetrieveUpdatedRow() {

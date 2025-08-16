@@ -35,7 +35,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class MariaDbInsertStatementTest extends MariaDbTest {
+class MariaDbInsertStatementTest extends MariaDbTest {
 
     @Test
     void shouldRetrieveInsertedRow() {

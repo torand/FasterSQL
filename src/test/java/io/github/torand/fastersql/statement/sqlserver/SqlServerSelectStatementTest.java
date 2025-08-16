@@ -71,7 +71,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class SqlServerSelectStatementTest extends SqlServerTest {
+class SqlServerSelectStatementTest extends SqlServerTest {
 
     @Test
     void shouldHandleComplexQuery() {

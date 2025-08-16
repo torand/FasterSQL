@@ -27,11 +27,10 @@ import org.testcontainers.containers.startupcheck.MinimumDurationRunningStartupC
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.SQLException;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class SqlServerTest {
+abstract class SqlServerTest {
     private static final Logger logger = LoggerFactory.getLogger(SqlServerTest.class);
 
     private static final String IMAGE = "mcr.microsoft.com/mssql/server:2022-latest";
@@ -47,7 +46,7 @@ public abstract class SqlServerTest {
     protected static SQLServerXADataSource ds;
 
     @BeforeAll
-    static void setUp() throws SQLException {
+    static void setUp() {
         sqlServerContainer.start();
 
         ds = new SQLServerXADataSource();

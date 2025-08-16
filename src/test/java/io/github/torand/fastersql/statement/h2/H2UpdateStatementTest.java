@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class H2UpdateStatementTest extends H2Test {
+class H2UpdateStatementTest extends H2Test {
 
     @Test
     void shouldRetrieveUpdatedRow() {

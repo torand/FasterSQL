@@ -69,7 +69,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class OracleSelectStatementTest extends OracleTest {
+class OracleSelectStatementTest extends OracleTest {
 
     @Test
     void shouldHandleComplexQuery() {

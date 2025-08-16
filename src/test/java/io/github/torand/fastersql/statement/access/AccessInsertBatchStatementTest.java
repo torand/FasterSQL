@@ -31,7 +31,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 
-public class AccessInsertBatchStatementTest extends AccessTest {
+class AccessInsertBatchStatementTest extends AccessTest {
 
     @Test
     void shouldRetrieveInsertedRows() {

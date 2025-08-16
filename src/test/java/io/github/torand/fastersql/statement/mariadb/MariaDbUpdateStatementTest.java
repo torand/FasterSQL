@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class MariaDbUpdateStatementTest extends MariaDbTest {
+class MariaDbUpdateStatementTest extends MariaDbTest {
 
     @Test
     void shouldRetrieveUpdatedRow() {

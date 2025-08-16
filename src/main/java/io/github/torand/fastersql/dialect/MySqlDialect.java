@@ -37,7 +37,9 @@ public class MySqlDialect implements Dialect {
     /**
      * Creates a MySQL {@link Dialect} implementation.
      */
-    public MySqlDialect() {}
+    public MySqlDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

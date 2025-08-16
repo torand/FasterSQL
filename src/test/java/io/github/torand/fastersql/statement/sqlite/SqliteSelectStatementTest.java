@@ -69,7 +69,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class SqliteSelectStatementTest extends SqliteTest {
+class SqliteSelectStatementTest extends SqliteTest {
 
     @Test
     void shouldHandleComplexQuery() {

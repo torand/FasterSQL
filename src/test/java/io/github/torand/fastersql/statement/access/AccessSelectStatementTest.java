@@ -72,7 +72,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 
-public class AccessSelectStatementTest extends AccessTest {
+class AccessSelectStatementTest extends AccessTest {
 
     @Test
     void shouldHandleComplexQuery() {

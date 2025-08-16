@@ -25,7 +25,7 @@ import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.l
 import static io.github.torand.fastersql.statement.Statements.delete;
 import static io.github.torand.fastersql.statement.Statements.select;
 
-public class OracleDeleteStatementTest extends OracleTest {
+class OracleDeleteStatementTest extends OracleTest {
 
     @Test
     void shouldRemoveDeletedRow() {

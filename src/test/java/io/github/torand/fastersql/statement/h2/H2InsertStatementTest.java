@@ -34,7 +34,7 @@ import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.Matchers.is;
 
-public class H2InsertStatementTest extends H2Test {
+class H2InsertStatementTest extends H2Test {
 
     @Test
     void shouldRetrieveInsertedRow() {

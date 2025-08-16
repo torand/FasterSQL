@@ -118,8 +118,6 @@ public class DeleteStatement implements PreparableStatement {
             throw new IllegalStateException("No FROM clause specified");
         }
 
-        // TODO: Verify that deleteTables is subset of fromTables
-
         validateColumnTableRelations(streamSafely(predicates).flatMap(Predicate::columnRefs));
     }
 

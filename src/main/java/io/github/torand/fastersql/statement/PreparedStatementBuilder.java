@@ -103,7 +103,7 @@ public class PreparedStatementBuilder {
                 stmt.setObject(i, uuid.toString());
             } else if (param instanceof URI uri) {
                 stmt.setObject(i, uri.toString());
-            } else if (param instanceof Enum enumValue) {
+            } else if (param instanceof Enum<?> enumValue) {
                 stmt.setObject(i, enumValue.name());
             } else if (param instanceof InputStream inputStream) {
                 stmt.setBinaryStream(i, inputStream);

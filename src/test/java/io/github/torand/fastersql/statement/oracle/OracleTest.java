@@ -30,7 +30,7 @@ import java.sql.SQLException;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class OracleTest {
+abstract class OracleTest {
     private static final Logger logger = LoggerFactory.getLogger(OracleTest.class);
 
     private static final String IMAGE = "gvenzl/oracle-free:23.5-slim-faststart";

@@ -34,7 +34,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public abstract class AccessTest {
+abstract class AccessTest {
     private static final Logger logger = LoggerFactory.getLogger(AccessTest.class);
 
     protected static DataSource ds;

@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class MySqlTest {
+abstract class MySqlTest {
     private static final Logger logger = LoggerFactory.getLogger(MySqlTest.class);
 
     private static final String IMAGE = "mysql:8.2.0";

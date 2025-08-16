@@ -35,7 +35,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class MySqlInsertStatementTest extends MySqlTest {
+class MySqlInsertStatementTest extends MySqlTest {
 
     @Test
     void shouldRetrieveInsertedRow() {

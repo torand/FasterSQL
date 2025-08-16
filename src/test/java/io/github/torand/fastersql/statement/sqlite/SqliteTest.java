@@ -33,7 +33,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.UUID;
 
-public abstract class SqliteTest {
+abstract class SqliteTest {
     private static final Logger logger = LoggerFactory.getLogger(SqliteTest.class);
 
     protected static SQLiteConnectionPoolDataSource ds;

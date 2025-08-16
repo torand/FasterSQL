@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
@@ -139,7 +139,7 @@ public class SelectSetOpStatement implements PreparableStatement {
     public String sql(Context context) {
         final Context localContext = context.withCommand(SELECT_SET_OP);
 
-        validate(localContext);
+        validate();
 
         StringBuilder sb = new StringBuilder();
         if (localContext.getDialect().supports(SET_OPERATION_PARENTHESES)) {
@@ -178,12 +178,12 @@ public class SelectSetOpStatement implements PreparableStatement {
         return params.stream();
     }
 
-    private void validate(Context context) {
-        Function<SelectStatement, Long> projCount = st -> st.projections().count();
-        Function<SetOperation, Long> setOpProjCount = so -> projCount.apply(so.operand());
+    private void validate() {
+        ToLongFunction<SelectStatement> projCount = st -> st.projections().count();
+        ToLongFunction<SetOperation> setOpProjCount = so -> projCount.applyAsLong(so.operand());
 
-        long expectedProjCount = projCount.apply(selectStatement);
-        if (streamSafely(setOperations).map(setOpProjCount).anyMatch(actualProjCount -> actualProjCount != expectedProjCount)) {
+        long expectedProjCount = projCount.applyAsLong(selectStatement);
+        if (streamSafely(setOperations).map(setOpProjCount::applyAsLong).anyMatch(actualProjCount -> actualProjCount != expectedProjCount)) {
             throw new IllegalStateException("SELECT statements in a set operation can't have different number of projections");
         }
 

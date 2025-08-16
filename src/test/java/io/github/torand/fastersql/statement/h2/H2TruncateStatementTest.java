@@ -24,7 +24,7 @@ import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.truncate;
 import static io.github.torand.fastersql.util.RowValueMatchers.isLong;
 
-public class H2TruncateStatementTest extends H2Test {
+class H2TruncateStatementTest extends H2Test {
 
     @Test
     void shouldRemoveAllRowsFromTuncatedTable() {

@@ -68,7 +68,7 @@ public class GenericConstant<T> implements Constant {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new GenericConstant(value, alias);
+        return new GenericConstant<>(value, alias);
     }
 
     @Override
@@ -86,6 +86,6 @@ public class GenericConstant<T> implements Constant {
     @Override
     public Projection forColumn(Column column) {
         requireNonNull(column, "No column specified");
-        return new GenericConstant(value, column.alias().map(Alias::name).orElse(null));
+        return new GenericConstant<>(value, column.alias().map(Alias::name).orElse(null));
     }
 }

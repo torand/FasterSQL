@@ -37,7 +37,9 @@ public class AnsiIsoDialect implements Dialect {
     /**
      * Creates an ANSI/ISO {@link Dialect} implementation.
      */
-    public AnsiIsoDialect() {}
+    public AnsiIsoDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

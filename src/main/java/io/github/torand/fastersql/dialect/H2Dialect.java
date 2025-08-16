@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.dialect;
 
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
+import io.github.torand.fastersql.statement.FasterSQLException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -42,7 +43,9 @@ public class H2Dialect implements Dialect {
     /**
      * Creates a H2 {@link Dialect} implementation.
      */
-    public H2Dialect() {}
+    public H2Dialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {
@@ -169,7 +172,7 @@ public class H2Dialect implements Dialect {
             preparedStatement.execute();
             return this;
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to setup H2 customizations", e);
+            throw new FasterSQLException("Failed to setup H2 customizations", e);
         }
     }
 }

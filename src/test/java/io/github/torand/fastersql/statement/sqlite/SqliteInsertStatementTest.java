@@ -37,7 +37,7 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class SqliteInsertStatementTest extends SqliteTest {
+class SqliteInsertStatementTest extends SqliteTest {
 
     @Test
     void shouldRetrieveInsertedRow() {

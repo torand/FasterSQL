@@ -73,7 +73,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class MariaDbSelectStatementTest extends MariaDbTest {
+class MariaDbSelectStatementTest extends MariaDbTest {
 
     @Test
     void shouldHandleComplexQuery() {

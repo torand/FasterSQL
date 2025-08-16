@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 import java.time.Duration;
 
 @Testcontainers
-public abstract class PostgreSqlTest {
+abstract class PostgreSqlTest {
     private static final Logger logger = LoggerFactory.getLogger(PostgreSqlTest.class);
 
     @Container

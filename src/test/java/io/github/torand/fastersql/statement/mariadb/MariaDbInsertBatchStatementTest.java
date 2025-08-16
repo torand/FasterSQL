@@ -32,7 +32,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 
-public class MariaDbInsertBatchStatementTest extends MariaDbTest {
+class MariaDbInsertBatchStatementTest extends MariaDbTest {
 
     @Test
     void shouldRetrieveInsertedRows() {

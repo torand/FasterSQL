@@ -16,8 +16,8 @@
 package io.github.torand.fastersql.datamodel;
 
 public abstract class DataModel {
-    public final static CustomerTable CUSTOMER = new CustomerTable();
-    public final static ProductTable PRODUCT = new ProductTable();
-    public final static PurchaseTable PURCHASE = new PurchaseTable();
-    public final static PurchaseItemTable PURCHASE_ITEM = new PurchaseItemTable();
+    public static final CustomerTable CUSTOMER = new CustomerTable();
+    public static final ProductTable PRODUCT = new ProductTable();
+    public static final PurchaseTable PURCHASE = new PurchaseTable();
+    public static final PurchaseItemTable PURCHASE_ITEM = new PurchaseItemTable();
 }

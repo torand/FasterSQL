@@ -37,7 +37,9 @@ public class MariaDbDialect implements Dialect {
     /**
      * Creates a MariaDb {@link Dialect} implementation.
      */
-    public MariaDbDialect() {}
+    public MariaDbDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

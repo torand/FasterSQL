@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class MySqlUpdateStatementTest extends MySqlTest {
+class MySqlUpdateStatementTest extends MySqlTest {
 
     @Test
     void shouldRetrieveUpdatedRow() {

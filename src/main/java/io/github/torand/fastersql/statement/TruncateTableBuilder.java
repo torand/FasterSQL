@@ -27,7 +27,9 @@ public class TruncateTableBuilder {
     /**
      * Creates a TRUNCATE statement builder.
      */
-    public TruncateTableBuilder() {}
+    public TruncateTableBuilder() {
+        // Default constructor required by Javadoc
+    }
 
     /**
      * Creates a TRUNCATE statement with the specified TABLE clause.

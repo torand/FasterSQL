@@ -73,7 +73,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class PostgreSqlSelectStatementTest extends PostgreSqlTest {
+class PostgreSqlSelectStatementTest extends PostgreSqlTest {
 
     @Test
     void shouldHandleComplexQuery() {

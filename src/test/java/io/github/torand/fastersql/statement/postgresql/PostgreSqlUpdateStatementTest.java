@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class PostgreSqlUpdateStatementTest extends PostgreSqlTest {
+class PostgreSqlUpdateStatementTest extends PostgreSqlTest {
 
     @Test
     void shouldRetrieveUpdatedRow() {

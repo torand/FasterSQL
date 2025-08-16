@@ -39,7 +39,9 @@ public class HsqldbDialect implements Dialect {
     /**
      * Creates a HyperSQL (HSQLDB) {@link Dialect} implementation.
      */
-    public HsqldbDialect() {}
+    public HsqldbDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

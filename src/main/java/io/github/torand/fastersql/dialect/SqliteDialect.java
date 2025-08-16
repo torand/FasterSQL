@@ -37,7 +37,9 @@ public class SqliteDialect implements Dialect {
     /**
      * Creates a SQLite {@link Dialect} implementation.
      */
-    public SqliteDialect() {}
+    public SqliteDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

@@ -27,19 +27,19 @@ import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 
 /**
  * Models a database table.
- * @param <ENTITY> the concrete table class with columns.
+ * @param <T> the concrete table model class with columns.
  */
-public abstract class Table<ENTITY extends Table<?>> implements Relation {
+public abstract class Table<T extends Table<?>> implements Relation {
     private final String name;
     private final TableAlias alias;
-    private final TableFactory<ENTITY> tableFactory;
+    private final TableFactory<T> tableFactory;
 
     /**
      * Creates a representation (model) of a database table.
      * @param name the table name.
      * @param tableFactory the instance factory.
      */
-    protected Table(String name, TableFactory<ENTITY> tableFactory) {
+    protected Table(String name, TableFactory<T> tableFactory) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = defaultAlias(name);
         this.tableFactory = tableFactory;
@@ -51,7 +51,7 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
      * @param alias the table alias.
      * @param tableFactory the instance factory.
      */
-    protected Table(String name, String alias, TableFactory<ENTITY> tableFactory) {
+    protected Table(String name, String alias, TableFactory<T> tableFactory) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));
         this.tableFactory = tableFactory;
@@ -103,7 +103,7 @@ public abstract class Table<ENTITY extends Table<?>> implements Relation {
     // Relation
 
     @Override
-    public ENTITY as(String alias) {
+    public T as(String alias) {
         return tableFactory.newInstance(alias);
     }
 

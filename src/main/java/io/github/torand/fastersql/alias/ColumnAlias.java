@@ -31,13 +31,14 @@ import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
     private final String name;
 
+    private static final Random RANDOM = new Random();
     /**
      * Factory method to create a random column alias using specified prefix.
      * @param prefix the prefix.
      * @return the column alias.
      */
     public static ColumnAlias generate(String prefix) {
-        return new ColumnAlias(requireNonBlank(prefix, "No prefix specified") + (new Random().nextInt(999) + 1));
+        return new ColumnAlias(requireNonBlank(prefix, "No prefix specified") + (RANDOM.nextInt(999) + 1));
     }
 
     /**

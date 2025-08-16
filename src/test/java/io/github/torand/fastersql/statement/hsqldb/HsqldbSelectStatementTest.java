@@ -71,7 +71,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
-public class HsqldbSelectStatementTest extends HsqldbTest {
+class HsqldbSelectStatementTest extends HsqldbTest {
 
     @Test
     void shouldHandleComplexQuery() {

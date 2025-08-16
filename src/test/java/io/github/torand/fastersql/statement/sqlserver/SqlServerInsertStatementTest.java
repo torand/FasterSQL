@@ -36,7 +36,7 @@ import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
 import static io.github.torand.fastersql.util.RowValueMatchers.isTimestamp;
 import static org.hamcrest.Matchers.is;
 
-public class SqlServerInsertStatementTest extends SqlServerTest {
+class SqlServerInsertStatementTest extends SqlServerTest {
 
     @Test
     void shouldRetrieveInsertedRow() {

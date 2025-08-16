@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 
-public class OracleUpdateStatementTest extends OracleTest {
+class OracleUpdateStatementTest extends OracleTest {
 
     @Test
     void shouldRetrieveUpdatedRow() {

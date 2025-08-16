@@ -17,6 +17,7 @@ package io.github.torand.fastersql.dialect;
 
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
 import io.github.torand.fastersql.setoperation.SetOperator;
+import io.github.torand.fastersql.statement.FasterSQLException;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -224,7 +225,7 @@ public interface Dialect {
                 throw new UnsupportedOperationException("Database with product name " + productName + " not supported");
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to detect SQL dialect from connection metadata", e);
+            throw new FasterSQLException("Failed to detect SQL dialect from connection metadata", e);
         }
     }
 }

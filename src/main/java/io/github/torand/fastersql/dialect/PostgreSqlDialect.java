@@ -41,7 +41,9 @@ public class PostgreSqlDialect implements Dialect {
     /**
      * Creates a PostgreSQL {@link Dialect} implementation.
      */
-    public PostgreSqlDialect() {}
+    public PostgreSqlDialect() {
+        // Default constructor required by Javadoc
+    }
 
     @Override
     public String getProductName() {

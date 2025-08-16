@@ -27,7 +27,9 @@ public class InsertIntoBuilder {
     /**
      * Creates an INSERT INTO builder.
      */
-    public InsertIntoBuilder() {}
+    public InsertIntoBuilder() {
+        // Default constructor required by Javadoc
+    }
 
     /**
      * Creates an INSERT statement with specified INTO clause.
