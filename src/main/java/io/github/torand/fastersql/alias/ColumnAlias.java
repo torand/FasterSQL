@@ -20,7 +20,7 @@ import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.sql.Context;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.stream.Stream;
 
 import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
@@ -31,7 +31,7 @@ import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
     private final String name;
 
-    private static final Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
     /**
      * Factory method to create a random column alias using specified prefix.
      * @param prefix the prefix.
