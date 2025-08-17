@@ -54,11 +54,10 @@ public class ResultSetTester {
                 throw new IllegalArgumentException("additionalColumnMatcherPairs should contain pairs of column labels and matchers");
             }
             for (int i = 0; i < additionalColumnMatcherPairs.length; i += 2) {
-                if (additionalColumnMatcherPairs[i] instanceof String additionalColumnLabel) {
-                    if (additionalColumnMatcherPairs[i+1] instanceof Matcher additionalMatcher) {
+                if (additionalColumnMatcherPairs[i] instanceof String additionalColumnLabel
+                    && additionalColumnMatcherPairs[i+1] instanceof Matcher additionalMatcher) {
                         rowValueMatchers.add(new RowValueMatcher(additionalColumnLabel, additionalMatcher));
                     }
-                }
             }
         }
 

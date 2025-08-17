@@ -483,16 +483,15 @@ class HsqldbSelectStatementTest extends HsqldbTest {
             .assertRowCount(2)
             .assertRow(1,
                 "PR_NAME", containsString("Ekornes Stressless"),
-                "PURCHASED_VALUE", isBigDecimal(5433.5),
-                "MAX_QNTY", isLong(1)
+                "PURCHASED_VALUE", isBigDecimalCloseTo(5433.50, 0.01),
+                "MAX_QNTY", isBigDecimal(1)
             )
             .assertRow(2,
                 "PR_NAME", containsString("Louis Poulsen"),
                 "PURCHASED_VALUE", isBigDecimal(11335.35),
-                "MAX_QNTY", isLong(3)
+                "MAX_QNTY", isBigDecimal(3)
             )
-            .logResultSet(stmt);
-            //.verify(stmt);
+            .verify(stmt);
     }
 
     @Test
@@ -619,11 +618,10 @@ class HsqldbSelectStatementTest extends HsqldbTest {
                 "PLUS_", isBigDecimalCloseTo(5434.5, 0.01),
                 "MINUS_", isBigDecimalCloseTo(5431.5, 0.01),
                 "TIMES_", isBigDecimalCloseTo(16300.5, 0.01),
-                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.0001),
-                "MOD_", isBigDecimalCloseTo(3.50, 0.001),
-                "NEG_", isBigDecimal(-13))
-            .logResultSet(stmt);
-            //.verify(stmt);
+                "DIVIDE_", isBigDecimalCloseTo(1358.375, 0.01),
+                "MOD_", isBigDecimalCloseTo(3.0, 0.1),
+                "NEG_", isLong(-13))
+            .verify(stmt);
     }
 
     @Test

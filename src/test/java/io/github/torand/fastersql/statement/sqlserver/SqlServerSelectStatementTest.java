@@ -545,7 +545,7 @@ class SqlServerSelectStatementTest extends SqlServerTest {
                 from PRODUCT PR \
                 order by PR.NAME asc"""
             )
-            .assertParams(-1L, Math.E, 1L, 4L, 3, 2L)
+            .assertParams(-1, Math.E, 1, 4, 3, 2)
             .assertRowCount(5)
             .assertRow(2,
                 "ROUND", isBigDecimalCloseTo(5434.0, 0.1),
@@ -558,7 +558,7 @@ class SqlServerSelectStatementTest extends SqlServerTest {
                 "POW", isInteger(9))
             .assertRow(3,
                 "ROUND", isBigDecimalCloseTo(7122.0, 0.1))
-            .logResultSet(stmt); //.verify(stmt);
+            .verify(stmt);
     }
 
     @Test

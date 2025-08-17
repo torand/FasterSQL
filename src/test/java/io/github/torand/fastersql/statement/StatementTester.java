@@ -93,10 +93,10 @@ public class StatementTester {
 
     public void logResultSet(PreparableStatement stmt) {
         try (Connection conn = ds.getConnection()) {
-            Dialect dialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
+            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
 
             ResultSet rs = PreparedStatementBuilder
-                .using(conn, dialect)
+                .using(conn, actualDialect)
                 .prepare(stmt)
                 .executeQuery();
 
@@ -108,8 +108,8 @@ public class StatementTester {
 
     public void verify(PreparableStatement stmt) {
         try (Connection conn = ds.getConnection()) {
-            Dialect dialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
-            Context context = Context.of(dialect);
+            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
+            Context context = Context.of(actualDialect);
 
             if (nonBlank(expectedSql)) {
                 assertThat(stmt.sql(context)).describedAs("SQL").isEqualTo(expectedSql);
@@ -122,7 +122,7 @@ public class StatementTester {
             if (stmt instanceof SelectStatement || stmt instanceof SelectSetOpStatement) {
                 if (nonNull(expectedResultSet)) {
                     ResultSet rs = PreparedStatementBuilder
-                        .using(conn, dialect)
+                        .using(conn, actualDialect)
                         .prepare(stmt)
                         .executeQuery();
 
@@ -130,7 +130,7 @@ public class StatementTester {
                 }
             } else {
                 int affectedRowCount = PreparedStatementBuilder
-                    .using(conn, dialect)
+                    .using(conn, actualDialect)
                     .prepare(stmt)
                     .executeUpdate();
 
