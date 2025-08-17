@@ -224,7 +224,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleOptionalWhereClauses() {
+    void shouldHandleOptionalWhereClauses() {
         Optional<String> maybeFirstName = Optional.of("Ola");
         Optional<String> maybeCountryCode = Optional.empty();
 
@@ -289,7 +289,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInProjection() {
+    void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
@@ -318,7 +318,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInPredicate() {
+    void shouldHandleSubqueriesInPredicate() {
         final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
 
         PreparableStatement stmt =
@@ -342,7 +342,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSimpleSubqueryInFromClause() {
+    void shouldHandleSimpleSubqueryInFromClause() {
         PreparableStatement stmt =
             select(count().as("CUSTOMER_COUNT"))
                 .from(table(
@@ -368,7 +368,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleMultipleSubqueriesInFromClause() {
+    void shouldHandleMultipleSubqueriesInFromClause() {
         PreparableStatement stmt =
             select(PRODUCT.ID, colRef("PURCHASED_QUANTITY", "QUANTITY"), colRef("PURCHASED_AMOUNT", "AMOUNT"))
                 .from(PRODUCT, table(
@@ -410,7 +410,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleAggregates() {
+    void shouldHandleAggregates() {
         PreparableStatement stmt =
             select(min(PRODUCT.PRICE).as("MIN_PRICE"), avg(PRODUCT.PRICE).as("AVG_PRICE"), max(PRODUCT.PRICE).as("MAX_PRICE"), count().as("PRODUCT_COUNT"))
                 .from(PRODUCT)
@@ -434,7 +434,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleAggregatesWithGroupingAndOrdering() {
+    void shouldHandleAggregatesWithGroupingAndOrdering() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"))
                 .from(PRODUCT)
@@ -463,7 +463,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleFilteredGroups() {
+    void shouldHandleFilteredGroups() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"), max(PURCHASE_ITEM.QUANTITY).as("MAX_QNTY"))
                 .from(PRODUCT)
@@ -497,7 +497,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleDistinct() {
+    void shouldHandleDistinct() {
         PreparableStatement stmt =
             selectDistinct(PRODUCT.CATEGORY)
                 .from(PRODUCT)
@@ -518,7 +518,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleForUpdate() {
+    void shouldHandleForUpdate() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
                 .from(CUSTOMER)
@@ -538,7 +538,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSystemFunctions() {
+    void shouldHandleSystemFunctions() {
         PreparableStatement stmt =
             select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentTime().as("CT"), currentDate().as("CD"))
                 .from(CUSTOMER);
@@ -553,7 +553,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleScalarMathFunctions() {
+    void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs(-1).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln(Math.E).as("LN"), exp(1).as("EXP"), sqrt(4).as("SQRT"), pow($(3), 2).as("POW"))
                 .from(PRODUCT)
@@ -582,7 +582,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleArithmeticOperators() {
+    void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus($i(1)).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
@@ -664,7 +664,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSimpleCaseExpressions() {
+    void shouldHandleSimpleCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_(CUSTOMER.LAST_NAME)
@@ -696,7 +696,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleSearchedCaseExpressions() {
+    void shouldHandleSearchedCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_()
@@ -728,7 +728,7 @@ class MySqlSelectStatementTest extends MySqlTest {
     }
 
     @Test
-    public void shouldHandleCastFunction() {
+    void shouldHandleCastFunction() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus(cast(1).as(decimal(1))).as("DEC_CAST"), cast("2").as(char_(1)).as("STR_CAST"))
                 .from(PRODUCT)

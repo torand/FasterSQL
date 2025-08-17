@@ -223,7 +223,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleOptionalWhereClauses() {
+    void shouldHandleOptionalWhereClauses() {
         Optional<String> maybeFirstName = Optional.of("Ola");
         Optional<String> maybeCountryCode = Optional.empty();
 
@@ -289,7 +289,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInProjection() {
+    void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
@@ -318,7 +318,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInPredicate() {
+    void shouldHandleSubqueriesInPredicate() {
         final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
 
         PreparableStatement stmt =
@@ -342,7 +342,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSimpleSubqueryInFromClause() {
+    void shouldHandleSimpleSubqueryInFromClause() {
         PreparableStatement stmt =
             select(count().as("CUSTOMER_COUNT"))
                 .from(table(
@@ -368,7 +368,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleMultipleSubqueriesInFromClause() {
+    void shouldHandleMultipleSubqueriesInFromClause() {
         PreparableStatement stmt =
             select(PRODUCT.ID, colRef("PURCHASED_QUANTITY", "QUANTITY"), colRef("PURCHASED_AMOUNT", "AMOUNT"))
                 .from(PRODUCT, table(
@@ -410,7 +410,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleAggregates() {
+    void shouldHandleAggregates() {
         PreparableStatement stmt =
             select(min(PRODUCT.PRICE).as("MIN_PRICE"), avg(PRODUCT.PRICE).as("AVG_PRICE"), max(PRODUCT.PRICE).as("MAX_PRICE"), count().as("PRODUCT_COUNT"))
                 .from(PRODUCT)
@@ -434,7 +434,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleAggregatesWithGroupingAndOrdering() {
+    void shouldHandleAggregatesWithGroupingAndOrdering() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"))
                 .from(PRODUCT)
@@ -463,7 +463,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleFilteredGroups() {
+    void shouldHandleFilteredGroups() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"), max(PURCHASE_ITEM.QUANTITY).as("MAX_QNTY"))
                 .from(PRODUCT)
@@ -497,7 +497,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleDistinct() {
+    void shouldHandleDistinct() {
         PreparableStatement stmt =
             selectDistinct(PRODUCT.CATEGORY)
                 .from(PRODUCT)
@@ -518,7 +518,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleForUpdate() {
+    void shouldHandleForUpdate() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
                 .from(CUSTOMER)
@@ -538,7 +538,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSystemFunctions() {
+    void shouldHandleSystemFunctions() {
         // Oracle does not support CURRENT_TIME
         PreparableStatement stmt =
             select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentDate().as("CD"))
@@ -554,7 +554,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleScalarMathFunctions() {
+    void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             // UCanAccess library currently has a bug supporting the power operator: https://github.com/spannm/ucanaccess/issues/26
             select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs(-1).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln(Math.E).as("LN"), exp(1).as("EXP"), sqrt(4).as("SQRT"), pow(PRODUCT.PRICE, 2).as("POW"))
@@ -584,7 +584,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleArithmeticOperators() {
+    void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus($i(1)).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
@@ -666,7 +666,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSimpleCaseExpressions() {
+    void shouldHandleSimpleCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_(CUSTOMER.LAST_NAME)
@@ -698,7 +698,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleSearchedCaseExpressions() {
+    void shouldHandleSearchedCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_()
@@ -730,7 +730,7 @@ class AccessSelectStatementTest extends AccessTest {
     }
 
     @Test
-    public void shouldHandleCastFunction() {
+    void shouldHandleCastFunction() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus(cast(1.0).as(decimal())).as("DEC_CAST"), cast($i("2")).as(varchar()).as("STR_CAST"))
                 .from(PRODUCT)

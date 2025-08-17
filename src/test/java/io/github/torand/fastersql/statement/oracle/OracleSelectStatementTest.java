@@ -248,7 +248,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleOptionalWhereClauses() {
+    void shouldHandleOptionalWhereClauses() {
         Optional<String> maybeFirstName = Optional.of("Ola");
         Optional<String> maybeCountryCode = Optional.empty();
 
@@ -313,7 +313,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInProjection() {
+    void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
@@ -342,7 +342,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSubqueriesInPredicate() {
+    void shouldHandleSubqueriesInPredicate() {
         final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
 
         PreparableStatement stmt =
@@ -366,7 +366,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSimpleSubqueryInFromClause() {
+    void shouldHandleSimpleSubqueryInFromClause() {
         PreparableStatement stmt =
             select(count().as("CUSTOMER_COUNT"))
                 .from(table(
@@ -392,7 +392,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleMultipleSubqueriesInFromClause() {
+    void shouldHandleMultipleSubqueriesInFromClause() {
         PreparableStatement stmt =
             select(PRODUCT.ID, colRef("PURCHASED_QUANTITY", "QUANTITY"), colRef("PURCHASED_AMOUNT", "AMOUNT"))
                 .from(PRODUCT, table(
@@ -434,7 +434,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleAggregates() {
+    void shouldHandleAggregates() {
         PreparableStatement stmt =
             select(min(PRODUCT.PRICE).as("MIN_PRICE"), avg(PRODUCT.PRICE).as("AVG_PRICE"), max(PRODUCT.PRICE).as("MAX_PRICE"), count().as("PRODUCT_COUNT"))
                 .from(PRODUCT)
@@ -458,7 +458,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleAggregatesWithGroupingAndOrdering() {
+    void shouldHandleAggregatesWithGroupingAndOrdering() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"))
                 .from(PRODUCT)
@@ -487,7 +487,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleFilteredGroups() {
+    void shouldHandleFilteredGroups() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"), max(PURCHASE_ITEM.QUANTITY).as("MAX_QNTY"))
                 .from(PRODUCT)
@@ -521,7 +521,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleDistinct() {
+    void shouldHandleDistinct() {
         PreparableStatement stmt =
             selectDistinct(PRODUCT.CATEGORY)
                 .from(PRODUCT)
@@ -542,7 +542,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleOrderByNulls() {
+    void shouldHandleOrderByNulls() {
         PreparableStatement stmt =
             select(PURCHASE.NOTES)
                 .from(PURCHASE)
@@ -561,7 +561,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleForUpdate() {
+    void shouldHandleForUpdate() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
                 .from(CUSTOMER)
@@ -581,7 +581,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSystemFunctions() {
+    void shouldHandleSystemFunctions() {
         // Oracle does not support CURRENT_TIME
         PreparableStatement stmt =
             select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentDate().as("CD"))
@@ -597,7 +597,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleScalarMathFunctions() {
+    void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs(-1.0).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln(Math.E).as("LN"), exp(1.0).as("EXP"), sqrt(4.0).as("SQRT"), pow($(3), 2.0).as("POW"))
                 .from(PRODUCT)
@@ -626,7 +626,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleArithmeticOperators() {
+    void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus($i(1)).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
@@ -705,7 +705,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSimpleCaseExpressions() {
+    void shouldHandleSimpleCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_(CUSTOMER.LAST_NAME)
@@ -737,7 +737,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleSearchedCaseExpressions() {
+    void shouldHandleSearchedCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_()
@@ -769,7 +769,7 @@ class OracleSelectStatementTest extends OracleTest {
     }
 
     @Test
-    public void shouldHandleCastFunction() {
+    void shouldHandleCastFunction() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus(cast(1).as(decimal(2,1))).as("DEC_CAST"), cast("2").as(varchar(1)).as("STR_CAST"))
                 .from(PRODUCT)

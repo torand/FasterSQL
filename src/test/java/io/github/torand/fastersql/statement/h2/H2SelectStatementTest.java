@@ -224,7 +224,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleOptionalWhereClauses() {
+    void shouldHandleOptionalWhereClauses() {
         Optional<String> maybeFirstName = Optional.of("Ola");
         Optional<String> maybeCountryCode = Optional.empty();
 
@@ -290,7 +290,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSubqueriesInProjection() {
+    void shouldHandleSubqueriesInProjection() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, subquery(select(count()).from(PURCHASE).where(PURCHASE.CUSTOMER_ID.eq(CUSTOMER.ID))).as("PURCHASE_COUNT"))
                 .from(CUSTOMER)
@@ -319,7 +319,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSubqueriesInPredicate() {
+    void shouldHandleSubqueriesInPredicate() {
         final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
 
         PreparableStatement stmt =
@@ -343,7 +343,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSimpleSubqueryInFromClause() {
+    void shouldHandleSimpleSubqueryInFromClause() {
         // Note! H2 does not support params in subquery projection
 
         PreparableStatement stmt =
@@ -371,7 +371,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleMultipleSubqueriesInFromClause() {
+    void shouldHandleMultipleSubqueriesInFromClause() {
         PreparableStatement stmt =
             select(PRODUCT.ID, colRef("PURCHASED_QUANTITY", "QUANTITY"), colRef("PURCHASED_AMOUNT", "AMOUNT"))
                 .from(PRODUCT, table(
@@ -413,7 +413,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleAggregates() {
+    void shouldHandleAggregates() {
         PreparableStatement stmt =
             select(min(PRODUCT.PRICE).as("MIN_PRICE"), avg(PRODUCT.PRICE).as("AVG_PRICE"), max(PRODUCT.PRICE).as("MAX_PRICE"), count().as("PRODUCT_COUNT"))
                 .from(PRODUCT)
@@ -437,7 +437,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleAggregatesWithGroupingAndOrdering() {
+    void shouldHandleAggregatesWithGroupingAndOrdering() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"))
                 .from(PRODUCT)
@@ -466,7 +466,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleFilteredGroups() {
+    void shouldHandleFilteredGroups() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, sum(PRODUCT.PRICE.times(PURCHASE_ITEM.QUANTITY)).as("PURCHASED_VALUE"), max(PURCHASE_ITEM.QUANTITY).as("MAX_QNTY"))
                 .from(PRODUCT)
@@ -500,7 +500,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleDistinct() {
+    void shouldHandleDistinct() {
         PreparableStatement stmt =
             selectDistinct(PRODUCT.CATEGORY)
                 .from(PRODUCT)
@@ -521,7 +521,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleOrderByNulls() {
+    void shouldHandleOrderByNulls() {
         PreparableStatement stmt =
             select(PURCHASE.NOTES)
                 .from(PURCHASE)
@@ -540,7 +540,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleForUpdate() {
+    void shouldHandleForUpdate() {
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME, CUSTOMER.FIRST_NAME)
                 .from(CUSTOMER)
@@ -560,7 +560,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSystemFunctions() {
+    void shouldHandleSystemFunctions() {
         PreparableStatement stmt =
             select(CUSTOMER.ID, currentTimestamp().as("CTS"), currentTime().as("CT"), currentDate().as("CD"))
                 .from(CUSTOMER);
@@ -575,7 +575,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleScalarMathFunctions() {
+    void shouldHandleScalarMathFunctions() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, round(PRODUCT.PRICE).as("ROUND"), abs(-1).as("ABS"), ceil(PRODUCT.PRICE).as("CEIL"), floor(PRODUCT.PRICE).as("FLOOR"), ln(Math.E).as("LN"), exp(1).as("EXP"), sqrt(4).as("SQRT"), pow($(3), 2).as("POW"))
                 .from(PRODUCT)
@@ -604,7 +604,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleArithmeticOperators() {
+    void shouldHandleArithmeticOperators() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus($i(1)).as("PLUS_"), PRODUCT.PRICE.minus(2).as("MINUS_"), PRODUCT.PRICE.times(3).as("TIMES_"), PRODUCT.PRICE.dividedBy(4).as("DIVIDE_"), PRODUCT.PRICE.mod(5).as("MOD_"), neg($(6).plus(7)).as("NEG_"))
                 .from(PRODUCT)
@@ -686,7 +686,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSimpleCaseExpressions() {
+    void shouldHandleSimpleCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_(CUSTOMER.LAST_NAME)
@@ -718,7 +718,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleSearchedCaseExpressions() {
+    void shouldHandleSearchedCaseExpressions() {
         PreparableStatement stmt =
             select(
                 case_()
@@ -750,7 +750,7 @@ class H2SelectStatementTest extends H2Test {
     }
 
     @Test
-    public void shouldHandleCastFunction() {
+    void shouldHandleCastFunction() {
         PreparableStatement stmt =
             select(PRODUCT.NAME, PRODUCT.PRICE.plus(cast(1).as(decimal())).as("DEC_CAST"), cast("2").as(varchar(1)).as("STR_CAST"))
                 .from(PRODUCT)
