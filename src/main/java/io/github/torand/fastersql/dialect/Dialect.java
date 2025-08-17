@@ -42,25 +42,33 @@ public interface Dialect {
      * Indicates whether <i>offset</i> clause must be specified before <i>limit</i> clause; if supported.
      * @return whether <i>offset</i> clause must be specified before <i>limit</i> clause; if supported.
      */
-    boolean offsetBeforeLimit();
+    default boolean offsetBeforeLimit() {
+        return true;
+    }
 
     /**
      * Returns the <i>row offset</i> clause formatted for a specific SQL dialect.
      * @return the <i>row offset</i> clause formatted for a specific SQL dialect.
      */
-    Optional<String> formatRowOffsetClause();
+    default Optional<String> formatRowOffsetClause() {
+        return Optional.of("offset ? rows");
+    }
 
     /**
      * Returns the <i>row limit</i> clause formatted for a specific SQL dialect.
      * @return the <i>row limit</i> clause formatted for a specific SQL dialect.
      */
-    Optional<String> formatRowLimitClause();
+    default Optional<String> formatRowLimitClause() {
+        return Optional.of("fetch next ? rows only");
+    }
 
     /**
      * Returns the <i>row number</i> literal formatted for a specific SQL dialect.
      * @return the <i>row number</i> literal formatted for a specific SQL dialect.
      */
-    Optional<String> formatRowNumLiteral();
+    default Optional<String> formatRowNumLiteral() {
+        return Optional.empty();
+    }
 
     /**
      * Returns the specified set operator formatted for a specific SQL dialect.
@@ -78,7 +86,9 @@ public interface Dialect {
      * @param scale the scale that that represents the number of digits after the decimal point. Must be less than or equal to the precision.
      * @return the 'to_number' function for a specific SQL dialect.
      */
-    String formatToNumberFunction(String operand, int precision, int scale);
+    default String formatToNumberFunction(String operand, int precision, int scale) {
+        return "to_number(%s)".formatted(operand);
+    }
 
     /**
      * Returns the 'to_char' function formatted for a specific SQL dialect.
@@ -86,7 +96,9 @@ public interface Dialect {
      * @param format the vendor-specific format mask
      * @return the 'to_char' function for a specific SQL dialect.
      */
-    String formatToCharFunction(String operand, String format);
+    default String formatToCharFunction(String operand, String format) {
+        return "to_char(%s, %s)".formatted(operand, format);
+    }
 
     /**
      * Returns the 'substring' function formatted for a specific SQL dialect.
@@ -95,35 +107,45 @@ public interface Dialect {
      * @param length the length of the substring
      * @return the 'substring' function for a specific SQL dialect.
      */
-    String formatSubstringFunction(String operand, int startPos, int length);
+    default String formatSubstringFunction(String operand, int startPos, int length) {
+        return "substring(%S, %d, %d)".formatted(operand, startPos, length);
+    }
 
     /**
      * Returns the 'concat' function formatted for a specific SQL dialect.
      * @param operands the string expressions to concatenate
      * @return the 'concat' function for a specific SQL dialect.
      */
-    String formatConcatFunction(List<String> operands);
+    default String formatConcatFunction(List<String> operands) {
+        return "concat(%s)".formatted(String.join(", ", operands));
+    }
 
     /**
      * Returns the 'length' function formatted for a specific SQL dialect.
      * @param operand the string expression to get length of
      * @return the 'length' function for a specific SQL dialect.
      */
-    String formatLengthFunction(String operand);
+    default String formatLengthFunction(String operand) {
+        return "length(%s)".formatted(operand);
+    }
 
     /**
      * Returns the 'ceil' function formatted for a specific SQL dialect.
      * @param operand the numeric expression to get ceiling of
      * @return the 'ceil' function for a specific SQL dialect.
      */
-    String formatCeilFunction(String operand);
+    default String formatCeilFunction(String operand) {
+        return "ceil(%s)".formatted(operand);
+    }
 
     /**
      * Returns the 'ln' function formatted for a specific SQL dialect.
      * @param operand the numeric expression to get natural logarithm of
      * @return the 'ln' function for a specific SQL dialect.
      */
-    String formatLnFunction(String operand);
+    default String formatLnFunction(String operand) {
+        return "ln(%s)".formatted(operand);
+    }
 
     /**
      * Returns the 'pow' function formatted for a specific SQL dialect.
@@ -140,7 +162,9 @@ public interface Dialect {
      * @param operand the numeric expression to perform rounding on
      * @return the 'round' function for a specific SQL dialect.
      */
-    String formatRoundFunction(String operand);
+    default String formatRoundFunction(String operand) {
+        return "round(%s)".formatted(operand);
+    }
 
     /**
      * Returns the 'mod' function formatted for a specific SQL dialect.
@@ -148,13 +172,17 @@ public interface Dialect {
      * @param dividend the numeric expression for dividend operand
      * @return the 'mod' function for a specific SQL dialect.
      */
-    String formatModuloFunction(String divisor, String dividend);
+    default String formatModuloFunction(String divisor, String dividend) {
+        return "mod(%s, %s)".formatted(divisor, dividend);
+    }
 
     /**
      * Returns the 'current_date' system function formatted for a specific SQL dialect.
      * @return the 'current_date' function for a specific SQL dialect.
      */
-    String formatCurrentDateFunction();
+    default String formatCurrentDateFunction() {
+        return "current_date";
+    }
 
     /**
      * Returns the 'cast' function formatted for a specific SQL dialect.
@@ -185,7 +213,9 @@ public interface Dialect {
      * Returns the string concatenation operator for a specific SQL Dialect.
      * @return the string concatenation operator for a specific SQL Dialect.
      */
-    Optional<String> getConcatOperator();
+    default Optional<String> getConcatOperator() {
+        return Optional.of("||");
+    }
 
     /**
      * Indicates whether a capability is supported by a specific SQL dialect.

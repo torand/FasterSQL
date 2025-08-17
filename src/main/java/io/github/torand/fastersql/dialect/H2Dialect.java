@@ -73,21 +73,6 @@ public class H2Dialect implements Dialect {
     }
 
     @Override
-    public String formatToNumberFunction(String operand, int precision, int scale) {
-        return "to_number(" + operand + ")";
-    }
-
-    @Override
-    public String formatToCharFunction(String operand, String format) {
-        return "to_char(" + operand + ", " + format + ")";
-    }
-
-    @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
     public String formatConcatFunction(List<String> operands) {
         throw new UnsupportedOperationException("H2 does not support the concat() function (use the concat infix operator instead)");
     }
@@ -103,23 +88,8 @@ public class H2Dialect implements Dialect {
     }
 
     @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("H2 does not support the mod() function (use the modulo infix operator instead)");
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override
@@ -142,11 +112,6 @@ public class H2Dialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> "clob";
             case BINARY_LARGE_OBJECT -> "blob";
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override

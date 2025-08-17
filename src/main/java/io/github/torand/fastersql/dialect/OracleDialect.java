@@ -33,6 +33,9 @@ import static io.github.torand.javacommons.lang.StringHelper.generate;
 
 /**
  * Defines the <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/">Oracle</a> SQL dialect.
+ *
+ * Row offset clause is supported from Oracle 12c onwards
+ * Row limit clause is supported from Oracle 12c onwards
  */
 public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
@@ -51,27 +54,6 @@ public class OracleDialect implements Dialect {
     @Override
     public String getProductName() {
         return "Oracle";
-    }
-
-    @Override
-    public boolean offsetBeforeLimit() {
-        return true;
-    }
-
-    /**
-     * Row offset clause is supported from Oracle 12c onwards
-     */
-    @Override
-    public Optional<String> formatRowOffsetClause() {
-        return Optional.of("offset ? rows");
-    }
-
-    /**
-     * Row limit clause is supported from Oracle 12c onwards
-     */
-    @Override
-    public Optional<String> formatRowLimitClause() {
-        return Optional.of("fetch next ? rows only");
     }
 
     @Override
@@ -98,48 +80,13 @@ public class OracleDialect implements Dialect {
     }
 
     @Override
-    public String formatToCharFunction(String operand, String format) {
-        return "to_char(" + operand + ", " + format + ")";
-    }
-
-    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substr(" + operand + ", " + startPos + ", " + length + ")";
+        return "substr(%s, %d, %d)".formatted(operand, startPos, length);
     }
 
     @Override
     public String formatConcatFunction(List<String> operands) {
         throw new UnsupportedOperationException("Oracle does not support the concat() function (use the concat infix operator instead)");
-    }
-
-    @Override
-    public String formatLengthFunction(String operand) {
-        return "length(" + operand + ")";
-    }
-
-    @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
-    public String formatModuloFunction(String divisor, String dividend) {
-        return "mod(" + divisor + ", " + dividend + ")";
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override
@@ -158,11 +105,6 @@ public class OracleDialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> "clob";
             case BINARY_LARGE_OBJECT -> "blob";
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override

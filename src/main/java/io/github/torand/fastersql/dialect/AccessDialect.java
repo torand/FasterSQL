@@ -53,26 +53,6 @@ public class AccessDialect implements Dialect {
     }
 
     @Override
-    public boolean offsetBeforeLimit() {
-        return true;
-    }
-
-    @Override
-    public Optional<String> formatRowOffsetClause() {
-        return Optional.of("offset ? rows");
-    }
-
-    @Override
-    public Optional<String> formatRowLimitClause() {
-        return Optional.of("fetch next ? rows only");
-    }
-
-    @Override
-    public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
-    }
-
-    @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
         return "val(" + operand + ")";
     }
@@ -80,11 +60,6 @@ public class AccessDialect implements Dialect {
     @Override
     public String formatToCharFunction(String operand, String format) {
         throw new UnsupportedOperationException("Access does not support the to_char() function");
-    }
-
-    @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override
@@ -98,16 +73,6 @@ public class AccessDialect implements Dialect {
     }
 
     @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
     public String formatPowerFunction(String base, String exponent) {
         throw new UnsupportedOperationException("Access does not support the power() function (use the power infix operator instead)");
     }
@@ -115,16 +80,6 @@ public class AccessDialect implements Dialect {
     @Override
     public String formatRoundFunction(String operand) {
         return "round(" + operand + ", 0)";
-    }
-
-    @Override
-    public String formatModuloFunction(String divisor, String dividend) {
-        return "mod(" + divisor + ", " + dividend + ")";
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override

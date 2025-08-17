@@ -18,7 +18,6 @@ package io.github.torand.fastersql.dialect;
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
@@ -62,11 +61,6 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
-    public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
-    }
-
-    @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
         return "cast(" + operand + " as decimal(" + precision + "," + scale + "))";
     }
@@ -77,43 +71,13 @@ public class MySqlDialect implements Dialect {
     }
 
     @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
-    public String formatConcatFunction(List<String> operands) {
-        return "concat(%s)".formatted(String.join(", ", operands));
-    }
-
-    @Override
     public String formatLengthFunction(String operand) {
         return "char_length(" + operand + ")";
     }
 
     @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("MySQL does not support the mod() function (use the modulo infix operator instead)");
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override

@@ -29,6 +29,10 @@ import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
  * Defines the <a href="https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16">Microsoft SQL Server</a> SQL dialect.
+ *
+ * Row offset clause is supported from SQL Server 2012 onwards
+ * Row limit clause is supported from SQL Server 2012 onwards
+ * SQL Server has the ROW_NUMBER() function but must be combined with OVER() in this context.
  */
 public class SqlServerDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;
@@ -50,35 +54,6 @@ public class SqlServerDialect implements Dialect {
     }
 
     @Override
-    public boolean offsetBeforeLimit() {
-        return true;
-    }
-
-    /**
-     * Row offset clause is supported from SQL Server 2012 onwards
-     */
-    @Override
-    public Optional<String> formatRowOffsetClause() {
-        return Optional.of("offset ? rows");
-    }
-
-    /**
-     * Row limit clause is supported from SQL Server 2012 onwards
-     */
-    @Override
-    public Optional<String> formatRowLimitClause() {
-        return Optional.of("fetch next ? rows only");
-    }
-
-    /**
-     * SQL Server has the ROW_NUMBER() function but must be combined with OVER() in this context.
-     */
-    @Override
-    public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
-    }
-
-    @Override
     public String formatToNumberFunction(String operand, int precision, int scale) {
         return "cast(" + operand + " as numeric(" + precision + "," + scale + "))";
     }
@@ -86,11 +61,6 @@ public class SqlServerDialect implements Dialect {
     @Override
     public String formatToCharFunction(String operand, String format) {
         throw new UnsupportedOperationException("SQL Server does not support the to_char() function");
-    }
-
-    @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
     }
 
     @Override

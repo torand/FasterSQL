@@ -18,7 +18,6 @@ package io.github.torand.fastersql.dialect;
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
@@ -78,44 +77,7 @@ public class SqliteDialect implements Dialect {
 
     @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substr(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
-    public String formatConcatFunction(List<String> operands) {
-        // Note! The concat infix operator is used in output SQL
-        return "concat(%s)".formatted(String.join(", ", operands));
-    }
-
-    @Override
-    public String formatLengthFunction(String operand) {
-        return "length(" + operand + ")";
-    }
-
-    @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
-    public String formatModuloFunction(String divisor, String dividend) {
-        // Note! The modulo infix operator is used in output SQL
-        return "mod(" + divisor + ", " + dividend + ")";
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
+        return "substr(%s, %d, %d)".formatted(operand, startPos, length);
     }
 
     @Override
@@ -140,11 +102,6 @@ public class SqliteDialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> "clob";
             case BINARY_LARGE_OBJECT -> "blob";
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override

@@ -18,7 +18,6 @@ package io.github.torand.fastersql.dialect;
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
@@ -47,73 +46,8 @@ public class AnsiIsoDialect implements Dialect {
     }
 
     @Override
-    public boolean offsetBeforeLimit() {
-        return true;
-    }
-
-    @Override
-    public Optional<String> formatRowOffsetClause() {
-        return Optional.of("offset ? rows");
-    }
-
-    @Override
-    public Optional<String> formatRowLimitClause() {
-        return Optional.of("fetch next ? rows only");
-    }
-
-    @Override
-    public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
-    }
-
-    @Override
-    public String formatToNumberFunction(String operand, int precision, int scale) {
-        return "to_number(%s)".formatted(operand);
-    }
-
-    @Override
-    public String formatToCharFunction(String operand, String format) {
-        return "to_char(%s, %s)".formatted(operand, format);
-    }
-
-    @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
-    public String formatConcatFunction(List<String> operands) {
-        return "concat(%s)".formatted(String.join(", ", operands));
-    }
-
-    @Override
-    public String formatLengthFunction(String operand) {
-        return "length(" + operand + ")";
-    }
-
-    @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("ANSI/ISO SQL does not support the mod() function (use the modulo infix operator instead)");
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override
@@ -137,11 +71,6 @@ public class AnsiIsoDialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> "clob";
             case BINARY_LARGE_OBJECT -> "blob";
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override

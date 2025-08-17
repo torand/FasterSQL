@@ -51,11 +51,6 @@ public class PostgreSqlDialect implements Dialect {
     }
 
     @Override
-    public boolean offsetBeforeLimit() {
-        return true;
-    }
-
-    @Override
     public Optional<String> formatRowOffsetClause() {
         return Optional.of("offset ?");
     }
@@ -63,11 +58,6 @@ public class PostgreSqlDialect implements Dialect {
     @Override
     public Optional<String> formatRowLimitClause() {
         return Optional.of("limit ?");
-    }
-
-    @Override
-    public Optional<String> formatRowNumLiteral() {
-        return Optional.empty();
     }
 
     @Override
@@ -84,16 +74,6 @@ public class PostgreSqlDialect implements Dialect {
     }
 
     @Override
-    public String formatToCharFunction(String operand, String format) {
-        return "to_char(" + operand + ", " + format + ")";
-    }
-
-    @Override
-    public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substring(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
     public String formatConcatFunction(List<String> operands) {
         throw new UnsupportedOperationException("PostgreSQL does not support the concat() function (use the concat infix operator instead)");
     }
@@ -104,28 +84,8 @@ public class PostgreSqlDialect implements Dialect {
     }
 
     @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
     public String formatModuloFunction(String divisor, String dividend) {
         throw new UnsupportedOperationException("PostgreSQL does not support the mod() function (use the modulo infix operator instead)");
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override
@@ -150,11 +110,6 @@ public class PostgreSqlDialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> null;
             case BINARY_LARGE_OBJECT -> null;
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override

@@ -18,7 +18,6 @@ package io.github.torand.fastersql.dialect;
 import io.github.torand.fastersql.function.singlerow.cast.DataType;
 
 import java.util.EnumSet;
-import java.util.List;
 import java.util.Optional;
 
 import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
@@ -69,59 +68,13 @@ public class HsqldbDialect implements Dialect {
     }
 
     @Override
-    public String formatToNumberFunction(String operand, int precision, int scale) {
-        return "to_number(" + operand + ")";
-    }
-
-    @Override
-    public String formatToCharFunction(String operand, String format) {
-        return "to_char(" + operand + ", " + format + ")";
-    }
-
-    @Override
     public String formatSubstringFunction(String operand, int startPos, int length) {
-        return "substr(" + operand + ", " + startPos + ", " + length + ")";
-    }
-
-    @Override
-    public String formatConcatFunction(List<String> operands) {
-        // Note! The concat infix operator is used in output SQL
-        return "concat(%s)".formatted(String.join(", ", operands));
+        return "substr(%s, %d, %d)".formatted(operand, startPos, length);
     }
 
     @Override
     public String formatLengthFunction(String operand) {
         return "char_length(" + operand + ")";
-    }
-
-    @Override
-    public String formatCeilFunction(String operand) {
-        return "ceil(" + operand + ")";
-    }
-
-    @Override
-    public String formatLnFunction(String operand) {
-        return "ln(" + operand + ")";
-    }
-
-    @Override
-    public String formatPowerFunction(String base, String exponent) {
-        return "power(%s, %s)".formatted(base, exponent);
-    }
-
-    @Override
-    public String formatRoundFunction(String operand) {
-        return "round(" + operand + ")";
-    }
-
-    @Override
-    public String formatModuloFunction(String divisor, String dividend) {
-        return "mod(" + divisor + ", " + dividend + ")";
-    }
-
-    @Override
-    public String formatCurrentDateFunction() {
-        return "current_date";
     }
 
     @Override
@@ -145,11 +98,6 @@ public class HsqldbDialect implements Dialect {
             case CHARACTER_LARGE_OBJECT -> "clob";
             case BINARY_LARGE_OBJECT -> "blob";
         });
-    }
-
-    @Override
-    public Optional<String> getConcatOperator() {
-        return Optional.of("||");
     }
 
     @Override
