@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.dialect.Dialect;
+import io.github.torand.fastersql.dialect.DialectResolver;
 import io.github.torand.fastersql.sql.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class PreparedStatementBuilder {
      * @return the statement builder
      */
     public static PreparedStatementBuilder using(Connection connection) {
-        return new PreparedStatementBuilder(connection, Dialect.fromConnection(connection));
+        return new PreparedStatementBuilder(connection, DialectResolver.fromConnection(connection));
     }
 
     /**

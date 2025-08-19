@@ -16,6 +16,7 @@
 package io.github.torand.fastersql.statement;
 
 import io.github.torand.fastersql.dialect.Dialect;
+import io.github.torand.fastersql.dialect.DialectResolver;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.util.ResultSetTester;
 import org.hamcrest.Matcher;
@@ -93,7 +94,7 @@ public class StatementTester {
 
     public void logResultSet(PreparableStatement stmt) {
         try (Connection conn = ds.getConnection()) {
-            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
+            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : DialectResolver.fromConnection(conn);
 
             ResultSet rs = PreparedStatementBuilder
                 .using(conn, actualDialect)
@@ -108,7 +109,7 @@ public class StatementTester {
 
     public void verify(PreparableStatement stmt) {
         try (Connection conn = ds.getConnection()) {
-            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : Dialect.fromConnection(conn);
+            Dialect actualDialect = nonNull(this.dialect) ? this.dialect : DialectResolver.fromConnection(conn);
             Context context = Context.of(actualDialect);
 
             if (nonBlank(expectedSql)) {
