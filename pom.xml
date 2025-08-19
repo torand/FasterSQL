@@ -82,8 +82,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.outputTimestamp></project.build.outputTimestamp>
+
         <sonar.organization>torand</sonar.organization>
         <sonar.projectKey>torand_FasterSQL</sonar.projectKey>
+        <sonar.test.exclusions>**/datamodel/*Table.java</sonar.test.exclusions>
 
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
