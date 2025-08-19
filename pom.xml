@@ -97,6 +97,7 @@
 
         <java-commons.version>1.2.0</java-commons.version>
         <slf4j.version>2.0.17</slf4j.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
         <junit.jupiter.version>5.13.4</junit.jupiter.version>
         <assertj.version>3.27.3</assertj.version>
         <hamcrest.version>3.0</hamcrest.version>
@@ -281,6 +282,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonarsource.scanner.maven</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven-plugin.version)</version>
                 </plugin>
             </plugins>
         </pluginManagement>
