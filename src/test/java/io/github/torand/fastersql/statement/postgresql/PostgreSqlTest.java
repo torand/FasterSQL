@@ -33,8 +33,10 @@ import java.time.Duration;
 abstract class PostgreSqlTest {
     private static final Logger logger = LoggerFactory.getLogger(PostgreSqlTest.class);
 
+    private static final String IMAGE = "postgres:9.6.12";
+
     @Container
-    protected static PostgreSQLContainer postgreSqlContainer = (PostgreSQLContainer) new PostgreSQLContainer()
+    protected static PostgreSQLContainer postgreSqlContainer = (PostgreSQLContainer) new PostgreSQLContainer(IMAGE)
         .withDatabaseName("testdb")
         .withUsername("testuser")
         .withPassword("testpwd")

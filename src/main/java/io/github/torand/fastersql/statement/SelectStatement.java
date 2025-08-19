@@ -31,6 +31,7 @@ import io.github.torand.fastersql.relation.Relation;
 import io.github.torand.fastersql.setoperation.SetOperation;
 import io.github.torand.fastersql.setoperation.SetOperator;
 import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 import io.github.torand.fastersql.subquery.Subquery;
 
 import java.util.HashSet;
@@ -530,7 +531,7 @@ public class SelectStatement implements PreparableStatement {
                 .collect(toSet());
 
             streamSafely(orders)
-                .flatMap(o -> o.aliasRefs())
+                .flatMap(Sql::aliasRefs)
                 .map(ColumnAlias::name)
                 .filter(a -> !orderableAliases.contains(a))
                 .findFirst()

@@ -20,8 +20,6 @@ import io.github.torand.fastersql.statement.StatementTester;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.hsqldb.jdbc.JDBCDataSource;
 import org.junit.jupiter.api.BeforeAll;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +31,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 abstract class HsqldbTest {
-    private static final Logger logger = LoggerFactory.getLogger(HsqldbTest.class);
 
     protected static JDBCDataSource ds;
 

@@ -20,6 +20,7 @@ import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -76,8 +77,8 @@ public class SimpleCase implements Expression {
     public Stream<Column> columnRefs() {
         return concatStreams(
             caseExpression.columnRefs(),
-            streamSafely(whenThens).flatMap(wh -> wh.columnRefs()),
-            Stream.ofNullable(elseExpression).flatMap(e -> e.columnRefs())
+            streamSafely(whenThens).flatMap(SimpleWhenThen::columnRefs),
+            Stream.ofNullable(elseExpression).flatMap(Sql::columnRefs)
         );
     }
 
@@ -85,8 +86,8 @@ public class SimpleCase implements Expression {
     public Stream<ColumnAlias> aliasRefs() {
         return concatStreams(
             caseExpression.aliasRefs(),
-            streamSafely(whenThens).flatMap(wh -> wh.aliasRefs()),
-            Stream.ofNullable(elseExpression).flatMap(e -> e.aliasRefs())
+            streamSafely(whenThens).flatMap(SimpleWhenThen::aliasRefs),
+            Stream.ofNullable(elseExpression).flatMap(Sql::aliasRefs)
         );
     }
 

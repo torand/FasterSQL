@@ -19,8 +19,6 @@ import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.statement.StatementTester;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.BeforeAll;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
@@ -34,7 +32,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 abstract class SqliteTest {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteTest.class);
 
     protected static SQLiteConnectionPoolDataSource ds;
 

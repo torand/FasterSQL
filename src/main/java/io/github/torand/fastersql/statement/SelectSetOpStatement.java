@@ -23,6 +23,7 @@ import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.setoperation.SetOperation;
 import io.github.torand.fastersql.setoperation.SetOperator;
 import io.github.torand.fastersql.sql.Context;
+import io.github.torand.fastersql.sql.Sql;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -195,7 +196,7 @@ public class SelectSetOpStatement implements PreparableStatement {
                 .collect(toSet());
 
             streamSafely(orders)
-                .flatMap(o -> o.aliasRefs())
+                .flatMap(Sql::aliasRefs)
                 .map(ColumnAlias::name)
                 .filter(a -> !orderableAliases.contains(a))
                 .findFirst()

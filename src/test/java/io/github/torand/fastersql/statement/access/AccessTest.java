@@ -21,8 +21,6 @@ import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.statement.StatementTester;
 import org.apache.ibatis.jdbc.ScriptRunner;
 import org.junit.jupiter.api.BeforeAll;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.io.BufferedReader;
@@ -35,7 +33,6 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 abstract class AccessTest {
-    private static final Logger logger = LoggerFactory.getLogger(AccessTest.class);
 
     protected static DataSource ds;
 
