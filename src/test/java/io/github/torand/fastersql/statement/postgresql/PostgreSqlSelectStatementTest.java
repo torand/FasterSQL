@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.statement.postgresql;
 
-import io.github.torand.fastersql.datamodel.CustomerTable;
 import io.github.torand.fastersql.statement.PreparableStatement;
 import io.github.torand.fastersql.statement.SelectSetOpStatement;
 import io.github.torand.fastersql.statement.SelectStatement;
@@ -30,6 +29,7 @@ import static io.github.torand.fastersql.constant.Constants.$;
 import static io.github.torand.fastersql.constant.Constants.$i;
 import static io.github.torand.fastersql.constant.Constants.nullValue;
 import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
+import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER2;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
 import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
@@ -319,8 +319,6 @@ class PostgreSqlSelectStatementTest extends PostgreSqlTest {
 
     @Test
     void shouldHandleSubqueriesInPredicate() {
-        final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
-
         PreparableStatement stmt =
             select(CUSTOMER.LAST_NAME)
                 .from(CUSTOMER)
