@@ -101,7 +101,7 @@ public class Join implements Sql {
      * Gets the table joined with.
      * @return the table joined with.
      */
-    public Table joined() {
+    public Table<?> joined() {
         return headOf(rights).table();
     }
 

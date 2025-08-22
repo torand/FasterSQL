@@ -16,6 +16,14 @@ public class FasterSQLException extends RuntimeException {
 
     /**
      * Creates a runtime exception.
+     * @param message the message.
+     */
+    public FasterSQLException(String message) {
+        super(message);
+    }
+
+    /**
+     * Creates a runtime exception.
      * @param cause the inner cause.
      */
     public FasterSQLException(Throwable cause) {

@@ -18,6 +18,7 @@ package io.github.torand.fastersql.statement;
 import io.github.torand.fastersql.alias.Alias;
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.dialect.AnsiIsoDialect;
+import io.github.torand.fastersql.dialect.Dialect;
 import io.github.torand.fastersql.expression.Expression;
 import io.github.torand.fastersql.function.aggregate.AggregateFunction;
 import io.github.torand.fastersql.join.Join;
@@ -356,6 +357,8 @@ public class SelectStatement implements PreparableStatement {
             .withCommand(SELECT)
             .withOuterStatement(this);
 
+        final Dialect dialect = localContext.getDialect();
+
         validate(context);
 
         StringBuilder sb = new StringBuilder();
@@ -371,7 +374,7 @@ public class SelectStatement implements PreparableStatement {
         sb.append(" from ");
 
         // Tables that are joined with should not be specified in the FROM clause
-        Set<Table> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
+        Set<Table<?>> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
 
         sb.append(streamSafely(relations)
             .filter(not(joinedTables::contains))
@@ -414,11 +417,11 @@ public class SelectStatement implements PreparableStatement {
         }
 
         if (nonNull(offset) || nonNull(limit)) {
-            if (context.getDialect().supports(LIMIT_OFFSET)) {
-                String offsetClause = nonNull(offset) ? " " + localContext.getDialect().formatRowOffsetClause().orElseThrow(() -> new RuntimeException("Dialect " + localContext.getDialect().getProductName() + " has no row offset clause")) : "";
-                String limitClause = nonNull(limit) ? " " + localContext.getDialect().formatRowLimitClause().orElseThrow(() -> new RuntimeException("Dialect " + localContext.getDialect().getProductName() + " has no row limit clause")) : "";
+            if (dialect.supports(LIMIT_OFFSET)) {
+                String offsetClause = nonNull(offset) ? " " + dialect.formatRowOffsetClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row offset clause")) : "";
+                String limitClause = nonNull(limit) ? " " + dialect.formatRowLimitClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row limit clause")) : "";
 
-                if (localContext.getDialect().offsetBeforeLimit()) {
+                if (dialect.offsetBeforeLimit()) {
                     sb.append(offsetClause).append(limitClause);
                 } else {
                     sb.append(limitClause).append(offsetClause);
@@ -449,19 +452,20 @@ public class SelectStatement implements PreparableStatement {
 
     private StringBuilder addLimitOffsetFallback(Context context, StringBuilder innerSql, Long rowFrom, Long rowTo) {
         final String ROWNUM = "{ROWNUM}";
+        final String selectAllFrom = "select * from";
 
         String rowNum = context.getDialect().formatRowNumLiteral()
-            .orElseThrow(() -> new RuntimeException("Dialect " + context.getDialect().getProductName() + " has no row number literal"));
+            .orElseThrow(() -> new FasterSQLException(getDialectRef(context.getDialect()) + " has no row number literal"));
 
         if (nonNull(rowFrom) && nonNull(rowTo)) {
-            String limitSql = "select ORIGINAL.*, " + ROWNUM + " ROW_NO from ( " + innerSql.toString() + " ) ORIGINAL where " + ROWNUM + " <= ?";
-            String offsetSql = "select * from ( " + limitSql + " ) where ROW_NO >= ?";
+            String limitSql = "select ORIGINAL.*, %s ROW_NO from ( %s ) ORIGINAL where %s <= ?".formatted(ROWNUM, innerSql, ROWNUM);
+            String offsetSql = "%s ( %s ) where ROW_NO >= ?".formatted(selectAllFrom, limitSql);
             return new StringBuilder(offsetSql.replace(ROWNUM, rowNum));
         } else if (nonNull(rowFrom)) {
-            String offsetSql = "select * from ( " + innerSql.toString() + " ) where " + ROWNUM + " >= ?";
+            String offsetSql = "%s ( %s ) where %s >= ?".formatted(selectAllFrom, innerSql, ROWNUM);
             return new StringBuilder(offsetSql.replace(ROWNUM, rowNum));
         } else if (nonNull(rowTo)) {
-            String limitSql = "select * from ( " + innerSql.toString() + " ) where " + ROWNUM + " <= ?";
+            String limitSql = "%s ( %s ) where %s <= ?".formatted(selectAllFrom, innerSql, ROWNUM);
             return new StringBuilder(limitSql.replace(ROWNUM, rowNum));
         }
 
@@ -547,7 +551,7 @@ public class SelectStatement implements PreparableStatement {
 
         if (forUpdate) {
             if (!context.getDialect().supports(SELECT_FOR_UPDATE)) {
-                throw new UnsupportedOperationException("%s does not support the SELECT ... FOR UPDATE clause".formatted(context.getDialect().getProductName()));
+                throw new UnsupportedOperationException("%s does not support the SELECT ... FOR UPDATE clause".formatted(getDialectRef(context.getDialect())));
             }
 
             if (distinct || nonEmpty(groups) || streamSafely(projections).anyMatch(instanceOf(AggregateFunction.class))) {
@@ -569,7 +573,7 @@ public class SelectStatement implements PreparableStatement {
     }
 
     private void validateColumnTableRelations(Context context, Stream<Column> columns) {
-        Function<Relation, Stream<Table>> filterTables = r -> r instanceof Table table ? Stream.of(table) : Stream.empty();
+        Function<Relation, Stream<Table<?>>> filterTables = r -> r instanceof Table<?> table ? Stream.of(table) : Stream.empty();
 
         Set<String> outerTableNames = new HashSet<>();
         if (nonEmpty(context.getOuterStatements())) {
@@ -592,5 +596,9 @@ public class SelectStatement implements PreparableStatement {
     @Override
     public String toString() {
         return toString(new AnsiIsoDialect());
+    }
+
+    private String getDialectRef(Dialect dialect) {
+        return "Dialect " + dialect.getProductName();
     }
 }
