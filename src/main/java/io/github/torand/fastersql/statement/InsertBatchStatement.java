@@ -102,15 +102,13 @@ public class InsertBatchStatement<T> implements PreparableStatement {
             //   ('val2_1', 'val2_2', 'val2_3'),
             //   ('val3_1', 'val3_2', 'val3_3');
 
-            String sb = "insert into " + table.sql(context) +
+            return "insert into " + table.sql(context) +
                 " (" +
                 columnValueExtractors().map(cve -> cve.column().sql(localContext)).collect(joining(", ")) +
                 ") values " +
                 entities()
                     .map(e -> "(" + columnValueExtractors().map(cve -> cve.valueSql(localContext, e)).collect(joining(", ")) + ")")
                     .collect(joining(", "));
-
-            return sb;
         }
     }
 

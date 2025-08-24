@@ -99,14 +99,12 @@ public class InsertStatement implements PreparableStatement {
         final Context localContext = context.withCommand(INSERT);
         validate();
 
-        String sb = "insert into " + table.sql(context) +
+        return "insert into " + table.sql(context) +
             " (" +
             streamSafely(columnValues).map(cv -> cv.column().sql(localContext)).collect(joining(", ")) +
             ") values (" +
             streamSafely(columnValues).map(cv -> cv.valueSql(localContext)).collect(joining(", ")) +
             ")";
-
-        return sb;
     }
 
     @Override
