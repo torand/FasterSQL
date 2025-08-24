@@ -187,7 +187,7 @@ dependencies {
 
 ## Logging
 
-The library outputs diagnostics etc using the [SLF4J](https://www.slf4j.org/) log framework. Visit its web page to
+The library outputs diagnostics etc. using the [SLF4J](https://www.slf4j.org/) log framework. Visit its web page to
 get instructions on how to integrate with the specific log framework used by your application.
 
 The generated SQL statement in the dialect of the underlying RDBMS is logged using log level DEBUG. To make them appear

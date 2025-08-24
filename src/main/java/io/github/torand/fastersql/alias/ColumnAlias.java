@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.alias;
 
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.sql.Context;
@@ -32,6 +31,7 @@ public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
     private final String name;
 
     private static final SecureRandom RANDOM = new SecureRandom();
+
     /**
      * Factory method to create a random column alias using specified prefix.
      * @param prefix the prefix.
@@ -63,11 +63,6 @@ public class ColumnAlias implements Alias, LeftOperand, OrderExpression {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
         return Stream.empty();
     }
 

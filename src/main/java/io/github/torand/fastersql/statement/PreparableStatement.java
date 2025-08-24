@@ -15,14 +15,11 @@
  */
 package io.github.torand.fastersql.statement;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.dialect.Dialect;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.sql.Sql;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static io.github.torand.javacommons.lang.StringHelper.isBlank;
 import static io.github.torand.javacommons.stream.StreamHelper.streamSafely;
@@ -32,16 +29,6 @@ import static java.util.stream.Collectors.joining;
  * Defines a statement that can be formatted as SQL.
  */
 public interface PreparableStatement extends Sql {
-
-    @Override
-    default Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    default Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
-    }
 
     /**
      * Gets the SQL of specified dialect for this statement.

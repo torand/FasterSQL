@@ -40,7 +40,7 @@ public record RowValueMatcher<T>(String columnLabel, Matcher<T> matcher) {
         }
     }
 
-    private static String getDescription(Matcher matcher, Object actual) {
+    private static String getDescription(Matcher<?> matcher, Object actual) {
         Description description = new StringDescription();
         description.appendText("Expected: ").appendDescriptionOf(matcher).appendText(". Actual: ");
         matcher.describeMismatch(actual, description);

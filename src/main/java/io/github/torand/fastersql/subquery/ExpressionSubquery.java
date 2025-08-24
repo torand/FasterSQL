@@ -17,7 +17,6 @@ package io.github.torand.fastersql.subquery;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.statement.SelectStatement;
@@ -59,16 +58,6 @@ public class ExpressionSubquery implements Subquery, Expression {
     @Override
     public Stream<Object> params(Context context) {
         return query.params(context);
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
     }
 
     // Subquery

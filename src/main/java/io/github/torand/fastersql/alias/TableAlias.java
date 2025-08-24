@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.alias;
 
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
@@ -50,16 +49,6 @@ public class TableAlias implements Alias {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
         return Stream.empty();
     }
 }

@@ -39,13 +39,13 @@ import static java.util.Objects.requireNonNull;
  */
 public class SimpleCase implements Expression {
     private final Expression caseExpression;
-    private final List<SimpleWhenThen> whenThens;
+    private final List<SimpleWhenThen> whenThenExpressions;
     private final Expression elseExpression;
     private final ColumnAlias alias;
 
     SimpleCase(Expression caseExpression, List<SimpleWhenThen> whenThenExpressions, Expression elseExpression, String alias) {
         this.caseExpression = requireNonNull(caseExpression, "No case expression specified");
-        this.whenThens = requireNonEmpty(whenThenExpressions, "No when-then expressions specified");
+        this.whenThenExpressions = requireNonEmpty(whenThenExpressions, "No when-then expressions specified");
         this.elseExpression = elseExpression;
         this.alias = nonBlank(alias) ? new ColumnAlias(alias) : defaultAlias();
     }
@@ -56,7 +56,7 @@ public class SimpleCase implements Expression {
     public String sql(Context context) {
         StringBuilder sql = new StringBuilder();
         sql.append("case %s ".formatted(caseExpression.sql(context)));
-        streamSafely(whenThens).forEach(wt -> sql.append(wt.sql(context)).append(" "));
+        streamSafely(whenThenExpressions).forEach(wt -> sql.append(wt.sql(context)).append(" "));
         if (nonNull(elseExpression)) {
             sql.append("else ").append(elseExpression.sql(context)).append(" ");
         }
@@ -68,7 +68,7 @@ public class SimpleCase implements Expression {
     public Stream<Object> params(Context context) {
         return concatStreams(
             caseExpression.params(context),
-            streamSafely(whenThens).flatMap(wh -> wh.params(context)),
+            streamSafely(whenThenExpressions).flatMap(wh -> wh.params(context)),
             Stream.ofNullable(elseExpression).flatMap(e -> e.params(context))
         );
     }
@@ -77,7 +77,7 @@ public class SimpleCase implements Expression {
     public Stream<Column> columnRefs() {
         return concatStreams(
             caseExpression.columnRefs(),
-            streamSafely(whenThens).flatMap(SimpleWhenThen::columnRefs),
+            streamSafely(whenThenExpressions).flatMap(SimpleWhenThen::columnRefs),
             Stream.ofNullable(elseExpression).flatMap(Sql::columnRefs)
         );
     }
@@ -86,7 +86,7 @@ public class SimpleCase implements Expression {
     public Stream<ColumnAlias> aliasRefs() {
         return concatStreams(
             caseExpression.aliasRefs(),
-            streamSafely(whenThens).flatMap(SimpleWhenThen::aliasRefs),
+            streamSafely(whenThenExpressions).flatMap(SimpleWhenThen::aliasRefs),
             Stream.ofNullable(elseExpression).flatMap(Sql::aliasRefs)
         );
     }
@@ -96,7 +96,7 @@ public class SimpleCase implements Expression {
     @Override
     public Projection as(String alias) {
         requireNonBlank(alias, "No alias specified");
-        return new SimpleCase(caseExpression, whenThens, elseExpression, alias);
+        return new SimpleCase(caseExpression, whenThenExpressions, elseExpression, alias);
     }
 
     @Override

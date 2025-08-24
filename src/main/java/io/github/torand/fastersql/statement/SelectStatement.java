@@ -173,7 +173,6 @@ public class SelectStatement implements PreparableStatement {
      * @param maybePredicates the optional predicates.
      * @return the modified statement.
      */
-    @SafeVarargs
     public final SelectStatement where(OptionalPredicate... maybePredicates) {
         requireNonEmpty(maybePredicates, "No optional WHERE predicates specified");
 
@@ -227,7 +226,6 @@ public class SelectStatement implements PreparableStatement {
      * @param maybePredicates the optional predicates.
      * @return the modified statement.
      */
-    @SafeVarargs
     public final SelectStatement having(OptionalPredicate... maybePredicates) {
         requireNonEmpty(maybePredicates, "No optional HAVING predicates specified");
 

@@ -36,7 +36,7 @@ abstract class OracleTest {
     private static final String IMAGE = "gvenzl/oracle-free:23.5-slim-faststart";
 
     @Container
-    protected static OracleContainer oracleContainer = new OracleContainer(IMAGE)
+    protected static final OracleContainer oracleContainer = new OracleContainer(IMAGE)
         .withStartupTimeout(Duration.ofMinutes(3))
         .withUsername("testuser")
         .withPassword("testpwd")

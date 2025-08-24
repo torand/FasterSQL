@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 public class ResultSetTester {
-    private Map<Integer, List<RowValueMatcher<?>>> rowValueMatcherMap = new HashMap<>();
+    private final Map<Integer, List<RowValueMatcher<?>>> rowValueMatcherMap = new HashMap<>();
     private Integer expectedRowCount;
 
     public static ResultSetTester resultSetTester() {

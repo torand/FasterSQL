@@ -53,16 +53,6 @@ public class GenericConstant<T> implements Constant {
         return Stream.of(value);
     }
 
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
-    }
-
     // Projection
 
     @Override

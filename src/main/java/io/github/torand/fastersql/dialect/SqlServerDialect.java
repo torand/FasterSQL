@@ -29,10 +29,11 @@ import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
 
 /**
  * Defines the <a href="https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16">Microsoft SQL Server</a> SQL dialect.
- *
+ * <p>
  * Row offset clause is supported from SQL Server 2012 onwards
  * Row limit clause is supported from SQL Server 2012 onwards
  * SQL Server has the ROW_NUMBER() function but must be combined with OVER() in this context.
+ * </p>
  */
 public class SqlServerDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;

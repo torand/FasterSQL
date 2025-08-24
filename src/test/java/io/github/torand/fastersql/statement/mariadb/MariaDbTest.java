@@ -36,7 +36,7 @@ abstract class MariaDbTest {
     private static final String IMAGE = "mariadb:10.3.6";
 
     @Container
-    protected static MariaDBContainer mariaDBContainer = (MariaDBContainer) new MariaDBContainer(IMAGE)
+    protected static final MariaDBContainer mariaDBContainer = new MariaDBContainer<>(IMAGE)
         .withDatabaseName("testdb")
         .withUsername("testuser")
         .withPassword("testpwd")

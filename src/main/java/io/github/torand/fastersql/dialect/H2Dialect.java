@@ -41,7 +41,7 @@ public class H2Dialect implements Dialect {
     private static final EnumSet<Capability> SUPPORTED_CAPS = EnumSet.of(LIMIT_OFFSET, CONCAT_OPERATOR, MODULO_OPERATOR, CURRENT_TIME, NULL_ORDERING, SELECT_FOR_UPDATE, TRUNCATE_TABLE, SET_OPERATION_PARENTHESES);
 
     /**
-     * Creates a H2 {@link Dialect} implementation.
+     * Creates an H2 {@link Dialect} implementation.
      */
     public H2Dialect() {
         // Default constructor required by Javadoc

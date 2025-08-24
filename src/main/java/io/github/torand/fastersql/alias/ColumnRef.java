@@ -16,7 +16,6 @@
 package io.github.torand.fastersql.alias;
 
 import io.github.torand.fastersql.expression.Expression;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.predicate.LeftOperand;
 import io.github.torand.fastersql.projection.Projection;
@@ -52,11 +51,6 @@ public class ColumnRef implements LeftOperand, OrderExpression, Expression {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
         return Stream.empty();
     }
 

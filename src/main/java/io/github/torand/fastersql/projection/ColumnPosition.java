@@ -15,8 +15,6 @@
  */
 package io.github.torand.fastersql.projection;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.order.OrderExpression;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.sql.Sql;
@@ -49,16 +47,6 @@ public class ColumnPosition implements Sql, OrderExpression {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
         return Stream.empty();
     }
 }

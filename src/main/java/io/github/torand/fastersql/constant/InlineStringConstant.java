@@ -53,16 +53,6 @@ public class InlineStringConstant implements Constant {
         return Stream.empty();
     }
 
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
-    }
-
     // Projection
 
     @Override

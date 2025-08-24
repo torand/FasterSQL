@@ -107,4 +107,48 @@ public class SimpleCaseBuilder {
         requireNonNull(whenThenClause, "No when-then clause specified");
         this.whenThenClauses.add(whenThenClause);
     }
+
+    /**
+     * Builder of a WHEN-THEN clause in a simple CASE expression.
+     */
+    public static class SimpleWhenThenBuilder {
+        private final SimpleCaseBuilder caseBuilder;
+        private final Expression whenExpression;
+
+        SimpleWhenThenBuilder(SimpleCaseBuilder caseBuilder, Expression whenExpression) {
+            this.caseBuilder = requireNonNull(caseBuilder, "No case builder specified");
+            this.whenExpression = requireNonNull(whenExpression, "No when expression specified");
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenExpression the THEN expression.
+         * @return the modified CASE expression.
+         */
+        public SimpleCaseBuilder then(Expression thenExpression) {
+            requireNonNull(thenExpression, "No then expression specified");
+            caseBuilder.addWhenThenClause(new SimpleWhenThen(whenExpression, thenExpression));
+            return caseBuilder;
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenConstant the THEN constant value.
+         * @return the modified CASE expression.
+         */
+        public SimpleCaseBuilder then(String thenConstant) {
+            requireNonNull(thenConstant, "No then constant specified");
+            return then($(thenConstant));
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenConstant the THEN constant value.
+         * @return the modified CASE expression.
+         */
+        public SimpleCaseBuilder then(Number thenConstant) {
+            requireNonNull(thenConstant, "No then constant specified");
+            return then($(thenConstant));
+        }
+    }
 }

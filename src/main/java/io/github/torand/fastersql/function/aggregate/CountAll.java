@@ -16,7 +16,6 @@
 package io.github.torand.fastersql.function.aggregate;
 
 import io.github.torand.fastersql.alias.ColumnAlias;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.order.Order;
 import io.github.torand.fastersql.projection.Projection;
 import io.github.torand.fastersql.sql.Context;
@@ -46,16 +45,6 @@ public class CountAll implements AggregateFunction {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
         return Stream.empty();
     }
 

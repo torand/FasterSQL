@@ -36,7 +36,7 @@ abstract class PostgreSqlTest {
     private static final String IMAGE = "postgres:9.6.12";
 
     @Container
-    protected static PostgreSQLContainer postgreSqlContainer = (PostgreSQLContainer) new PostgreSQLContainer(IMAGE)
+    protected static final PostgreSQLContainer postgreSqlContainer = new PostgreSQLContainer<>(IMAGE)
         .withDatabaseName("testdb")
         .withUsername("testuser")
         .withPassword("testpwd")

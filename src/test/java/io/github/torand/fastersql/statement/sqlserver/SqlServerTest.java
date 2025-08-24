@@ -36,7 +36,7 @@ abstract class SqlServerTest {
     private static final String IMAGE = "mcr.microsoft.com/mssql/server:2022-latest";
 
     @Container
-    protected static MSSQLServerContainer sqlServerContainer = (MSSQLServerContainer)new MSSQLServerContainer(IMAGE)
+    protected static final MSSQLServerContainer sqlServerContainer = new MSSQLServerContainer<>(IMAGE)
         .acceptLicense()
         .withPassword("TestPassw0rd")
         .withInitScript("sqlserver-init.sql")

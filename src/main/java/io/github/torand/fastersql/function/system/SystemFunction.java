@@ -15,9 +15,7 @@
  */
 package io.github.torand.fastersql.function.system;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.function.Function;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.sql.Context;
 
 import java.util.stream.Stream;
@@ -31,16 +29,6 @@ public interface SystemFunction extends Function {
 
     @Override
     default Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    default Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    default Stream<ColumnAlias> aliasRefs() {
         return Stream.empty();
     }
 }

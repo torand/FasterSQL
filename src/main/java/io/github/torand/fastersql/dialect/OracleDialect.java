@@ -33,9 +33,10 @@ import static io.github.torand.javacommons.lang.StringHelper.generate;
 
 /**
  * Defines the <a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/sqlrf/">Oracle</a> SQL dialect.
- *
+ * <p>
  * Row offset clause is supported from Oracle 12c onwards
  * Row limit clause is supported from Oracle 12c onwards
+ * </p>
  */
 public class OracleDialect implements Dialect {
     private final EnumSet<Capability> supportedCaps;

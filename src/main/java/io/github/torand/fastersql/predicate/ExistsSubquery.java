@@ -15,8 +15,6 @@
  */
 package io.github.torand.fastersql.predicate;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
-import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.subquery.Subquery;
 
@@ -47,16 +45,6 @@ public class ExistsSubquery implements Predicate {
     public Stream<Object> params(Context context) {
         Context localContext = context.withClause(RESTRICTION);
         return query.params(localContext);
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
     }
 
     // Predicate

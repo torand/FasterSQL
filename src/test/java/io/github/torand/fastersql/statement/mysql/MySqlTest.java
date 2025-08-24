@@ -36,7 +36,7 @@ abstract class MySqlTest {
     private static final String IMAGE = "mysql:8.2.0";
 
     @Container
-    protected static MySQLContainer mySqlContainer = (MySQLContainer) new MySQLContainer(IMAGE)
+    protected static final MySQLContainer mySqlContainer = new MySQLContainer<>(IMAGE)
         .withDatabaseName("testdb")
         .withUsername("testuser")
         .withPassword("testpwd")

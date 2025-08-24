@@ -43,12 +43,16 @@ public interface Sql {
      * For validation purposes.
      * @return the columns referenced by this fragment.
      */
-    Stream<Column> columnRefs();
+    default Stream<Column> columnRefs() {
+        return Stream.empty();
+    }
 
     /**
      * Gets the column aliases referenced by this fragment.
      * For validation purposes.
      * @return the column aliases referenced by this fragment.
      */
-    Stream<ColumnAlias> aliasRefs();
+    default Stream<ColumnAlias> aliasRefs() {
+        return Stream.empty();
+    }
 }

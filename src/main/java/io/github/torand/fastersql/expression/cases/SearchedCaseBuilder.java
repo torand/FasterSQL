@@ -86,4 +86,48 @@ public class SearchedCaseBuilder {
         requireNonNull(whenThenClause, "No when-then clause specified");
         this.whenThenClauses.add(whenThenClause);
     }
+
+    /**
+     * Builder of a WHEN-THEN clause in a searched CASE expression.
+     */
+    public static class SearchedWhenThenBuilder {
+        private final SearchedCaseBuilder caseBuilder;
+        private final Predicate whenPredicate;
+
+        SearchedWhenThenBuilder(SearchedCaseBuilder caseBuilder, Predicate whenPredicate) {
+            this.caseBuilder = requireNonNull(caseBuilder, "No case builder specified");
+            this.whenPredicate = requireNonNull(whenPredicate, "No when predicate specified");
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenExpression the THEN expression.
+         * @return the modified CASE expression.
+         */
+        public SearchedCaseBuilder then(Expression thenExpression) {
+            requireNonNull(thenExpression, "No then expression specified");
+            caseBuilder.addWhenThenClause(new SearchedWhenThen(whenPredicate, thenExpression));
+            return caseBuilder;
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenConstant the THEN constant value.
+         * @return the modified CASE expression.
+         */
+        public SearchedCaseBuilder then(String thenConstant) {
+            requireNonNull(thenConstant, "No then constant specified");
+            return then($(thenConstant));
+        }
+
+        /**
+         * Adds a WHEN-THEN clause.
+         * @param thenConstant the THEN constant value.
+         * @return the modified CASE expression.
+         */
+        public SearchedCaseBuilder then(Number thenConstant) {
+            requireNonNull(thenConstant, "No then constant specified");
+            return then($(thenConstant));
+        }
+    }
 }

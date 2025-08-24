@@ -35,7 +35,7 @@ abstract class H2Test {
     private static final String IMAGE = "torandon/h2database:2.3.232";
 
     @Container
-    protected static GenericContainer h2Container = (GenericContainer) new GenericContainer(IMAGE)
+    protected static final GenericContainer h2Container = new GenericContainer(IMAGE)
         .withStartupTimeout(Duration.ofMinutes(3))
         .withFileSystemBind("src/test/resources/h2-init.sql", "/docker-entrypoint-initdb.d/test-db.sql", BindMode.READ_ONLY)
         .withExposedPorts(8082, 9092)

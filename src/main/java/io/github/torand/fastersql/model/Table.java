@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.model;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.alias.TableAlias;
 import io.github.torand.fastersql.relation.Relation;
 import io.github.torand.fastersql.sql.Context;
@@ -87,16 +86,6 @@ public abstract class Table<T extends Table<?>> implements Relation {
 
     @Override
     public Stream<Object> params(Context context) {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<Column> columnRefs() {
-        return Stream.empty();
-    }
-
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
         return Stream.empty();
     }
 

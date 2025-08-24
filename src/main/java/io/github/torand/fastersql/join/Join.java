@@ -15,7 +15,6 @@
  */
 package io.github.torand.fastersql.join;
 
-import io.github.torand.fastersql.alias.ColumnAlias;
 import io.github.torand.fastersql.dialect.Capability;
 import io.github.torand.fastersql.model.Column;
 import io.github.torand.fastersql.model.Table;
@@ -142,8 +141,4 @@ public class Join implements Sql {
         return Stream.concat(streamSafely(lefts), streamSafely(rights));
     }
 
-    @Override
-    public Stream<ColumnAlias> aliasRefs() {
-        return Stream.empty();
-    }
 }
