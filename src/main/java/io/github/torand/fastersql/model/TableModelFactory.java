@@ -16,13 +16,13 @@
 package io.github.torand.fastersql.model;
 
 /**
- * Defines a factory to create instances of a database {@link Table} model.
+ * Defines a factory to create instances of a database table model.
  * @param <T> the table model class.
  */
 @FunctionalInterface
-public interface TableFactory<T> {
+public interface TableModelFactory<T extends TableModel> {
     /**
-     * Creates a new instance of a database {@link Table} model.
+     * Creates a new instance of a database table model.
      * @param alias the table alias.
      * @return the new table model instance.
      */

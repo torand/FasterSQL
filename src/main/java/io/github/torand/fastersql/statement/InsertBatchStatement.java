@@ -42,11 +42,11 @@ import static java.util.stream.Collectors.joining;
  * @param <T> the batch entity type.
  */
 public class InsertBatchStatement<T> implements PreparableStatement {
-    private final Table<?> table;
+    private final Table table;
     private final List<ColumnValueExtractor<? super T>> columnValueExtractors;
     private final List<? extends T> entities;
 
-    InsertBatchStatement(Collection<? extends T> entities, Table<?> table, Collection<ColumnValueExtractor<? super T>> columnValueExtractors) {
+    InsertBatchStatement(Collection<? extends T> entities, Table table, Collection<ColumnValueExtractor<? super T>> columnValueExtractors) {
         this.entities = asList(requireNonEmpty(entities, "No entities specified"));
         this.table = requireNonNull(table, "No table specified");
         this.columnValueExtractors = asList(columnValueExtractors);

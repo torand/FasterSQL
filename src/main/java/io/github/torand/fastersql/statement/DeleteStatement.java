@@ -42,10 +42,10 @@ import static java.util.stream.Collectors.joining;
  * Implements a DELETE statement.
  */
 public class DeleteStatement implements PreparableStatement {
-    private final Table<?> fromTable;
+    private final Table fromTable;
     private final List<Predicate> predicates;
 
-    DeleteStatement(Table<?> table, Collection<Predicate> predicates) {
+    DeleteStatement(Table table, Collection<Predicate> predicates) {
         this.fromTable = requireNonNull(table, "No table specified");
         this.predicates = asList(predicates);
     }

@@ -40,7 +40,7 @@ public class InsertBatchIntoBuilder<T> {
      * @param table the table to insert into.
      * @return the statement.
      */
-    public InsertBatchStatement<T> into(Table<?> table) {
+    public InsertBatchStatement<T> into(Table table) {
         return new InsertBatchStatement<>(entities, requireNonNull(table, "No table specified"), null);
     }
 }

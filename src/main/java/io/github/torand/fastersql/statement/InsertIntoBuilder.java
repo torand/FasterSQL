@@ -36,7 +36,7 @@ public class InsertIntoBuilder {
      * @param table the table to insert into.
      * @return the statement.
      */
-    public InsertStatement into(Table<?> table) {
+    public InsertStatement into(Table table) {
         return new InsertStatement(requireNonNull(table, "No table specified"), null);
     }
 }

@@ -30,7 +30,7 @@ public class DeleteFromBuilder {
      * @param table the table to delete from.
      * @return the statement.
      */
-    public DeleteStatement from(Table<?> table) {
+    public DeleteStatement from(Table table) {
         return new DeleteStatement(requireNonNull(table, "No table specified"), null);
     }
 }

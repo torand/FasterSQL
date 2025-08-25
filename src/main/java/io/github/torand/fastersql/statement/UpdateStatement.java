@@ -43,11 +43,11 @@ import static java.util.stream.Collectors.joining;
  * Implements an UPDATE statement.
  */
 public class UpdateStatement implements PreparableStatement {
-    private final Table<?> table;
+    private final Table table;
     private final List<ColumnValue> columnValues;
     private final List<Predicate> predicates;
 
-    UpdateStatement(Table<?> table, Collection<ColumnValue> columnValues, Collection<Predicate> predicates) {
+    UpdateStatement(Table table, Collection<ColumnValue> columnValues, Collection<Predicate> predicates) {
         this.table = requireNonNull(table, "No table specified");
         this.columnValues = asList(columnValues);
         this.predicates = asList(predicates);

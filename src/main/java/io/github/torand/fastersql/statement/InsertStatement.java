@@ -40,10 +40,10 @@ import static java.util.stream.Collectors.joining;
  * Implements an INSERT statement for single row insertion.
  */
 public class InsertStatement implements PreparableStatement {
-    private final Table<?> table;
+    private final Table table;
     private final List<ColumnValue> columnValues;
 
-    InsertStatement(Table<?> table, Collection<ColumnValue> columnValues) {
+    InsertStatement(Table table, Collection<ColumnValue> columnValues) {
         this.table = requireNonNull(table, "No table specified");
         this.columnValues = asList(columnValues);
     }

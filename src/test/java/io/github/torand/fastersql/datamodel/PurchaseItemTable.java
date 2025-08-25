@@ -16,9 +16,9 @@
 package io.github.torand.fastersql.datamodel;
 
 import io.github.torand.fastersql.model.Column;
-import io.github.torand.fastersql.model.Table;
+import io.github.torand.fastersql.model.TableModel;
 
-public class PurchaseItemTable extends Table<PurchaseItemTable> {
+public class PurchaseItemTable extends TableModel<PurchaseItemTable> {
     public final Column ID = column("ID");
     public final Column PURCHASE_ID = column("PURCHASE_ID");
     public final Column PRODUCT_ID = column("PRODUCT_ID");
@@ -26,9 +26,5 @@ public class PurchaseItemTable extends Table<PurchaseItemTable> {
 
     PurchaseItemTable(String alias) {
         super("PURCHASE_ITEM", alias, PurchaseItemTable::new);
-    }
-
-    PurchaseItemTable() {
-        this("PI");
     }
 }

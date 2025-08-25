@@ -16,12 +16,12 @@
 package io.github.torand.fastersql.datamodel;
 
 public abstract class DataModel {
-    public static final CustomerTable CUSTOMER = new CustomerTable();
+    public static final CustomerTable CUSTOMER = new CustomerTable("C");
     public static final CustomerTable CUSTOMER2 = CUSTOMER.as("C2");
 
-    public static final ProductTable PRODUCT = new ProductTable();
+    public static final ProductTable PRODUCT = new ProductTable("PR");
 
-    public static final PurchaseTable PURCHASE = new PurchaseTable();
+    public static final PurchaseTable PURCHASE = new PurchaseTable("PU");
 
-    public static final PurchaseItemTable PURCHASE_ITEM = new PurchaseItemTable();
+    public static final PurchaseItemTable PURCHASE_ITEM = new PurchaseItemTable("PI");
 }

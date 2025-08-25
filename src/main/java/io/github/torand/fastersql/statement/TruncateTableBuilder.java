@@ -36,7 +36,7 @@ public class TruncateTableBuilder {
      * @param table the TABLE clause.
      * @return the statement.
      */
-    public TruncateStatement table(Table<?> table) {
+    public TruncateStatement table(Table table) {
         return new TruncateStatement(requireNonNull(table, "No table specified"));
     }
 }

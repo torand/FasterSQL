@@ -25,44 +25,29 @@ import static io.github.torand.fastersql.sql.Command.SELECT;
 import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 
 /**
- * Models a database table.
- * @param <T> the concrete table model class with columns.
+ * Represents a database table.
  */
-public abstract class Table<T extends Table<?>> implements Relation {
+public class Table implements Relation {
     private final String name;
     private final TableAlias alias;
-    private final TableFactory<T> tableFactory;
 
     /**
-     * Creates a representation (model) of a database table.
+     * Creates a representation of a database table.
      * @param name the table name.
-     * @param tableFactory the instance factory.
      */
-    protected Table(String name, TableFactory<T> tableFactory) {
+    protected Table(String name) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = defaultAlias(name);
-        this.tableFactory = tableFactory;
     }
 
     /**
-     * Creates a representation (model) of a database table.
+     * Creates a representation of a database table.
      * @param name the table name.
      * @param alias the table alias.
-     * @param tableFactory the instance factory.
      */
-    protected Table(String name, String alias, TableFactory<T> tableFactory) {
+    protected Table(String name, String alias) {
         this.name = requireNonBlank(name, "No name specified");
         this.alias = new TableAlias(requireNonBlank(alias, "No alias specified"));
-        this.tableFactory = tableFactory;
-    }
-
-    /**
-     * Creates a model of a column belonging to this table.
-     * @param name the column name.
-     * @return the column model.
-     */
-    public Column column(String name) {
-        return new Column(this, name);
     }
 
     /**
@@ -92,8 +77,8 @@ public abstract class Table<T extends Table<?>> implements Relation {
     // Relation
 
     @Override
-    public T as(String alias) {
-        return tableFactory.newInstance(alias);
+    public Table as(String alias) {
+        return new Table(alias);
     }
 
     @Override

@@ -31,25 +31,25 @@ import static io.github.torand.javacommons.contract.Requires.requireNonBlank;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Models a column in a database table.
+ * Represents a column in a database table.
  */
 public class Column implements LeftOperand, Expression, OrderExpression {
-    private final Table<?> table;
+    private final Table table;
     private final String name;
     private final ColumnAlias alias;
 
     /**
-     * Creates a representation (model) of a column inside a database table.
+     * Creates a representation of a column inside a database table.
      * @param table the table representation.
      * @param name the column name.
      */
-    public Column(Table<?> table, String name) {
+    public Column(Table table, String name) {
         this.table = requireNonNull(table, "No table specified");
         this.name = requireNonBlank(name, "No name specified");
         this.alias = defaultAlias(table, name);
     }
 
-    private Column(Table<?> table, String name, String alias) {
+    private Column(Table table, String name, String alias) {
         this.table = requireNonNull(table, "No table specified");
         this.name = requireNonBlank(name, "No name specified");
         this.alias = new ColumnAlias(requireNonBlank(alias, "No alias specified"));
@@ -76,7 +76,7 @@ public class Column implements LeftOperand, Expression, OrderExpression {
      * Gets the table this column belongs to.
      * @return the table.
      */
-    public Table<?> table() {
+    public Table table() {
         return table;
     }
 
@@ -118,7 +118,7 @@ public class Column implements LeftOperand, Expression, OrderExpression {
         return Optional.ofNullable(alias);
     }
 
-    private ColumnAlias defaultAlias(Table<?> table, String name) {
+    private ColumnAlias defaultAlias(Table table, String name) {
         return new ColumnAlias((table.alias().name() + "_" + name).toUpperCase());
     }
 }

@@ -16,9 +16,9 @@
 package io.github.torand.fastersql.datamodel;
 
 import io.github.torand.fastersql.model.Column;
-import io.github.torand.fastersql.model.Table;
+import io.github.torand.fastersql.model.TableModel;
 
-public class ProductTable extends Table<ProductTable> {
+public class ProductTable extends TableModel<ProductTable> {
     public final Column ID = column("ID");
     public final Column NAME = column("NAME");
     public final Column DESCRIPTION = column("DESCRIPTION");
@@ -28,9 +28,5 @@ public class ProductTable extends Table<ProductTable> {
 
     ProductTable(String alias) {
         super("PRODUCT", alias, ProductTable::new);
-    }
-
-    ProductTable() {
-        this("PR");
     }
 }

@@ -100,7 +100,7 @@ public class Join implements Sql {
      * Gets the table joined with.
      * @return the table joined with.
      */
-    public Table<?> joined() {
+    public Table joined() {
         return headOf(rights).table();
     }
 
@@ -112,7 +112,7 @@ public class Join implements Sql {
             throw new UnsupportedOperationException("%s does not support FULL OUTER JOIN".formatted(context.getDialect().getProductName()));
         }
 
-        Table<?> rightTable = headOf(this.rights).table();
+        Table rightTable = headOf(this.rights).table();
         StringBuilder sql = new StringBuilder()
             .append(mode.sql)
             .append(" ")

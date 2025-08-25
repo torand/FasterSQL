@@ -16,9 +16,9 @@
 package io.github.torand.fastersql.datamodel;
 
 import io.github.torand.fastersql.model.Column;
-import io.github.torand.fastersql.model.Table;
+import io.github.torand.fastersql.model.TableModel;
 
-public class CustomerTable extends Table<CustomerTable> {
+public class CustomerTable extends TableModel<CustomerTable> {
     public final Column ID = column("ID");
     public final Column FIRST_NAME = column("FIRST_NAME");
     public final Column LAST_NAME = column("LAST_NAME");
@@ -34,9 +34,5 @@ public class CustomerTable extends Table<CustomerTable> {
 
     CustomerTable(String alias) {
         super("CUSTOMER", alias, CustomerTable::new);
-    }
-
-    CustomerTable() {
-        this("C");
     }
 }

@@ -372,7 +372,7 @@ public class SelectStatement implements PreparableStatement {
         sb.append(" from ");
 
         // Tables that are joined with should not be specified in the FROM clause
-        Set<Table<?>> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
+        Set<Table> joinedTables = streamSafely(joins).map(Join::joined).collect(toSet());
 
         sb.append(streamSafely(relations)
             .filter(not(joinedTables::contains))
@@ -571,7 +571,7 @@ public class SelectStatement implements PreparableStatement {
     }
 
     private void validateColumnTableRelations(Context context, Stream<Column> columns) {
-        Function<Relation, Stream<Table<?>>> filterTables = r -> r instanceof Table<?> table ? Stream.of(table) : Stream.empty();
+        Function<Relation, Stream<Table>> filterTables = r -> r instanceof Table table ? Stream.of(table) : Stream.empty();
 
         Set<String> outerTableNames = new HashSet<>();
         if (nonEmpty(context.getOuterStatements())) {

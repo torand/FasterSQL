@@ -29,9 +29,9 @@ import static java.util.Objects.requireNonNull;
  * Implements a TRUNCATE statement.
  */
 public class TruncateStatement implements PreparableStatement {
-    private final Table<?> table;
+    private final Table table;
 
-    TruncateStatement(Table<?> table) {
+    TruncateStatement(Table table) {
         this.table = requireNonNull(table, "No table specified");
     }
 
