@@ -48,4 +48,18 @@ public abstract class TableModel<T extends TableModel<?>> extends Table {
     public T as(String alias) {
         return instanceFactory.newInstance(alias);
     }
+
+    /**
+     * Defines a factory to create instances of a database table model.
+     * @param <T> the table model class.
+     */
+    @FunctionalInterface
+    public interface TableModelFactory<T extends TableModel> {
+        /**
+         * Creates a new instance of a database table model.
+         * @param alias the table alias.
+         * @return the new table model instance.
+         */
+        T newInstance(String alias);
+    }
 }

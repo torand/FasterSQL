@@ -34,10 +34,12 @@ import io.github.torand.fastersql.setoperation.SetOperator;
 import io.github.torand.fastersql.sql.Context;
 import io.github.torand.fastersql.sql.Sql;
 import io.github.torand.fastersql.subquery.Subquery;
+import io.github.torand.javacommons.collection.CollectionHelper;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -357,7 +359,7 @@ public class SelectStatement implements PreparableStatement {
 
         final Dialect dialect = localContext.getDialect();
 
-        validate(context);
+        validate(localContext);
 
         StringBuilder sb = new StringBuilder();
         sb.append("select ");
@@ -414,20 +416,7 @@ public class SelectStatement implements PreparableStatement {
                 .collect(joining(", ")));
         }
 
-        if (nonNull(offset) || nonNull(limit)) {
-            if (dialect.supports(LIMIT_OFFSET)) {
-                String offsetClause = nonNull(offset) ? " " + dialect.formatRowOffsetClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row offset clause")) : "";
-                String limitClause = nonNull(limit) ? " " + dialect.formatRowLimitClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row limit clause")) : "";
-
-                if (dialect.offsetBeforeLimit()) {
-                    sb.append(offsetClause).append(limitClause);
-                } else {
-                    sb.append(limitClause).append(offsetClause);
-                }
-            } else {
-                sb = addLimitOffsetFallback(localContext, sb, rowFrom(), rowTo());
-            }
-        }
+        sb = addLimitOffsetSql(dialect, sb);
 
         if (forUpdate) {
             sb.append(" for update");
@@ -448,12 +437,31 @@ public class SelectStatement implements PreparableStatement {
         return mapSafely(limit, l -> (nonNull(offset) ? offset : 0) + l);
     }
 
-    private StringBuilder addLimitOffsetFallback(Context context, StringBuilder innerSql, Long rowFrom, Long rowTo) {
+    private StringBuilder addLimitOffsetSql(Dialect dialect, StringBuilder querySql) {
+        if (nonNull(offset) || nonNull(limit)) {
+            if (dialect.supports(LIMIT_OFFSET)) {
+                String offsetClause = nonNull(offset) ? " " + dialect.formatRowOffsetClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row offset clause")) : "";
+                String limitClause = nonNull(limit) ? " " + dialect.formatRowLimitClause().orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row limit clause")) : "";
+
+                if (dialect.offsetBeforeLimit()) {
+                    return querySql.append(offsetClause).append(limitClause);
+                } else {
+                    return querySql.append(limitClause).append(offsetClause);
+                }
+            } else {
+                return addLimitOffsetFallbackSql(dialect, querySql, rowFrom(), rowTo());
+            }
+        }
+
+        return querySql;
+    }
+
+    private StringBuilder addLimitOffsetFallbackSql(Dialect dialect, StringBuilder innerSql, Long rowFrom, Long rowTo) {
         final String ROWNUM = "{ROWNUM}";
         final String selectAllFrom = "select * from";
 
-        String rowNum = context.getDialect().formatRowNumLiteral()
-            .orElseThrow(() -> new FasterSQLException(getDialectRef(context.getDialect()) + " has no row number literal"));
+        String rowNum = dialect.formatRowNumLiteral()
+            .orElseThrow(() -> new FasterSQLException(getDialectRef(dialect) + " has no row number literal"));
 
         if (nonNull(rowFrom) && nonNull(rowTo)) {
             String limitSql = "select ORIGINAL.*, %s ROW_NO from ( %s ) ORIGINAL where %s <= ?".formatted(ROWNUM, innerSql, ROWNUM);
@@ -475,29 +483,22 @@ public class SelectStatement implements PreparableStatement {
         List<Object> params = new LinkedList<>();
 
         streamSafely(projections).flatMap(p -> p.params(context)).forEach(params::add);
-
         streamSafely(relations).flatMap(r -> r.params(context)).forEach(params::add);
-
         streamSafely(wherePredicates).flatMap(p -> p.params(context)).forEach(params::add);
-
         streamSafely(havingPredicates).flatMap(p -> p.params(context)).forEach(params::add);
 
-        if (context.getDialect().supports(LIMIT_OFFSET)) {
-            if (context.getDialect().offsetBeforeLimit()) {
-                if (nonNull(offset)) {
-                    params.add(offset);
-                }
-                if (nonNull(limit)) {
-                    params.add(limit);
-                }
-            } else {
-                if (nonNull(limit)) {
-                    params.add(limit);
-                }
-                if (nonNull(offset)) {
-                    params.add(offset);
-                }
+        params = addLimitOffsetParams(context.getDialect(), params);
+
+        return params.stream();
+    }
+
+    private List<Object> addLimitOffsetParams(Dialect dialect, List<Object> params) {
+        if (dialect.supports(LIMIT_OFFSET)) {
+            List<Long> limitOffsetParams = Stream.of(limit, offset).filter(Objects::nonNull).toList();
+            if (dialect.offsetBeforeLimit()) {
+                limitOffsetParams = CollectionHelper.reverse(limitOffsetParams);
             }
+            params.addAll(limitOffsetParams);
         } else {
             if (nonNull(limit)) {
                 params.add(rowTo());
@@ -507,7 +508,7 @@ public class SelectStatement implements PreparableStatement {
             }
         }
 
-        return params.stream();
+        return params;
     }
 
     private void validate(Context context) {
