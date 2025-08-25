@@ -487,12 +487,12 @@ public class SelectStatement implements PreparableStatement {
         streamSafely(wherePredicates).flatMap(p -> p.params(context)).forEach(params::add);
         streamSafely(havingPredicates).flatMap(p -> p.params(context)).forEach(params::add);
 
-        params = addLimitOffsetParams(context.getDialect(), params);
+        addLimitOffsetParams(context.getDialect(), params);
 
         return params.stream();
     }
 
-    private List<Object> addLimitOffsetParams(Dialect dialect, List<Object> params) {
+    private void addLimitOffsetParams(Dialect dialect, List<Object> params) {
         if (dialect.supports(LIMIT_OFFSET)) {
             List<Long> limitOffsetParams = Stream.of(limit, offset).filter(Objects::nonNull).toList();
             if (dialect.offsetBeforeLimit()) {
@@ -507,8 +507,6 @@ public class SelectStatement implements PreparableStatement {
                 params.add(rowFrom());
             }
         }
-
-        return params;
     }
 
     private void validate(Context context) {
