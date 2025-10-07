@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ...
 
-## [1.9.0] - 2025-08-xx
+## [1.9.0] - 2025-10-07
 
 ### Added
 - Supporting the 'union', 'intersect', and 'except' set operations.
