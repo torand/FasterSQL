@@ -91,7 +91,7 @@
         <hamcrest.version>3.0</hamcrest.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <testcontainers.version>1.21.3</testcontainers.version>
-        <oracle.version>23.9.0.25.07</oracle.version>
+        <oracle.version>23.26.0.0.0</oracle.version>
         <h2.version>2.4.240</h2.version>
         <mysql-connector-j.version>9.5.0</mysql-connector-j.version>
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
