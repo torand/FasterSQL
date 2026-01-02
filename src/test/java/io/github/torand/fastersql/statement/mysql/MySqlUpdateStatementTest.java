@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,7 @@ import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.update;
 import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
 import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
+import static org.hamcrest.Matchers.*;
 
 class MySqlUpdateStatementTest extends MySqlTest {
 

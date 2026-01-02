@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
-import static io.github.torand.fastersql.dialect.Capability.FULL_OUTER_JOIN;
-import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
-import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
-import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
+import static io.github.torand.fastersql.dialect.Capability.*;
 
 /**
  * Defines the <a href="https://learn.microsoft.com/en-us/sql/sql-server/?view=sql-server-ver16">Microsoft SQL Server</a> SQL dialect.

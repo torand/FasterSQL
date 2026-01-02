@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,9 +34,7 @@ import java.util.stream.Stream;
 
 import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
 import static io.github.torand.fastersql.sql.Command.SELECT_SET_OP;
-import static io.github.torand.javacommons.collection.CollectionHelper.asList;
-import static io.github.torand.javacommons.collection.CollectionHelper.concat;
-import static io.github.torand.javacommons.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.javacommons.collection.CollectionHelper.*;
 import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static io.github.torand.javacommons.stream.StreamHelper.streamSafely;
 import static java.util.stream.Collectors.joining;

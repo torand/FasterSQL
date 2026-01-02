@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,14 +25,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.torand.fastersql.dialect.Capability.CONCAT_OPERATOR;
-import static io.github.torand.fastersql.dialect.Capability.CURRENT_TIME;
-import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
-import static io.github.torand.fastersql.dialect.Capability.MODULO_OPERATOR;
-import static io.github.torand.fastersql.dialect.Capability.NULL_ORDERING;
-import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
-import static io.github.torand.fastersql.dialect.Capability.SET_OPERATION_PARENTHESES;
-import static io.github.torand.fastersql.dialect.Capability.TRUNCATE_TABLE;
+import static io.github.torand.fastersql.dialect.Capability.*;
 
 /**
  * Defines the <a href="https://www.h2database.com/html/grammar.html">H2</a> SQL dialect.

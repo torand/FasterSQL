@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,7 @@ import java.util.UUID;
 import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
 import static io.github.torand.fastersql.statement.Statements.insertBatch;
 import static io.github.torand.fastersql.statement.Statements.select;
-import static io.github.torand.fastersql.util.RowValueMatchers.isBigDecimal;
-import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
+import static io.github.torand.fastersql.util.RowValueMatchers.*;
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.is;
 

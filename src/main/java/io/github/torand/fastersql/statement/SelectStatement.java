@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,12 +36,7 @@ import io.github.torand.fastersql.sql.Sql;
 import io.github.torand.fastersql.subquery.Subquery;
 import io.github.torand.javacommons.collection.CollectionHelper;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -50,10 +45,7 @@ import static io.github.torand.fastersql.dialect.Capability.LIMIT_OFFSET;
 import static io.github.torand.fastersql.dialect.Capability.SELECT_FOR_UPDATE;
 import static io.github.torand.fastersql.sql.Command.SELECT;
 import static io.github.torand.fastersql.statement.Helpers.unwrapSuppliers;
-import static io.github.torand.javacommons.collection.CollectionHelper.asList;
-import static io.github.torand.javacommons.collection.CollectionHelper.concat;
-import static io.github.torand.javacommons.collection.CollectionHelper.isEmpty;
-import static io.github.torand.javacommons.collection.CollectionHelper.nonEmpty;
+import static io.github.torand.javacommons.collection.CollectionHelper.*;
 import static io.github.torand.javacommons.contract.Requires.require;
 import static io.github.torand.javacommons.contract.Requires.requireNonEmpty;
 import static io.github.torand.javacommons.functional.Functions.castTo;

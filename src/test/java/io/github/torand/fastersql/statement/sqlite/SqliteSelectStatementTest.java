@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024-2025 Tore Eide Andersen
+ * Copyright (c) 2024-2026 Tore Eide Andersen
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,34 +25,12 @@ import java.util.Optional;
 
 import static io.github.torand.fastersql.alias.Aliases.alias;
 import static io.github.torand.fastersql.alias.Aliases.colRef;
-import static io.github.torand.fastersql.constant.Constants.$;
-import static io.github.torand.fastersql.constant.Constants.$i;
-import static io.github.torand.fastersql.constant.Constants.nullValue;
-import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER;
-import static io.github.torand.fastersql.datamodel.DataModel.CUSTOMER2;
-import static io.github.torand.fastersql.datamodel.DataModel.PRODUCT;
-import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE;
-import static io.github.torand.fastersql.datamodel.DataModel.PURCHASE_ITEM;
+import static io.github.torand.fastersql.constant.Constants.*;
+import static io.github.torand.fastersql.datamodel.DataModel.*;
 import static io.github.torand.fastersql.expression.arithmetic.ArithmeticExpressions.neg;
 import static io.github.torand.fastersql.expression.cases.CaseExpressions.case_;
-import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.avg;
-import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.count;
-import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.max;
-import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.min;
-import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.sum;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.abs;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.cast;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ceil;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.exp;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.floor;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.ln;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.lower;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.pow;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.round;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.sqrt;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.substring;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.toNumber;
-import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.upper;
+import static io.github.torand.fastersql.function.aggregate.AggregateFunctions.*;
+import static io.github.torand.fastersql.function.singlerow.SingleRowFunctions.*;
 import static io.github.torand.fastersql.function.singlerow.cast.DataTypes.decimal;
 import static io.github.torand.fastersql.function.singlerow.cast.DataTypes.varchar;
 import static io.github.torand.fastersql.function.system.SystemFunctions.currentDate;
@@ -62,10 +40,7 @@ import static io.github.torand.fastersql.projection.Projections.subquery;
 import static io.github.torand.fastersql.relation.Relations.table;
 import static io.github.torand.fastersql.statement.Statements.select;
 import static io.github.torand.fastersql.statement.Statements.selectDistinct;
-import static io.github.torand.fastersql.util.RowValueMatchers.isDouble;
-import static io.github.torand.fastersql.util.RowValueMatchers.isDoubleCloseTo;
-import static io.github.torand.fastersql.util.RowValueMatchers.isInteger;
-import static io.github.torand.fastersql.util.RowValueMatchers.isNull;
+import static io.github.torand.fastersql.util.RowValueMatchers.*;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 
