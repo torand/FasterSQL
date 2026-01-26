@@ -97,7 +97,7 @@
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
         <mariadb-java-client.version>3.5.7</mariadb-java-client.version>
         <postgresql.version>42.7.9</postgresql.version>
-        <mssql-jdbc.version>13.3.0.jre11-preview</mssql-jdbc.version>
+        <mssql-jdbc.version>13.3.1.jre11-preview</mssql-jdbc.version>
         <ucanaccess.version>5.1.5</ucanaccess.version>
         <mybatis.version>3.5.19</mybatis.version>
         <sqlite-jdbc.version>3.51.1.0</sqlite-jdbc.version>
