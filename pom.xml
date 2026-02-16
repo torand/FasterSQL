@@ -96,7 +96,7 @@
         <mysql-connector-j.version>9.6.0</mysql-connector-j.version>
         <hikaricp-java6.version>2.3.13</hikaricp-java6.version>
         <mariadb-java-client.version>3.5.7</mariadb-java-client.version>
-        <postgresql.version>42.7.9</postgresql.version>
+        <postgresql.version>42.7.10</postgresql.version>
         <mssql-jdbc.version>13.3.1.jre11-preview</mssql-jdbc.version>
         <ucanaccess.version>5.1.5</ucanaccess.version>
         <mybatis.version>3.5.19</mybatis.version>
